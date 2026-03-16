@@ -81,24 +81,6 @@ const withRecording: PriceCard[] = [
   },
 ];
 
-const otherServices = [
-  {
-    name: 'Play & Review',
-    price: '$70',
-    description:
-      'We play a 15|10 rated game on Chess.com or Lichess, then review and analyze it together afterward. A great way to get direct, practical feedback on your play in real time.',
-    buttonLabel: 'Book Now',
-    href: '#',
-  },
-  {
-    name: 'Game Analysis',
-    price: '$60',
-    description:
-      "Send me 2 of your games and I'll provide detailed PGN annotations with full analysis, emailed to you within a few days.",
-    buttonLabel: 'Book Now',
-    href: '#',
-  },
-];
 ---
 
 <Layout
@@ -285,51 +267,6 @@ const otherServices = [
   </section>
 
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 5 — OTHER SERVICES
-  ════════════════════════════════════════════════════════════════════════ -->
-  <section class="bg-off-white section-pad">
-    <div class="container-max">
-
-      <div class="text-center mb-10">
-        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
-          Other Services
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        {otherServices.map(({ name, price, description, buttonLabel, href }) => (
-          <div class="card flex flex-col gap-5">
-            <div class="flex items-start justify-between gap-3">
-              <h3 class="font-playfair text-navy text-xl font-semibold leading-snug">
-                {name}
-              </h3>
-              <span class="font-playfair text-gold text-3xl font-bold leading-none flex-shrink-0">
-                {price}
-              </span>
-            </div>
-
-            <div class="h-px bg-navy/8"></div>
-
-            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
-              {description}
-            </p>
-
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-gold text-sm text-center"
-              aria-label={`${buttonLabel} — ${name}`}
-            >
-              {buttonLabel}
-            </a>
-          </div>
-        ))}
-      </div>
-
-    </div>
-  </section>
 
 
 
