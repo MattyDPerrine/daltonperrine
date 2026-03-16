@@ -135,31 +135,6 @@ const otherServices = [
 
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 2 — FREE CONSULTATION CALLOUT
-  ════════════════════════════════════════════════════════════════════════ -->
-  <section class="bg-gold">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
-      <p class="font-inter text-navy font-medium text-base leading-relaxed max-w-lg">
-        <strong class="font-semibold">Not sure if coaching is right for you?</strong>{' '}
-        Book a free 15-minute consultation call. No pressure, no obligation.
-      </p>
-      <a
-        href="https://nextlevelchesscoaching.setmore.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex-shrink-0 inline-block bg-navy text-white font-inter font-semibold px-6 py-3 rounded-lg
-               transition-all duration-200 ease-in-out
-               hover:bg-charcoal hover:shadow-md hover:-translate-y-0.5
-               focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2 focus:ring-offset-gold
-               whitespace-nowrap"
-      >
-        Book Free Consultation
-      </a>
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
        SECTION 3 — WITHOUT VIDEO RECORDING
   ════════════════════════════════════════════════════════════════════════ -->
   <section class="bg-off-white section-pad">
@@ -357,93 +332,5 @@ const otherServices = [
   </section>
 
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SECTION 6 — HOW TO PAY & BOOK
-  ════════════════════════════════════════════════════════════════════════ -->
-  <section class="bg-white section-pad">
-    <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-6">
-
-      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
-        How to Book
-      </h2>
-
-      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
-        Click any <strong class="font-semibold text-navy">"Buy Now"</strong> or{' '}
-        <strong class="font-semibold text-navy">"Book Now"</strong> button above to make your
-        payment. Once payment is received, contact me using the form below or reach out on
-        Chess.com (username:{' '}
-        <a
-          href="https://www.chess.com/member/mattydperrine"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150"
-        >
-          MattyDPerrine
-        </a>
-        ) so we can schedule your lesson at a time that works for both of us.
-      </p>
-
-      <div class="w-full flex flex-col sm:flex-row items-stretch gap-3 text-left mt-2">
-        {[
-          { n: '1', text: 'Choose your package and complete payment' },
-          { n: '2', text: 'Contact me to schedule your session' },
-          { n: '3', text: 'I study your games before we meet' },
-        ].map(({ n, text }) => (
-          <div class="flex items-center gap-3 bg-off-white rounded-xl px-5 py-4 flex-1 shadow-card">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gold flex items-center justify-center shadow-[0_2px_10px_rgba(201,162,39,0.3)]">
-              <span class="font-playfair text-white text-sm font-bold leading-none">{n}</span>
-            </div>
-            <p class="font-inter text-navy text-sm leading-snug">{text}</p>
-          </div>
-        ))}
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-4 mt-4">
-        <a href="/contact" class="btn-gold text-base px-8 py-3.5">
-          Contact Me
-        </a>
-        <a
-          href="/first-lesson"
-          class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-3.5 rounded-lg
-                 transition-all duration-200 ease-in-out
-                 hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
-                 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
-        >
-          Learn About the First Lesson
-        </a>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       CLOSING NAVY BAND
-  ════════════════════════════════════════════════════════════════════════ -->
-  <section class="bg-navy relative overflow-hidden">
-    <div
-      aria-hidden="true"
-      class="absolute inset-0 opacity-[0.035] pointer-events-none"
-      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
-    ></div>
-    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-      <div>
-        <p class="font-playfair text-white text-xl font-semibold mb-1">
-          Have a question before booking?
-        </p>
-        <p class="font-inter text-off-white/60 text-sm">
-          I'm happy to answer any questions you have about lessons, scheduling, or my coaching approach.
-        </p>
-      </div>
-      <a
-        href="https://nextlevelchesscoaching.setmore.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn-gold flex-shrink-0"
-      >
-        Book Free Consultation
-      </a>
-    </div>
-  </section>
 
 </Layout>
