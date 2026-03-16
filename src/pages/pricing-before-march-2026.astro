@@ -13,13 +13,6 @@ interface PriceCard {
 
 const withoutRecording: PriceCard[] = [
   {
-    name: 'Trial Lesson',
-    price: '$70',
-    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
-    buttonLabel: 'Get Started',
-    href: '#',
-  },
-  {
     name: 'Single Lesson',
     price: '$80',
     description: 'One 1-hour personalized coaching session.',
@@ -54,13 +47,6 @@ const withoutRecording: PriceCard[] = [
 ];
 
 const withRecording: PriceCard[] = [
-  {
-    name: 'Trial Lesson',
-    price: '$75',
-    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
-    buttonLabel: 'Get Started',
-    href: '#',
-  },
   {
     name: 'Single Lesson',
     price: '$85',
@@ -163,7 +149,7 @@ const otherServices = [
       </div>
 
       <!-- Pricing grid -->
-      <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+      <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {withoutRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
           <div
             class:list={[
@@ -248,7 +234,7 @@ const otherServices = [
       </div>
 
       <!-- Pricing grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {withRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
           <div
             class:list={[
