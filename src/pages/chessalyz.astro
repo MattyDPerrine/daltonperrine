@@ -2,11 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 
 // ── Recent updates — edit this list whenever you ship something new ──────────
+// Each update can optionally include a `link` field pointing to a Substack article.
+// Example:
+//   { date: 'April 2026', title: 'New feature', description: '...', link: 'https://yoursubstack.substack.com/p/...' }
 const updates = [
   {
     date: 'March 2026',
     title: 'Public beta launched',
     description: 'Chessalyz.ai is now open to the public. Join the Skool community to get access and share feedback.',
+    // link: 'https://yoursubstack.substack.com/p/...',
   },
 ];
 ---
@@ -143,13 +147,23 @@ const updates = [
       </div>
 
       <div class="max-w-2xl mx-auto flex flex-col gap-5">
-        {updates.map(({ date, title, description }) => (
+        {updates.map(({ date, title, description, link }) => (
           <div class="card flex flex-col gap-2">
             <div class="flex items-center gap-3">
               <span class="font-inter text-gold text-xs font-semibold tracking-wide uppercase">{date}</span>
             </div>
             <h3 class="font-playfair text-navy text-xl font-semibold leading-snug">{title}</h3>
             <p class="font-inter text-text-secondary text-sm leading-relaxed">{description}</p>
+            {link && (
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-inter text-gold text-sm font-medium hover:underline mt-1 self-start"
+              >
+                Read on Substack →
+              </a>
+            )}
           </div>
         ))}
       </div>
