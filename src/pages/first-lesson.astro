@@ -1,0 +1,352 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const questionnaire = [
+  'What is your name?',
+  'What is your over-the-board rating? (USCF / FIDE)',
+  'What is your Chess.com and/or Lichess username?',
+  'How long have you been playing chess tournaments?',
+  'What are your short-term and long-term goals in chess?',
+  'What do you want or expect to get out of our lessons together?',
+];
+
+const timeline = [
+  {
+    phase: 'Before',
+    icon: '📋',
+    label: 'You fill out a short questionnaire',
+  },
+  {
+    phase: 'Before',
+    icon: '♟',
+    label: 'I analyze your recent games',
+  },
+  {
+    phase: 'During',
+    icon: '🎙',
+    label: 'We meet on Chess.com / Lichess + Zoom',
+  },
+  {
+    phase: 'During',
+    icon: '🔍',
+    label: 'Game review & improvement plan',
+  },
+  {
+    phase: 'After',
+    icon: '📝',
+    label: 'Detailed notes & homework emailed to you',
+  },
+];
+---
+
+<Layout
+  title="Your First Chess Lesson | What to Expect — FM Dalton Perrine"
+  description="Find out what to expect before, during, and after your first chess lesson with FM Dalton Perrine. Preparation is simple — just show up ready to learn."
+>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        No surprises. No guesswork.
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Your First Lesson
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        Here's exactly what to expect when we work together<br />for the first time.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ─── MINI TIMELINE STRIP ───────────────────────────────────────────── -->
+  <div class="bg-navy/95 border-t border-white/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <ol class="flex flex-wrap justify-center gap-x-0 gap-y-3" role="list" aria-label="Lesson overview">
+        {timeline.map(({ icon, label }, i) => (
+          <>
+            {i === 3 && <li class="w-full" aria-hidden="true" />}
+            <li class="flex items-center">
+              <span class="flex items-center gap-2 font-inter text-xs text-off-white/65 px-4">
+                <span class="text-base leading-none" aria-hidden="true">{icon}</span>
+                {label}
+              </span>
+              {i < timeline.length - 1 && (
+                <span aria-hidden="true" class="text-gold/30 text-lg leading-none hidden sm:block">›</span>
+              )}
+            </li>
+          </>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — BEFORE THE LESSON
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto px-0">
+
+      <!-- Section label -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center flex-shrink-0 shadow-[0_2px_12px_rgba(201,162,39,0.35)]">
+          <span class="font-playfair text-white text-sm font-bold leading-none">1</span>
+        </div>
+        <span class="font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase">Step One</span>
+      </div>
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-7">
+        Before We Meet
+      </h2>
+
+      <div class="flex flex-col gap-5 font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        <p>
+          Once you've reached out through my contact form, I'll send you a short questionnaire
+          by email to get to know you and your chess background. Here's what I'll ask:
+        </p>
+      </div>
+
+      <!-- Questionnaire cards -->
+      <ol class="mt-7 flex flex-col gap-3" role="list">
+        {questionnaire.map((q, i) => (
+          <li class="flex gap-0 rounded-lg bg-white shadow-card overflow-hidden hover:shadow-lg transition-shadow duration-200">
+            <div class="w-1.5 flex-shrink-0 bg-gold rounded-l-lg"></div>
+            <div class="flex items-center gap-4 px-5 py-4">
+              <span
+                class="flex-shrink-0 w-7 h-7 rounded-full bg-gold/10 text-gold font-playfair font-bold text-sm flex items-center justify-center leading-none"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <p class="font-inter text-navy text-sm leading-relaxed">
+                {q}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed mt-7">
+        Once you've answered the questionnaire and made payment for your first lesson, we'll
+        schedule a day and time that works for both of us.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — MY PREPARATION
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="max-w-3xl mx-auto px-0">
+
+      <!-- Section label -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center flex-shrink-0 shadow-[0_2px_12px_rgba(201,162,39,0.35)]">
+          <span class="font-playfair text-white text-sm font-bold leading-none">2</span>
+        </div>
+        <span class="font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase">Step Two</span>
+      </div>
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-7">
+        What I Do Before the Lesson
+      </h2>
+
+      <!-- Callout box -->
+      <div class="rounded-xl bg-navy text-off-white px-7 py-6 mb-7 relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          class="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 48px 48px;"
+        ></div>
+        <div class="relative flex gap-4 items-start">
+          <span class="text-2xl mt-0.5 select-none flex-shrink-0" aria-hidden="true">♟</span>
+          <p class="font-inter text-off-white/85 text-sm leading-relaxed italic">
+            "I do homework before you even show up."
+          </p>
+        </div>
+      </div>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        Between the time we schedule the lesson and the day it happens, I'll be analyzing your
+        recent games on my own time. Looking at your games helps me get an idea of your overall
+        ability, your playing style, and a few specific areas where I think you can improve the
+        most. This way, we hit the ground running from the very first session with no wasted time.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — DURING THE LESSON
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto px-0">
+
+      <!-- Section label -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center flex-shrink-0 shadow-[0_2px_12px_rgba(201,162,39,0.35)]">
+          <span class="font-playfair text-white text-sm font-bold leading-none">3</span>
+        </div>
+        <span class="font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase">Step Three</span>
+      </div>
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-7">
+        During the Lesson
+      </h2>
+
+      <div class="flex flex-col gap-5 font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        <p>
+          We'll meet online using Chess.com or Lichess, and communicate through Zoom.
+          Each lesson lasts approximately one hour.
+        </p>
+        <p>
+          In our first session, we'll review some of your recent games together. I'll walk you
+          through my observations, point out recurring patterns, both strengths to build on and
+          weaknesses to address, and begin forming a plan for your improvement. I'll ask you lots
+          of questions throughout the lesson because I want to understand how you
+          <em class="text-navy not-italic font-medium">think</em> about positions, not just what moves you play.
+        </p>
+      </div>
+
+      <!-- Platforms row -->
+      <div class="mt-8 flex flex-wrap gap-3">
+        {[
+          { label: 'Chess.com', detail: 'Classroom' },
+          { label: 'Lichess', detail: 'Study board' },
+          { label: 'Zoom', detail: 'Voice / video' },
+        ].map(({ label, detail }) => (
+          <div class="flex items-center gap-2.5 bg-white rounded-lg px-4 py-3 shadow-card border border-navy/5">
+            <span class="text-gold text-lg leading-none select-none" aria-hidden="true">♟</span>
+            <div>
+              <p class="font-inter font-semibold text-navy text-sm leading-none mb-0.5">{label}</p>
+              <p class="font-inter text-text-secondary text-xs">{detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — AFTER THE LESSON
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="max-w-3xl mx-auto px-0">
+
+      <!-- Section label -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center flex-shrink-0 shadow-[0_2px_12px_rgba(201,162,39,0.35)]">
+          <span class="font-playfair text-white text-sm font-bold leading-none">4</span>
+        </div>
+        <span class="font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase">Step Four</span>
+      </div>
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-7">
+        After the Lesson
+      </h2>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed mb-8">
+        At the end of our session, I'll send you an email with detailed notes from the lesson
+        along with personalized homework tailored to the areas we identified. Future lessons will
+        build on what we covered and continue to expand on your weak areas as your game develops.
+        I periodically re-evaluate your strengths and weaknesses as you grow, so your training
+        plan evolves with you.
+      </p>
+
+      <!-- After-lesson deliverables -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { icon: '📧', title: 'Lesson Notes', desc: 'Detailed written summary emailed after every session' },
+          { icon: '📝', title: 'Homework', desc: 'Personalized assignments targeting your specific weak areas' },
+          { icon: '📈', title: 'Progress Tracking', desc: 'Ongoing re-evaluation as your game develops and grows' },
+        ].map(({ icon, title, desc }) => (
+          <div class="rounded-xl bg-off-white border border-navy/8 px-5 py-5 flex flex-col gap-2 text-center items-center">
+            <span class="text-2xl select-none" aria-hidden="true">{icon}</span>
+            <p class="font-playfair text-navy font-semibold text-base">{title}</p>
+            <p class="font-inter text-text-secondary text-xs leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — NOT SURE YET?
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-2xl mx-auto px-0 text-center flex flex-col items-center gap-6">
+
+      <span class="text-4xl select-none" aria-hidden="true">🤔</span>
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold leading-snug">
+        Not Sure Yet?
+      </h2>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed max-w-xl">
+        If you'd like to ask me questions or learn more about how online chess lessons work
+        before committing, you can book a free 15-minute consultation call. No pressure, no
+        obligation, just a conversation about your chess and how I can help.
+      </p>
+
+      <a
+        href="https://nextlevelchesscoaching.setmore.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-gold text-base px-9 py-3.5"
+      >
+        Book a Free Consultation
+      </a>
+
+      <div class="flex flex-col items-center gap-3">
+        <span class="font-inter text-text-secondary text-sm">Or jump right in:</span>
+        <a
+          href="/pricing"
+          class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-3 rounded-lg
+                 transition-all duration-200 ease-in-out
+                 hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+        >
+          See Pricing &amp; Book a Lesson
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       CLOSING NAVY BAND
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <p class="font-playfair text-off-white/80 text-lg font-medium text-center sm:text-left">
+        Still have questions? I'm happy to answer them.
+      </p>
+      <a href="/contact" class="btn-gold flex-shrink-0">
+        Contact Me
+      </a>
+    </div>
+  </section>
+
+</Layout>

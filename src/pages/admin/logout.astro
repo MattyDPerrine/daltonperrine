@@ -1,0 +1,15 @@
+---
+/**
+ * src/pages/admin/logout.astro
+ * Handles POST /admin/logout — clears the session cookie and redirects.
+ */
+export const prerender = false;
+
+import { clearSessionCookie } from '../../lib/auth';
+
+if (Astro.request.method === 'POST') {
+  clearSessionCookie(Astro.cookies);
+}
+
+return Astro.redirect('/admin/login');
+---

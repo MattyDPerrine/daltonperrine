@@ -1,0 +1,245 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// Fetch all non-draft posts, newest first
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => {
+  if (a.data.pinned && !b.data.pinned) return -1;
+  if (!a.data.pinned && b.data.pinned) return 1;
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year:  'numeric',
+    month: 'long',
+    day:   'numeric',
+  });
+}
+
+// Tag colors — cycles through a small palette based on tag text
+const tagColorMap: Record<string, string> = {
+  improvement:  'bg-gold/15 text-gold-hover border-gold/25',
+  tactics:      'bg-navy/8 text-navy border-navy/15',
+  mindset:      'bg-emerald-50 text-emerald-700 border-emerald-200',
+  openings:     'bg-indigo-50 text-indigo-700 border-indigo-200',
+  tournaments:  'bg-amber-50 text-amber-700 border-amber-200',
+  endgames:     'bg-rose-50 text-rose-700 border-rose-200',
+  strategy:     'bg-sky-50 text-sky-700 border-sky-200',
+};
+
+function tagClass(tag: string): string {
+  return tagColorMap[tag.toLowerCase()] ?? 'bg-navy/8 text-navy border-navy/15';
+}
+---
+
+<Layout
+  title="Chess Improvement Blog | Articles on Strategy, Mindset & Openings — FM Dalton Perrine"
+  description="Chess articles, game annotations, and improvement tips from FIDE Master Dalton Perrine. Topics include openings, endgames, tournament mindset, and more."
+>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        Chess Improvement · Strategy · Mindset
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Blog
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        Articles on chess improvement, strategy, mindset,<br />and the journey to mastery.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — SUBSTACK CALLOUT
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-gold">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+      <div class="flex items-start gap-3">
+        <!-- Substack icon -->
+        <div class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-lg bg-navy/15 items-center justify-center mt-0.5">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-navy" aria-hidden="true">
+            <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+          </svg>
+        </div>
+        <p class="font-inter text-navy font-medium text-base leading-relaxed max-w-lg">
+          <strong class="font-semibold">Most of my articles are published on Chess Chatter</strong>, my<br />Substack newsletter. Subscribe there to never miss a post.
+        </p>
+      </div>
+      <a
+        href="https://chesschatter.substack.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex-shrink-0 inline-block bg-navy text-white font-inter font-semibold px-6 py-3 rounded-lg
+               transition-all duration-200 ease-in-out
+               hover:bg-charcoal hover:shadow-md hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2 focus:ring-offset-gold
+               whitespace-nowrap"
+      >
+        Visit Chess Chatter
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — BLOG POST GRID
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      {posts.length === 0 ? (
+        <!-- Empty state -->
+        <div class="text-center py-20 flex flex-col items-center gap-4">
+          <span class="text-6xl select-none" aria-hidden="true">♟</span>
+          <h2 class="font-playfair text-navy text-2xl font-bold">No posts yet</h2>
+          <p class="font-inter text-text-secondary">
+            Check back soon — or subscribe on{' '}
+            <a href="https://chesschatter.substack.com/" target="_blank" rel="noopener noreferrer"
+               class="text-gold hover:text-gold-hover underline underline-offset-2">
+              Substack
+            </a>{' '}
+            in the meantime.
+          </p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {posts.map((post) => {
+            const { title, description, date, tags, image, externalUrl } = post.data;
+            const href = externalUrl ?? `/blog/${post.slug}`;
+            const isExternal = Boolean(externalUrl);
+
+            return (
+              <article class="card flex flex-col gap-0 overflow-hidden p-0 group">
+
+                <!-- Thumbnail (only shown if a custom image is set) -->
+                {image && (
+                  <a href={href} target={isExternal ? '_blank' : undefined}
+                     rel={isExternal ? 'noopener noreferrer' : undefined}
+                     class="block overflow-hidden" aria-hidden="true" tabindex="-1">
+                    <img
+                      src={image}
+                      alt={title}
+                      class="w-full h-44 object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </a>
+                )}
+
+                <!-- Card body -->
+                <div class="flex flex-col gap-3 p-6 flex-grow">
+
+                  <!-- Meta row: date + external badge -->
+                  <div class="flex items-center gap-3">
+                    <time
+                      datetime={date.toISOString()}
+                      class="font-inter text-text-secondary text-xs"
+                    >
+                      {formatDate(date)}
+                    </time>
+                    {isExternal && (
+                      <span class="inline-flex items-center gap-1 font-inter text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full bg-navy/8 text-navy border border-navy/12">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5" aria-hidden="true">
+                          <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+                        </svg>
+                        Substack
+                      </span>
+                    )}
+                  </div>
+
+                  <!-- Title -->
+                  <h2 class="font-playfair text-navy text-xl font-semibold leading-snug">
+                    <a
+                      href={href}
+                      target={isExternal ? '_blank' : undefined}
+                      rel={isExternal ? 'noopener noreferrer' : undefined}
+                      class="hover:text-gold transition-colors duration-150"
+                    >
+                      {title}
+                    </a>
+                  </h2>
+
+                  <!-- Description -->
+                  <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow line-clamp-3">
+                    {description}
+                  </p>
+
+                  <!-- Tags -->
+                  {tags && tags.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5 mt-1">
+                      {tags.map((tag) => (
+                        <span class:list={[
+                          'font-inter text-[11px] font-semibold tracking-wide px-2.5 py-0.5 rounded-full border',
+                          tagClass(tag),
+                        ]}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <!-- Read more -->
+                  <a
+                    href={href}
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener noreferrer' : undefined}
+                    class="inline-flex items-center gap-1.5 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group/link mt-2"
+                    aria-label={`Read more about ${title}`}
+                  >
+                    Read more
+                    <span aria-hidden="true" class="transition-transform duration-150 group-hover/link:translate-x-1">→</span>
+                  </a>
+                </div>
+
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NEWSLETTER CTA BAND
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+      <div>
+        <p class="font-playfair text-gold text-xl font-semibold mb-1">
+          Chess Chatter Newsletter
+        </p>
+        <p class="font-inter text-off-white/60 text-sm max-w-sm">
+          Chess analysis, mindset strategies, and practical<br />improvement advice delivered straight to your inbox.<br />Join 800+ subscribers.
+        </p>
+      </div>
+      <a
+        href="https://chesschatter.substack.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-gold flex-shrink-0"
+      >
+        Subscribe on Substack
+      </a>
+    </div>
+  </section>
+
+</Layout>

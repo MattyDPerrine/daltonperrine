@@ -1,0 +1,259 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// 1. Generate a static route for every non-draft blog post
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props:  { post },
+  }));
+}
+
+// 2. Receive the post for this route
+const { post } = Astro.props;
+const { title, description, date, author, image, tags, externalUrl } = post.data;
+
+// 3. Render the markdown body
+const { Content } = await render(post);
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', {
+    year:  'numeric',
+    month: 'long',
+    day:   'numeric',
+  });
+}
+
+const tagColorMap: Record<string, string> = {
+  improvement:  'bg-gold/15 text-gold-hover border-gold/25',
+  tactics:      'bg-navy/8 text-navy border-navy/15',
+  mindset:      'bg-emerald-50 text-emerald-700 border-emerald-200',
+  openings:     'bg-indigo-50 text-indigo-700 border-indigo-200',
+  tournaments:  'bg-amber-50 text-amber-700 border-amber-200',
+  endgames:     'bg-rose-50 text-rose-700 border-rose-200',
+  strategy:     'bg-sky-50 text-sky-700 border-sky-200',
+};
+
+function tagClass(tag: string): string {
+  return tagColorMap[tag.toLowerCase()] ?? 'bg-navy/8 text-navy border-navy/15';
+}
+---
+
+<Layout
+  title={`${title} | FM Dalton Perrine`}
+  description={description}
+  ogType="article"
+  articleDate={date.toISOString()}
+  articleAuthor={author}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": title,
+      "description": description,
+      "datePublished": date.toISOString(),
+      "author": {
+        "@type": "Person",
+        "@id": "https://daltonperrine.com/#person",
+        "name": author
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Dalton Perrine",
+        "url": "https://daltonperrine.com"
+      },
+      "url": `https://daltonperrine.com/blog/${post.slug}`,
+      "mainEntityOfPage": `https://daltonperrine.com/blog/${post.slug}`,
+      ...(image ? { "image": image.startsWith('http') ? image : `https://daltonperrine.com${image}` } : {})
+    })} />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       POST HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+
+    <!-- Hero image (if present) -->
+    {image && (
+      <div class="absolute inset-0 z-0">
+        <img
+          src={image}
+          alt=""
+          class="w-full h-full object-cover opacity-20"
+          aria-hidden="true"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/80 to-navy"></div>
+      </div>
+    )}
+
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 text-center">
+
+      <!-- Tags -->
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-1.5 mb-5">
+          {tags.map((tag) => (
+            <span class:list={[
+              'font-inter text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full border',
+              tagClass(tag),
+            ]}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <!-- Title -->
+      <h1 class="font-playfair text-white text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-5">
+        {title}
+      </h1>
+
+      <!-- Meta row -->
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <span class="font-inter text-off-white/60 text-sm flex items-center gap-1.5">
+          <svg viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-gold" aria-hidden="true">
+            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+          </svg>
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        </span>
+        <span class="font-inter text-off-white/60 text-sm flex items-center gap-1.5">
+          <svg viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-gold" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+          </svg>
+          {author}
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       POST BODY
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Back link -->
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 font-inter text-sm text-text-secondary hover:text-gold transition-colors duration-150 group mb-10"
+      >
+        <span aria-hidden="true" class="transition-transform duration-150 group-hover:-translate-x-1">←</span>
+        Back to all posts
+      </a>
+
+      <!-- External article notice -->
+      {externalUrl && (
+        <div class="mb-8 rounded-xl bg-gold/10 border border-gold/25 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gold" aria-hidden="true">
+              <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+            </svg>
+          </div>
+          <div class="flex-grow">
+            <p class="font-inter font-semibold text-navy text-sm mb-0.5">
+              This article is published on Chess Chatter (Substack)
+            </p>
+            <p class="font-inter text-text-secondary text-xs">
+              Click below to read the full post on Substack.
+            </p>
+          </div>
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-shrink-0 btn-gold text-sm py-2 px-5"
+          >
+            Read on Substack →
+          </a>
+        </div>
+      )}
+
+      <!-- Article content -->
+      <article
+        class="
+          prose prose-chess
+          prose-headings:font-playfair prose-headings:text-navy
+          prose-p:font-inter prose-p:text-text-secondary prose-p:leading-relaxed
+          prose-a:text-gold prose-a:no-underline hover:prose-a:text-gold-hover hover:prose-a:underline
+          prose-strong:text-navy
+          prose-blockquote:border-l-gold prose-blockquote:text-text-secondary prose-blockquote:italic
+          prose-li:font-inter prose-li:text-text-secondary
+          prose-code:text-navy prose-code:bg-navy/5 prose-code:rounded prose-code:px-1
+          prose-pre:bg-navy prose-pre:text-off-white
+          max-w-none
+        "
+      >
+        <Content />
+      </article>
+
+      <!-- Author attribution -->
+      <div class="mt-12 pt-8 border-t border-navy/10 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center flex-shrink-0 text-xl select-none" aria-hidden="true">
+          ♞
+        </div>
+        <div>
+          <p class="font-playfair text-navy font-semibold">{author}</p>
+          <p class="font-inter text-text-secondary text-xs mt-0.5">
+            FIDE Master · Chess Coach · Content Creator
+          </p>
+        </div>
+      </div>
+
+      <!-- Back link (bottom) -->
+      <div class="mt-10">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:-translate-x-1">←</span>
+          Back to all posts
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NEWSLETTER CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative section-pad">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-5">
+        <div class="w-12 h-12 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center text-xl select-none" aria-hidden="true">
+          ✉
+        </div>
+        <h2 class="font-playfair text-gold text-2xl sm:text-3xl font-bold">
+          Want more? Subscribe to Chess Chatter
+        </h2>
+        <p class="font-inter text-off-white/70 leading-relaxed">
+          Weekly articles on chess improvement, strategy, mindset, and the journey to mastery.
+          Join 800+ subscribers — free.
+        </p>
+        <a
+          href="https://chesschatter.substack.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-gold text-base px-10 py-3.5"
+        >
+          Subscribe on Substack
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

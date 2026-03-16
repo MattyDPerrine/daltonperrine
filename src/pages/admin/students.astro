@@ -1,0 +1,335 @@
+---
+/**
+ * src/pages/admin/students.astro  —  Student Management
+ * All CRUD operations (create, edit, toggle, delete) POST to this same page.
+ */
+export const prerender = false;
+
+import AdminLayout               from '../../layouts/AdminLayout.astro';
+import { supabaseAdmin, generateAccessToken, getRecordingCountByStudent } from '../../lib/supabase-admin';
+
+// ── Handle form submissions ───────────────────────────────────────────────────
+let flashSuccess = Astro.url.searchParams.get('success') ?? '';
+let flashError   = '';
+let newTokenResult: { name: string; token: string } | null = null;
+
+if (Astro.request.method === 'POST') {
+  const form   = await Astro.request.formData();
+  const action = form.get('action')?.toString() ?? '';
+
+  // ── CREATE ─────────────────────────────────────────────────────────────
+  if (action === 'create') {
+    const name  = form.get('name')?.toString().trim() ?? '';
+    const email = form.get('email')?.toString().trim() ?? '';
+    const notes = form.get('notes')?.toString().trim() ?? '';
+
+    if (!name) {
+      flashError = 'Name is required.';
+    } else {
+      const token = generateAccessToken();
+      const { error } = await supabaseAdmin.from('students').insert({
+        name,
+        email: email || null,
+        notes: notes || null,
+        access_token: token,
+        is_active: true,
+      });
+      if (error) {
+        flashError = error.message;
+      } else {
+        newTokenResult = { name, token };
+      }
+    }
+  }
+
+  // ── EDIT ───────────────────────────────────────────────────────────────
+  if (action === 'edit') {
+    const id    = form.get('id')?.toString() ?? '';
+    const name  = form.get('name')?.toString().trim() ?? '';
+    const email = form.get('email')?.toString().trim() ?? '';
+    const notes = form.get('notes')?.toString().trim() ?? '';
+
+    if (!name) {
+      flashError = 'Name is required.';
+    } else {
+      const { error } = await supabaseAdmin.from('students').update({
+        name,
+        email: email || null,
+        notes: notes || null,
+      }).eq('id', id);
+      if (error) { flashError = error.message; }
+      else        { return Astro.redirect('/admin/students?success=Student+updated'); }
+    }
+  }
+
+  // ── TOGGLE ACTIVE ──────────────────────────────────────────────────────
+  if (action === 'toggle') {
+    const id        = form.get('id')?.toString() ?? '';
+    const isActive  = form.get('is_active') === 'true';
+    const { error } = await supabaseAdmin.from('students')
+      .update({ is_active: !isActive }).eq('id', id);
+    if (error) flashError = error.message;
+    else return Astro.redirect(`/admin/students?success=Student+${isActive ? 'deactivated' : 'activated'}`);
+  }
+
+  // ── DELETE ─────────────────────────────────────────────────────────────
+  if (action === 'delete') {
+    const id        = form.get('id')?.toString() ?? '';
+    const { error } = await supabaseAdmin.from('students').delete().eq('id', id);
+    if (error) flashError = error.message;
+    else return Astro.redirect('/admin/students?success=Student+deleted');
+  }
+}
+
+// ── Fetch all students + recording counts ─────────────────────────────────────
+const [{ data: students = [] }, recordingCounts] = await Promise.all([
+  supabaseAdmin.from('students').select('*').order('name'),
+  getRecordingCountByStudent(),
+]);
+
+const BASE_URL = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://daltonperrine.com';
+
+// Which student is being edited (from query param)
+const editId = Astro.url.searchParams.get('edit') ?? '';
+---
+
+<AdminLayout title="Students | Admin">
+
+  <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full
+              flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-navy font-playfair">Manage Students</h1>
+      <p class="text-gray-500 text-sm mt-0.5">{students?.length ?? 0} students total</p>
+    </div>
+    <button id="show-add-form"
+            class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-4 py-2 rounded-lg
+                   text-sm hover:bg-gold-hover transition-colors">
+      + Add New Student
+    </button>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+    <!-- ── Flash messages ─────────────────────────────────────────────── -->
+    {flashSuccess && (
+      <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 text-sm">
+        ✅ {flashSuccess}
+      </div>
+    )}
+    {flashError && (
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+        ⚠️ {flashError}
+      </div>
+    )}
+
+    <!-- ── New homework link banner ───────────────────────────────────── -->
+    {newTokenResult && (
+      <div class="bg-gold/10 border-2 border-gold rounded-xl p-6">
+        <p class="font-semibold text-navy text-lg mb-1">✅ Student "{newTokenResult.name}" created!</p>
+        <p class="text-gray-600 text-sm mb-3">Copy and send this private homework link to your student:</p>
+        <div class="flex items-center gap-3 flex-wrap">
+          <code id="new-token-url"
+                class="bg-white border border-gold rounded-lg px-4 py-2 text-sm font-mono text-navy flex-1 min-w-0 break-all">
+            {BASE_URL}/homework/{newTokenResult.token}
+          </code>
+          <button onclick="copyNewToken()"
+                  class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-navy/80 transition-colors whitespace-nowrap">
+            📋 Copy Link
+          </button>
+        </div>
+      </div>
+    )}
+
+    <!-- ── Add student form (hidden by default) ───────────────────────── -->
+    <div id="add-form-wrap" class="hidden bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <h2 class="font-semibold text-navy mb-4 text-lg">Add New Student</h2>
+      <form method="POST">
+        <input type="hidden" name="action" value="create" />
+        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name <span class="text-red-500">*</span></label>
+            <input type="text" name="name" required placeholder="Student name"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-gray-400">(optional)</span></label>
+            <input type="email" name="email" placeholder="student@example.com"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Private Notes <span class="text-gray-400">(only you can see this)</span>
+          </label>
+          <textarea name="notes" rows="3" placeholder="e.g. Focuses on endgames, has USCF rating 1450..."
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y"></textarea>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="submit"
+                  class="bg-gold text-navy font-semibold px-5 py-2 rounded-lg text-sm hover:bg-gold-hover transition-colors">
+            Create Student
+          </button>
+          <button type="button" id="hide-add-form"
+                  class="bg-white text-navy font-medium px-5 py-2 rounded-lg text-sm border border-gray-200 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── Students table ─────────────────────────────────────────────── -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      {!students || students.length === 0 ? (
+        <div class="px-6 py-16 text-center text-gray-400 italic text-sm">
+          No students yet. Click "Add New Student" to get started.
+        </div>
+      ) : (
+        <table class="w-full">
+          <thead class="bg-navy">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Name</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden md:table-cell">Email</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden lg:table-cell">Homework Link</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden sm:table-cell">Recordings</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((s: any) => (
+              <>
+              <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-3">
+                  <p class="font-medium text-navy text-sm">{s.name}</p>
+                  {s.notes && (
+                    <p class="text-gray-400 text-xs mt-0.5 truncate max-w-48" title={s.notes}>📝 {s.notes}</p>
+                  )}
+                </td>
+                <td class="px-4 py-3 text-gray-500 text-sm hidden md:table-cell">{s.email ?? '—'}</td>
+                <td class="px-4 py-3 hidden lg:table-cell">
+                  <div class="flex items-center gap-2">
+                    <code class="text-xs font-mono text-navy/70 truncate max-w-xs">
+                      daltonperrine.com/homework/{s.access_token}
+                    </code>
+                    <button
+                      class="text-gray-400 hover:text-gold transition-colors text-xs"
+                      onclick={`navigator.clipboard.writeText('${BASE_URL}/homework/${s.access_token}').then(()=>alert('Copied!'))`}
+                      title="Copy link"
+                    >📋</button>
+                  </div>
+                </td>
+                <td class="px-4 py-3 hidden sm:table-cell">
+                  {(recordingCounts as any)[s.id] ? (
+                    <a href={`/admin/recordings?student=${s.id}`}
+                       class="inline-flex items-center gap-1 text-xs text-gold underline underline-offset-2 font-medium">
+                      🎬 {(recordingCounts as any)[s.id]}
+                    </a>
+                  ) : (
+                    <a href={`/admin/recordings?success=&student=${s.id}`}
+                       class="text-xs text-gray-400 hover:text-gold underline underline-offset-2">
+                      + Add
+                    </a>
+                  )}
+                </td>
+                <td class="px-4 py-3">
+                  <span class={s.is_active
+                    ? 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700'
+                    : 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500'}>
+                    {s.is_active ? '● Active' : '○ Inactive'}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <a href={`/admin/students?edit=${s.id}`}
+                       class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                    <a href={`/admin/recordings?student=${s.id}`}
+                       class="text-emerald-600 hover:text-emerald-800 text-xs font-medium underline underline-offset-2">Videos</a>
+                    <form method="POST" class="inline">
+                      <input type="hidden" name="action"    value="toggle" />
+                      <input type="hidden" name="id"        value={s.id} />
+                      <input type="hidden" name="is_active" value={String(s.is_active)} />
+                      <button type="submit"
+                              class="text-amber-600 hover:text-amber-800 text-xs font-medium underline underline-offset-2">
+                        {s.is_active ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </form>
+                    <form method="POST" class="inline"
+                          onsubmit="return confirm('Delete this student? This cannot be undone.')">
+                      <input type="hidden" name="action" value="delete" />
+                      <input type="hidden" name="id"     value={s.id} />
+                      <button type="submit"
+                              class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+
+              {/* Inline edit form — expands below the row when ?edit=id */}
+              {editId === s.id && (
+                <tr class="bg-gold/5 border-t border-gold/30">
+                  <td colspan="5" class="px-4 py-5">
+                    <h3 class="font-semibold text-navy mb-3 text-sm">Editing: {s.name}</h3>
+                    <form method="POST">
+                      <input type="hidden" name="action" value="edit" />
+                      <input type="hidden" name="id"     value={s.id} />
+                      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <label class="block text-xs font-medium text-gray-700 mb-1">Name *</label>
+                          <input type="text" name="name" required value={s.name}
+                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-gray-700 mb-1">Email</label>
+                          <input type="email" name="email" value={s.email ?? ''}
+                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Private Notes</label>
+                        <textarea name="notes" rows="2"
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y">{s.notes ?? ''}</textarea>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <button type="submit"
+                                class="bg-gold text-navy font-semibold px-4 py-1.5 rounded-lg text-sm hover:bg-gold-hover transition-colors">
+                          Save Changes
+                        </button>
+                        <a href="/admin/students"
+                           class="bg-white text-navy font-medium px-4 py-1.5 rounded-lg text-sm border border-gray-200 hover:bg-gray-50 transition-colors">
+                          Cancel
+                        </a>
+                      </div>
+                    </form>
+                  </td>
+                </tr>
+              )}
+              </>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+
+  </div>
+</AdminLayout>
+
+<script is:inline>
+  // Toggle add form visibility
+  document.getElementById('show-add-form')?.addEventListener('click', () => {
+    document.getElementById('add-form-wrap')?.classList.remove('hidden');
+    document.getElementById('show-add-form')?.classList.add('hidden');
+  });
+  document.getElementById('hide-add-form')?.addEventListener('click', () => {
+    document.getElementById('add-form-wrap')?.classList.add('hidden');
+    document.getElementById('show-add-form')?.classList.remove('hidden');
+  });
+  // Copy new token link
+  function copyNewToken() {
+    const text = document.getElementById('new-token-url')?.textContent?.trim() ?? '';
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Homework link copied to clipboard!');
+    });
+  }
+</script>

@@ -1,0 +1,352 @@
+---
+/**
+ * src/pages/homework/[token].astro
+ *
+ * Student Homework Portal — Assignment List + Lesson Recordings
+ * URL: /homework/<access_token>
+ *
+ * Two tabs:
+ *   Tab 1 — Homework:          assignment cards linking to individual pages
+ *   Tab 2 — Lesson Recordings: video recordings with expandable inline player
+ *
+ * No login required. Token is the student's private key.
+ */
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import { getStudentByToken, getStudentAssignments, getRecordingsForStudent } from '../../lib/supabase-admin';
+import { parseVideoUrl } from '../../lib/video';
+
+// ── Validate token ────────────────────────────────────────────────────────────
+const { token } = Astro.params;
+if (!token) return Astro.redirect('/404');
+
+const student = await getStudentByToken(token);
+if (!student) return new Response(null, { status: 404 });
+
+// ── Fetch data in parallel ────────────────────────────────────────────────────
+const [studentAssignments, recordings] = await Promise.all([
+  getStudentAssignments(student.id),
+  getRecordingsForStudent(student.id),
+]);
+
+// Stats
+const pendingCount    = studentAssignments.filter((sa) => sa.status === 'pending').length;
+const inProgressCount = studentAssignments.filter((sa) => sa.status === 'in_progress').length;
+const completedCount  = studentAssignments.filter((sa) => sa.status === 'completed').length;
+
+// Sort assignments: in_progress → pending → completed
+const sortOrder: Record<string, number> = { in_progress: 0, pending: 1, completed: 2 };
+const sorted = [...studentAssignments].sort(
+  (a, b) => (sortOrder[a.status] ?? 3) - (sortOrder[b.status] ?? 3)
+);
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function formatDate(d: string | null) {
+  if (!d) return '';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
+}
+function formatDateShort(d: string | null) {
+  if (!d) return '';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+  });
+}
+
+const statusLabel: Record<string, string> = {
+  pending:     '⬜ Not Started',
+  in_progress: '🔄 In Progress',
+  completed:   '✅ Completed',
+};
+const statusClass: Record<string, string> = {
+  pending:     'bg-gray-100 text-gray-600',
+  in_progress: 'bg-amber-50 text-amber-700 border border-amber-200',
+  completed:   'bg-emerald-50 text-emerald-700 border border-emerald-200',
+};
+---
+
+<Layout
+  title={`Homework for ${student.name} | FM Dalton Perrine`}
+  description={`Private homework portal for ${student.name}.`}
+  noindex={true}
+>
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+  <section class="bg-navy pb-0">
+    <div class="container-max pt-10 pb-0">
+      <p class="text-gold font-semibold tracking-wider text-sm uppercase mb-2">
+        Private Homework Portal
+      </p>
+      <h1 class="font-playfair text-3xl lg:text-4xl font-bold text-white">
+        Hi, {student.name}! 👋
+      </h1>
+      <p class="text-white/70 mt-3 max-w-xl text-base pb-5">
+        Here's your content from Coach Dalton — assignments to work through and
+        {recordings.length > 0 ? ' recordings of your lessons.' : ' recordings of your lessons when they\'re ready.'}
+      </p>
+
+      <!-- ── Tab navigation ──────────────────────────────────────────────── -->
+      <div class="flex gap-0 border-t border-white/10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 mt-2">
+        <button id="tab-homework"
+                data-tab="homework"
+                class="tab-btn px-5 py-3 text-sm font-semibold border-b-2 border-gold text-white
+                       transition-colors relative">
+          📋 Homework
+          {studentAssignments.length > 0 && (
+            <span class="ml-1.5 inline-flex items-center justify-center bg-gold text-navy text-xs
+                         font-bold rounded-full w-5 h-5">
+              {studentAssignments.length}
+            </span>
+          )}
+        </button>
+        <button id="tab-recordings"
+                data-tab="recordings"
+                class="tab-btn px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-white/60
+                       hover:text-white transition-colors">
+          🎬 Lesson Recordings
+          {recordings.length > 0 && (
+            <span class="ml-1.5 inline-flex items-center justify-center bg-white/20 text-white text-xs
+                         font-bold rounded-full w-5 h-5">
+              {recordings.length}
+            </span>
+          )}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOMEWORK TAB ───────────────────────────────────────────────────────── -->
+  <section id="section-homework" class="section-pad bg-off-white">
+    <div class="container-max">
+
+      {studentAssignments.length > 0 && (
+        <div class="flex flex-wrap gap-3 text-sm mb-6">
+          {pendingCount > 0 && (
+            <span class="bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full">
+              {pendingCount} not started
+            </span>
+          )}
+          {inProgressCount > 0 && (
+            <span class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full">
+              {inProgressCount} in progress
+            </span>
+          )}
+          {completedCount > 0 && (
+            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full">
+              {completedCount} completed
+            </span>
+          )}
+        </div>
+      )}
+
+      {sorted.length === 0 ? (
+        <div class="card text-center py-16">
+          <p class="text-6xl mb-4">♟</p>
+          <h2 class="font-playfair text-2xl font-bold text-navy mb-2">No homework yet!</h2>
+          <p class="text-text-secondary">Check back after your next lesson with Coach Dalton.</p>
+        </div>
+      ) : (
+        <div class="space-y-4">
+          {sorted.map((sa) => {
+            const asgn = sa.assignment as any;
+            const items = asgn?.assignment_items ?? [];
+            const itemCount = items.length;
+            return (
+              <a
+                href={`/homework/${token}/${asgn.id}`}
+                class="card block hover:shadow-lg transition-all duration-200 group"
+              >
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-3 mb-1">
+                      <h2 class="font-playfair text-xl font-bold text-navy group-hover:text-gold transition-colors">
+                        {asgn.title}
+                      </h2>
+                      <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass[sa.status]}`}>
+                        {statusLabel[sa.status]}
+                      </span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm text-text-secondary">
+                      {asgn.lesson_date && (
+                        <span>📅 Lesson: {formatDate(asgn.lesson_date)}</span>
+                      )}
+                      <span>{itemCount} item{itemCount !== 1 ? 's' : ''}</span>
+                    </div>
+                    {sa.student_notes && sa.status !== 'pending' && (
+                      <p class="mt-2 text-xs text-text-secondary italic truncate max-w-lg">
+                        📝 "{sa.student_notes}"
+                      </p>
+                    )}
+                  </div>
+                  <div class="flex-shrink-0">
+                    <span class={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold
+                                  transition-colors ${sa.status === 'completed'
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : 'bg-gold text-navy group-hover:bg-gold/90'}`}>
+                      {sa.status === 'completed' ? 'Review ↗' : 'Open Assignment →'}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+  <!-- ── RECORDINGS TAB ─────────────────────────────────────────────────────── -->
+  <section id="section-recordings" class="section-pad bg-off-white hidden">
+    <div class="container-max">
+
+      {recordings.length === 0 ? (
+        <div class="card text-center py-16">
+          <p class="text-5xl mb-4">🎬</p>
+          <h2 class="font-playfair text-2xl font-bold text-navy mb-2">No recordings yet</h2>
+          <p class="text-text-secondary max-w-md mx-auto">
+            If you've purchased the video recording option, recordings from your lessons will appear
+            here after each session.
+          </p>
+        </div>
+      ) : (
+        <div class="space-y-5">
+          {recordings.map((r: any) => {
+            const videoInfo = parseVideoUrl(r.video_url);
+            return (
+              <div class="card" data-recording-card>
+                <!-- Recording header -->
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                  <div>
+                    <h3 class="font-playfair text-xl font-bold text-navy">{r.title}</h3>
+                    <p class="text-text-secondary text-sm mt-0.5">
+                      📅 {formatDateShort(r.lesson_date)}
+                    </p>
+                  </div>
+                  <button data-expand-player
+                          class="inline-flex items-center gap-2 bg-gold text-navy font-semibold
+                                 px-4 py-2 rounded-lg text-sm hover:bg-gold/90 transition-colors
+                                 flex-shrink-0 self-start">
+                    ▶ Watch Recording
+                  </button>
+                </div>
+
+                <!-- Coach notes -->
+                {r.notes && (
+                  <p class="text-text-primary text-sm leading-relaxed mb-4 bg-navy/4 rounded-xl p-4">
+                    <span class="font-semibold text-navy">Coach's notes: </span>
+                    {r.notes}
+                  </p>
+                )}
+
+                <!-- Expandable player (hidden until button click) -->
+                <div data-player-wrap class="hidden">
+                  <div class="border-t border-navy/10 pt-4">
+                    {videoInfo.embedUrl ? (
+                      <>
+                        <!-- Responsive 16:9 iframe -->
+                        <div class="relative w-full max-w-2xl rounded-xl overflow-hidden bg-black"
+                             style="aspect-ratio: 16 / 9;">
+                          <iframe
+                            src={videoInfo.embedUrl}
+                            class="absolute inset-0 w-full h-full"
+                            allow="autoplay"
+                            allowfullscreen
+                            loading="lazy"
+                          ></iframe>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 mt-3">
+                          <a href={r.video_url}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             class="text-sm text-gold underline underline-offset-2 font-medium
+                                    hover:text-gold/80 transition-colors">
+                            Open in Google Drive ↗
+                          </a>
+                          <span class="text-text-secondary text-xs">
+                            (Opens externally — you can download from there)
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <!-- Fallback if file ID can't be extracted -->
+                      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                        <p class="text-amber-800 text-sm mb-2">
+                          The video player couldn't load. Open the recording directly in Google Drive:
+                        </p>
+                        <a href={r.video_url}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 text-gold font-medium underline underline-offset-2">
+                          Open Recording in Google Drive →
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+  <!-- ── Footer CTA ─────────────────────────────────────────────────────────── -->
+  <section class="bg-navy section-pad text-center">
+    <div class="container-max">
+      <p class="text-white/70 text-sm">
+        Questions about your homework or recordings?
+        <a href="mailto:NextLevelChessCoaching@gmail.com" class="text-gold underline ml-1">
+          Email Coach Dalton
+        </a>
+      </p>
+    </div>
+  </section>
+
+</Layout>
+
+<script is:inline>
+// ── Tab switching ─────────────────────────────────────────────────────────────
+const tabs = {
+  homework:   { btn: document.getElementById('tab-homework'),   section: document.getElementById('section-homework') },
+  recordings: { btn: document.getElementById('tab-recordings'), section: document.getElementById('section-recordings') },
+};
+
+function activateTab(name) {
+  for (const [key, { btn, section }] of Object.entries(tabs)) {
+    const isActive = key === name;
+    btn?.classList.toggle('border-gold',         isActive);
+    btn?.classList.toggle('text-white',          isActive);
+    btn?.classList.toggle('border-transparent',  !isActive);
+    btn?.classList.toggle('text-white/60',       !isActive);
+    section?.classList.toggle('hidden', !isActive);
+  }
+  history.replaceState(null, '', `#${name}`);
+}
+
+// Check URL hash on load
+const hash = location.hash.replace('#', '');
+activateTab(hash === 'recordings' ? 'recordings' : 'homework');
+
+Object.entries(tabs).forEach(([name, { btn }]) => {
+  btn?.addEventListener('click', () => activateTab(name));
+});
+
+// ── Expand/collapse video players ─────────────────────────────────────────────
+document.querySelectorAll('[data-recording-card]').forEach((card) => {
+  const expandBtn  = card.querySelector('[data-expand-player]');
+  const playerWrap = card.querySelector('[data-player-wrap]');
+
+  expandBtn?.addEventListener('click', () => {
+    const isOpen = !playerWrap?.classList.contains('hidden');
+    playerWrap?.classList.toggle('hidden', isOpen);
+    if (expandBtn) {
+      expandBtn.textContent = isOpen ? '▶ Watch Recording' : '▲ Hide Player';
+    }
+  });
+});
+</script>

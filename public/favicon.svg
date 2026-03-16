@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Navy rounded-square background -->
+  <rect width="64" height="64" rx="13" fill="#1B1F3B"/>
+  <!-- Thin gold border -->
+  <rect x="2" y="2" width="60" height="60" rx="11" fill="none" stroke="#C9A227" stroke-width="1.5"/>
+  <!-- Gold chess knight glyph centered -->
+  <text
+    x="32" y="46"
+    font-family="serif"
+    font-size="38"
+    text-anchor="middle"
+    dominant-baseline="auto"
+    fill="#C9A227"
+  >♞</text>
+</svg>

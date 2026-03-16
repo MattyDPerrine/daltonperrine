@@ -1,0 +1,378 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const testimonials = [
+  {
+    quote:
+      'Sign up for lessons immediately! I received an excellent breakdown of some of my games. What I really enjoyed was the clear explanations to my questions, the book recommendations, and the clear plan to improve my chess.',
+    attribution: '— Marc',
+  },
+  {
+    quote:
+      'Dalton is the first coach to have started off with an interest in learning the style of his students so that he can personalize his lessons to enhance your strengths and eliminate weaknesses. I highly recommend him to anyone who is serious about improving their chess.',
+    attribution: '— Jefferson',
+  },
+  {
+    quote:
+      'He teaches you what you want or need to learn, not just what he wants to teach. I believe I will achieve my goals with his instruction. A good teaching style with clear explanations — you get more than your money\'s worth.',
+    attribution: '— Walt',
+  },
+];
+
+const offerings = [
+  {
+    icon: '♟',
+    title: 'Private Coaching',
+    description:
+      'Personalized 1-on-1 lessons tailored to your game, your goals, and your playing style. Every lesson includes customized homework and follow-up notes.',
+    linkLabel: 'Learn more →',
+    href: '/coaching',
+  },
+  {
+    icon: '♜',
+    title: 'Game Analysis',
+    description:
+      'Send me your games and I\'ll provide detailed annotated PGN analysis, or we can play a game together and review it live afterward.',
+    linkLabel: 'See pricing →',
+    href: '/pricing',
+  },
+  {
+    icon: '♗',
+    title: 'Free Content',
+    description:
+      'Hundreds of educational videos on YouTube, plus weekly articles on chess improvement, mindset, and strategy on my Substack newsletter, Chess Chatter.',
+    linkLabel: 'Explore →',
+    href: '/content',
+  },
+];
+---
+
+<Layout
+  title="FM Dalton Perrine | Online Chess Coach — Personalized Lessons for All Levels"
+  description="Work 1-on-1 with FIDE Master Dalton Perrine and get a personalized chess training plan built around your style, goals, and schedule."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://daltonperrine.com/#service",
+          "name": "FM Dalton Perrine Chess Coaching",
+          "url": "https://daltonperrine.com",
+          "image": "https://daltonperrine.com/og-default.svg",
+          "description": "Personalized 1-on-1 online chess coaching for players of all levels, offered by FIDE Master Dalton Perrine.",
+          "email": "NextLevelChessCoaching@gmail.com",
+          "areaServed": "Worldwide",
+          "serviceType": "Chess Coaching",
+          "provider": { "@id": "https://daltonperrine.com/#person" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://daltonperrine.com/#person",
+          "name": "Dalton Perrine",
+          "url": "https://daltonperrine.com",
+          "jobTitle": "FIDE Master & Chess Coach",
+          "description": "FIDE Master (2374 peak rating), USCF National Master, Chessable course author, and online chess coach with 12+ years of coaching experience.",
+          "sameAs": [
+            "https://www.chess.com/member/dalton2468",
+            "https://lichess.org/@/MattyDPerrine",
+            "https://www.youtube.com/@DaltonPerrine",
+            "https://chesschatter.substack.com",
+            "https://www.chessable.com/author/DaltonPerrine/"
+          ]
+        }
+      ]
+    })} />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <!-- Subtle chessboard texture -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
+
+        <!-- ── Left: text ─────────────────────────────────────────────── -->
+        <div class="flex flex-col gap-6 lg:flex-1 text-center lg:text-left">
+
+          <!-- Gold label -->
+          <span class="font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase">
+            FIDE Master · Chess Coach · Educator
+          </span>
+
+          <!-- Name -->
+          <h1 class="font-playfair text-white text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
+            Dalton Perrine
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="font-inter text-off-white/75 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+            Helping chess players of all levels build real understanding,
+            raise their rating, and take their game to the next level!
+          </p>
+
+          <!-- CTA buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-2">
+            <a href="/pricing" class="btn-gold text-base px-8 py-3.5">
+              Book a Lesson
+            </a>
+            <a
+              href="https://chesschatter.substack.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-3.5 rounded-lg
+                     transition-all duration-200 ease-in-out
+                     hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
+                     focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-navy"
+            >
+              Read Chess Chatter
+            </a>
+          </div>
+        </div>
+
+        <!-- ── Right: photo ──────────────────────────────────────────── -->
+        <div class="lg:flex-1 flex justify-center lg:justify-end">
+          <img
+            src="/images/dalton-perrine.jpg"
+            alt="FM Dalton Perrine competing at a chess tournament"
+            class="w-full max-w-lg lg:max-w-none rounded-2xl object-cover shadow-2xl"
+          />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — BRIEF INTRO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto px-0 text-center">
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-8">
+        Who I Am
+      </h2>
+
+      <div class="flex flex-col gap-5 font-inter text-text-secondary text-lg leading-relaxed text-left">
+        <p>
+          I'm Dalton Perrine, a FIDE Master and USCF National Master with 23+ years of
+          competitive experience and 12+ years of full-time coaching. I've helped thousands
+          of students sharpen their skills, win tournaments, and gain hundreds of rating
+          points. I'm also a Chessable author, content creator, and active tournament player
+          currently pursuing the International Master title.
+        </p>
+        <p>
+          Whether you're a beginner looking to build a foundation or an experienced tournament
+          player trying to break through a plateau, I create a personalized plan built around
+          your unique strengths, weaknesses, and playing style. No cookie-cutter lessons ever.
+        </p>
+      </div>
+
+      <a href="/about" class="inline-flex items-center gap-2 mt-8 font-inter font-semibold text-gold hover:text-gold-hover transition-colors duration-150 group">
+        More about me
+        <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — FEATURED VIDEO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <!-- Heading -->
+      <div class="text-center mb-10">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-4">
+          Watch &amp; Learn
+        </h2>
+        <p class="font-inter text-text-secondary text-lg max-w-xl mx-auto leading-relaxed">
+          Check out some of my educational content on YouTube, where I break
+          down openings, strategy, and real tournament games.
+        </p>
+      </div>
+
+      <!-- Responsive 16:9 video embed -->
+      <div class="max-w-3xl mx-auto">
+        <div class="relative w-full rounded-xl overflow-hidden shadow-[0_8px_40px_rgba(27,31,59,0.14)]" style="padding-top: 56.25%;">
+          <iframe
+            class="absolute inset-0 w-full h-full"
+            src="https://www.youtube.com/embed/ZtVEBcOCgNo"
+            title="FM Dalton Perrine — Chess Lesson"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- YouTube link -->
+      <div class="text-center mt-6">
+        <a
+          href="https://www.youtube.com/@DaltonPerrine"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 font-inter font-semibold text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          See more on YouTube
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — WHAT I OFFER
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <!-- Heading -->
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          What I Offer
+        </h2>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {offerings.map(({ icon, title, description, linkLabel, href }) => (
+          <div class="card flex flex-col gap-4">
+            <!-- Icon badge -->
+            <div class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center text-3xl leading-none select-none" aria-hidden="true">
+              {icon}
+            </div>
+
+            <!-- Title -->
+            <h3 class="font-playfair text-navy text-xl font-semibold">
+              {title}
+            </h3>
+
+            <!-- Description -->
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <!-- Link -->
+            <a
+              href={href}
+              class="inline-flex items-center gap-1.5 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group mt-auto"
+            >
+              {linkLabel.replace(' →', '')}
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+            </a>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — TESTIMONIAL HIGHLIGHTS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <!-- Heading -->
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          What My Students Say
+        </h2>
+        <div class="flex justify-center gap-1 text-gold text-lg" aria-label="5 stars">
+          {'★★★★★'}
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {testimonials.map(({ quote, attribution }) => (
+          <div class="card flex flex-col gap-5">
+            <!-- Quote mark -->
+            <span class="text-gold text-5xl font-playfair leading-none select-none" aria-hidden="true">&ldquo;</span>
+            <!-- Quote text -->
+            <p class="font-inter text-text-secondary text-sm leading-relaxed italic flex-grow -mt-4">
+              {quote}
+            </p>
+            <!-- Attribution -->
+            <p class="font-inter font-semibold text-navy text-sm mt-auto pt-4 border-t border-navy/8">
+              {attribution}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Link to full testimonials page -->
+      <div class="text-center mt-10">
+        <a
+          href="/testimonials"
+          class="inline-flex items-center gap-2 font-inter font-semibold text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          Read more testimonials
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — NEWSLETTER CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <!-- Subtle chessboard texture (mirrors hero) -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+
+    <div class="relative section-pad">
+      <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-6">
+
+        <!-- Heading -->
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Chess Chatter Newsletter
+        </h2>
+
+        <!-- Subheading -->
+        <p class="font-inter text-off-white/75 text-lg leading-relaxed">
+          Chess analysis, mindset strategies, and practical improvement advice
+          delivered straight to your inbox. Join 800+ subscribers.
+        </p>
+
+        <!-- CTA -->
+        <a
+          href="https://chesschatter.substack.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-gold text-base px-10 py-4 mt-2"
+        >
+          Subscribe on Substack
+        </a>
+
+        <!-- Endorsement note -->
+        <p class="font-inter text-off-white/45 text-sm">
+          Recommended by GM Eugene Perelshteyn
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+</Layout>

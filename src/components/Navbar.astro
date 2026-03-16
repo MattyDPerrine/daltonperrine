@@ -1,0 +1,171 @@
+---
+const navLinks = [
+  { href: '/',             label: 'Home' },
+  { href: '/about',        label: 'About' },
+  { href: '/coaching',     label: 'Coaching' },
+  { href: '/pricing',      label: 'Pricing' },
+  { href: '/testimonials', label: 'Testimonials' },
+  { href: '/blog',         label: 'Blog' },
+  { href: '/content',      label: 'Content' },
+  { href: '/contact',      label: 'Contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-50 bg-navy transition-shadow duration-300"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-18">
+
+      <!-- Wordmark -->
+      <a
+        href="/"
+        class="font-playfair text-gold text-xl lg:text-2xl font-semibold tracking-wide hover:opacity-90 transition-opacity flex-shrink-0"
+        aria-label="FM Dalton Perrine – Home"
+      >
+        FM Dalton Perrine
+      </a>
+
+      <!-- Desktop nav links -->
+      <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+        {navLinks.map(({ href, label }) => (
+          <a
+            href={href}
+            class:list={[
+              'px-3 py-2 rounded-md text-sm font-medium font-inter transition-colors duration-150',
+              currentPath === href
+                ? 'text-gold'
+                : 'text-off-white hover:text-gold',
+            ]}
+            aria-current={currentPath === href ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden lg:block flex-shrink-0">
+        <a href="/pricing" class="btn-gold text-sm py-2 px-5">
+          Book a Lesson
+        </a>
+      </div>
+
+      <!-- Mobile hamburger button -->
+      <button
+        id="menu-btn"
+        class="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-md text-off-white hover:text-gold focus:outline-none focus:ring-2 focus:ring-gold transition-colors"
+        aria-label="Toggle mobile menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <!-- Hamburger icon (3 bars) -->
+        <span id="bar1" class="block w-5 h-0.5 bg-current transition-all duration-300 mb-1.5"></span>
+        <span id="bar2" class="block w-5 h-0.5 bg-current transition-all duration-300 mb-1.5"></span>
+        <span id="bar3" class="block w-5 h-0.5 bg-current transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu drawer -->
+  <div
+    id="mobile-menu"
+    class="hidden lg:hidden bg-navy border-t border-white/10"
+    aria-label="Mobile navigation"
+  >
+    <nav class="flex flex-col px-4 py-4 gap-1">
+      {navLinks.map(({ href, label }) => (
+        <a
+          href={href}
+          class:list={[
+            'block px-4 py-3 rounded-md text-base font-inter font-medium transition-colors duration-150',
+            currentPath === href
+              ? 'text-gold bg-white/5'
+              : 'text-off-white hover:text-gold hover:bg-white/5',
+          ]}
+          aria-current={currentPath === href ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+      <div class="mt-3 pt-3 border-t border-white/10">
+        <a href="/pricing" class="btn-gold block text-center text-sm">
+          Book a Lesson
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Spacer so content isn't hidden behind the fixed navbar -->
+<div class="h-16 lg:h-18"></div>
+
+<script>
+  // ── Navbar scroll shadow ──────────────────────────────────────────────────
+  const navbar = document.getElementById('navbar');
+
+  function updateNavbarShadow() {
+    if (!navbar) return;
+    if (window.scrollY > 8) {
+      navbar.classList.add('shadow-navbar');
+    } else {
+      navbar.classList.remove('shadow-navbar');
+    }
+  }
+
+  window.addEventListener('scroll', updateNavbarShadow, { passive: true });
+  updateNavbarShadow();
+
+  // ── Mobile hamburger toggle ───────────────────────────────────────────────
+  const menuBtn    = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const bar1       = document.getElementById('bar1');
+  const bar2       = document.getElementById('bar2');
+  const bar3       = document.getElementById('bar3');
+
+  let menuOpen = false;
+
+  function openMenu() {
+    menuOpen = true;
+    mobileMenu?.classList.remove('hidden');
+    menuBtn?.setAttribute('aria-expanded', 'true');
+    // Animate bars into X
+    bar1?.classList.add('translate-y-2', 'rotate-45');
+    bar2?.classList.add('opacity-0');
+    bar3?.classList.add('-translate-y-2', '-rotate-45');
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    mobileMenu?.classList.add('hidden');
+    menuBtn?.setAttribute('aria-expanded', 'false');
+    // Restore bars
+    bar1?.classList.remove('translate-y-2', 'rotate-45');
+    bar2?.classList.remove('opacity-0');
+    bar3?.classList.remove('-translate-y-2', '-rotate-45');
+  }
+
+  menuBtn?.addEventListener('click', () => {
+    menuOpen ? closeMenu() : openMenu();
+  });
+
+  // Close menu on nav link click (mobile SPA-style navigation)
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (menuOpen && navbar && !navbar.contains(e.target as Node)) {
+      closeMenu();
+    }
+  });
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (menuOpen && e.key === 'Escape') closeMenu();
+  });
+</script>

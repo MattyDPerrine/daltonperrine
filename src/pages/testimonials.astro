@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const items = [
+  { type: 'quote', quote: "I've had a great experience working with Dalton. He has no problem putting together lessons based on a specific request, changing plans at the last minute, or covering a wide range of topics (from calculation, planning, or opening prep). While working with him, I have set new personal bests in blitz, rapid, and classical chess. I have noticed an increase in my ability to calculate deeper and recognize opponents' resources when calculating tactics. Highly recommended for adult improvers. Lastly, Dalton seems willing to work with your preferred style of learning and progress rather than imposing his own structure on you.", attribution: '— Brendan' },
+  { type: 'graph', student: 'Brendan', images: ['/images/brendan-testimonial-graph1.png', '/images/brendan-testimonial-graph2.png'] },
+  { type: 'quote', quote: "Dalton hasn't just helped improve my OTB rating by hundreds of points. He's also given me a genuine love for the game that I'll carry with me for the rest of my life.", attribution: '— Nate' },
+  { type: 'graph', student: 'Nate', images: ['/images/nate-testimonial-graph.png'] },
+  { type: 'quote', quote: "Since starting lessons with Dalton Perrine, I have grown into a far stronger and more confident chess player, and my love for the game has grown just as much. Dalton comes prepared to sessions not only with excellent lesson plans, but also with a focused and encouraging attitude. In addition, Dalton's scheduling flexibility stands out above most coaches of any sport or hobby, and he has been able to accommodate my conflicts and changes with grace. Far more times than I would like to admit, I have canceled minutes before a lesson, expecting a frustrated or disappointed response, only to receive a kind and understanding email ending with \"See you next week!\" Whether you are trying to reach the next serious level of chess, or just trying to get a little better in a casual way, Dalton is the guy for you.", attribution: '— Paul' },
+  { type: 'graph', student: 'Paul', images: ['/images/paul-testimonial-graph.png'] },
+  { type: 'quote', quote: 'I had loved chess as a child but never played or learned seriously. In 2021 I decided that I wanted to be a "competent" chess player but was struggling to keep above 1000 rapid on chess.com. I figured 1500 was competent but I am older and have a demanding career so I needed help. Dalton Perrine helped me understand and improve in ways I wouldn\'t have been able to on my own. I look forward to our lessons and never feel judged for not seeing something. I am beyond competent now but have set new goals with his help.', attribution: '— Rick' },
+  { type: 'graph', student: 'Rick', images: ['/images/rick-testimonial-graph.png'] },
+  { type: 'quote', quote: "I've been working with Dalton for about a year and a half now, and I've really seen my chess improve. He personalizes the lessons to what you need to work on and also does a great job going over games, looking for new ideas. I've seen my rating go up by almost 200 points since that time and I'm excited to keep working with him.", attribution: '— Hunter' },
+  { type: 'quote', quote: 'Dalton is an excellent chess teacher, systematic and patient. I have made great progress with the help of his coaching. As an "adult improver," Dalton\'s interactive, personalized lessons have helped me gain an understanding of the game as well as the confidence to participate in OTB tournaments. I highly recommend Dalton for anyone who would like to improve in chess.', attribution: '— Debbie' },
+  { type: 'quote', quote: "I started studying with Dalton two years ago after purchasing his Benko Gambit course. I wanted to work with Dalton on just the Benko but he quickly helped me understand that the road to chess improvement isn't just working on an opening, it's working on your entire game. Dalton analyzed some of my games with me and helped me identify the weak areas of my play. We worked together to develop a plan to improve and I have seen huge results since, including one upset win of a 1950 player in a tournament. My strategic and positional understanding have greatly improved because of Dalton's tutelage and I would not be the player I am now without his assistance. I have come to admire Dalton's work ethic, his passion for helping his students improve, and his creativity. Dalton is an excellent coach who will help you get better. You must do the work, but he will be with you every step of the way to help you improve.", attribution: '— Bill' },
+  { type: 'quote', quote: 'Sign up for lessons immediately! I received an excellent breakdown of some of my games. What I really enjoyed was the clear explanations to my questions, the book recommendations, and the clear plan to improve my chess. Just sign up!', attribution: '— Marc' },
+  { type: 'graph', student: 'Addison', images: ['/images/addison-testimonial-graph1.png', '/images/addison-testimonial-graph2.png'] },
+  { type: 'quote', quote: "Thanks a lot for the lesson. I learned a lot from you in an hour's time. I look forward to working with you!", attribution: '— Rob' },
+  { type: 'quote', quote: "I am really excited about this new approach to my chess learning. I have always loved chess but have never really devoted serious time or study to it. I've tried various books and courses at times but I guess I have become frustrated by the awfully wide nature of the subject and essentially have got lost without a clear plan of study.", attribution: '— Clive' },
+  { type: 'quote', quote: "I've only taken one lesson so far but I can tell that Dalton's teaching style will be of great help. He is very friendly and patient, even with low level players like myself.", attribution: '— Joey' },
+  { type: 'quote', quote: "Had a great first lesson with Dalton. He is a knowledgeable and patient coach who pays careful attention to your current progress and playing styles. He provided clear and useful suggestions after spending time reviewing the games sent to him. I would definitely recommend him as one of the best chess coaches around who himself is a strong tournament player and can share real life playing experience with you!", attribution: '— Nathan' },
+  { type: 'graph', student: 'Matthew', images: ['/images/matthew-testimonial-graph1.png', '/images/matthew-testimonial-graph2.png'] },
+  { type: 'quote', quote: 'First lesson went well. Dalton is clear and concise. Easy to understand. I hope to become a better player with his coaching help.', attribution: '— Norm' },
+  { type: 'quote', quote: "I had my first lesson last night. We went over a game of mine and he answered many questions. I'm signing up for a block of lessons and we will see where it leads. Dalton has a study plan in mind to help me on my weak points. Up to the next level is where I'm headed.", attribution: '— Robert' },
+  { type: 'quote', quote: 'I have already signed up for a full block of lessons. After working with Dalton I know the best and fastest way to improve my chess game is to have him as my coach.', attribution: '— Steven' },
+  { type: 'quote', quote: 'Had my first lesson with Dalton recently and it was very productive. He explained things very clearly and was able to touch on subjects that would help improve my game the best. I had nothing short of a great experience and will be continuing our lessons.', attribution: '— Richard' },
+  { type: 'graph', student: 'Sreetej', images: ['/images/sreetej-testimonial-graph1.png', '/images/sreetej-testimonial-graph2.png'] },
+  { type: 'quote', quote: "My first lesson with Dalton was — first and foremost — enjoyable, and I think that's a key component to any effective chess coach. He broke down my needed areas of improvement and identified some key components in my own play and style, which isn't easy for any chess player to do for themselves! I was very surprised at how quickly time flew in our lesson, but we covered great ground. Dalton's a class-A act who can improve any aspiring tournament player. Highly recommended!", attribution: '— Coel' },
+  { type: 'quote', quote: "Just had a great first lesson with Dalton. We went over some recent games. He pointed out a new plan that I had never considered in an opening structure I frequently get. He also found some weakness in my ability to recognize the most active squares for my minor pieces. The first lesson was definitely worth the money, and I'm looking forward to working more with him.", attribution: '— Robert' },
+  { type: 'quote', quote: 'Dalton offered me exactly what I asked for in my first lesson because he was very well prepared with an outline of opening lines and games. Plus, he showed me a modern technique to use to look at any position and evaluate it using specific, easily recognizable standards. I signed up for more — it was a no-brainer.', attribution: '— Chris' },
+  { type: 'quote', quote: "I just had a good opening lesson with Dalton. I could tell that he was well prepared and all of his correspondence was professional. I even received a reminder email. The lesson was easy to follow and I look forward to learning more.", attribution: '— Terrance' },
+  { type: 'quote', quote: "A great lesson. I could actually pay attention to what he was trying to show me without taking notes because he sends it later in an email. He teaches you what you want or need to learn, not just what he wants to teach. I believe I will achieve my goals with his instruction. A good teaching style with clear explanations — you get more than your money's worth.", attribution: '— Walt' },
+  { type: 'quote', quote: "Dalton is an excellent teacher and I highly recommend his services! He greatly helped me improve my middlegame planning as well as my positional understanding. He personalizes each lesson as well as the homework assignments. He's very good at what he does.", attribution: '— Henry' },
+  { type: 'quote', quote: "Great Teacher! Helped me a lot with my tactical recognition and helped me realize how to look and understand my opponent's threats.", attribution: '— Rishit' },
+  { type: 'graph', student: 'Samir', images: ['/images/samir-testimonial-graph.png'] },
+];
+
+const testimonialCount = items.filter(i => i.type === 'quote').length;
+---
+
+<Layout
+  title="Student Testimonials | Chess Coaching Reviews — FM Dalton Perrine"
+  description="Read what students say about online chess lessons with FM Dalton Perrine. Beginners, club players, and tournament competitors all share their experiences."
+>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <!-- Star row -->
+      <div class="flex justify-center gap-1 mb-5" aria-label="5 stars">
+        {Array(5).fill(null).map(() => (
+          <svg viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-gold" aria-hidden="true">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+        ))}
+      </div>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        What My Students Say
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        Don't just take my word for it. Here's what students have to say about working with me.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — FEATURED TESTIMONIAL
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-gold relative overflow-hidden">
+    <!-- Subtle texture -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.06] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#1B1F3B 0% 25%, transparent 0% 50%); background-size: 48px 48px;"
+    ></div>
+
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 text-center">
+      <blockquote class="relative">
+        <p class="font-playfair text-white text-xl sm:text-2xl lg:text-[1.65rem] font-medium italic leading-relaxed">
+          Mark Dvoretsky once said that serious work with a chess player begins with a diagnosis
+          of the student's strengths and weaknesses. I have taken lessons from two other coaches
+          in the past and Dalton is the first one to have started off with an interest in learning
+          the style of his students so that he can personalize his lessons to enhance your strengths
+          and eliminate weaknesses. I highly recommend him to anyone who is serious about improving
+          their chess.
+        </p>
+        <footer class="mt-8">
+          <cite class="font-inter text-white font-bold text-lg not-italic tracking-wide">
+            — Jefferson
+          </cite>
+        </footer>
+      </blockquote>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — ALL TESTIMONIALS  (masonry columns)
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-2">
+          More from Students
+        </h2>
+        <p class="font-inter text-text-secondary text-base">
+          {testimonialCount} testimonials from players of all levels.
+        </p>
+      </div>
+
+      <!--
+        CSS columns masonry: cards flow naturally into columns,
+        varying heights without JavaScript.
+      -->
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+        {items.map((item) => (
+          <div class="break-inside-avoid mb-5">
+            <article class="bg-white rounded-xl shadow-card hover:shadow-lg transition-shadow duration-200 overflow-hidden flex flex-col">
+              <!-- Gold top accent bar -->
+              <div class="h-1 w-full bg-gold flex-shrink-0"></div>
+
+              {item.type === 'quote' && (
+                <div class="p-6 flex flex-col gap-4 flex-grow">
+                  <!-- Stars -->
+                  <div class="flex gap-0.5" aria-label="5 stars">
+                    {Array(5).fill(null).map(() => (
+                      <svg viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-gold" aria-hidden="true">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <!-- Quote text -->
+                  <blockquote class="flex-grow">
+                    <p class="font-inter text-text-secondary text-sm leading-relaxed italic">
+                      &ldquo;{item.quote}&rdquo;
+                    </p>
+                  </blockquote>
+                  <!-- Attribution -->
+                  <footer class="pt-3 border-t border-navy/8 mt-auto">
+                    <cite class="font-inter font-semibold text-navy text-sm not-italic">
+                      {item.attribution}
+                    </cite>
+                  </footer>
+                </div>
+              )}
+
+              {item.type === 'graph' && (
+                <div class="p-4 flex flex-col gap-3">
+                  <!-- Label -->
+                  <p class="font-inter font-semibold text-navy text-sm">
+                    📈 Rating Progress — {item.student}
+                  </p>
+                  <!-- Graph image(s) -->
+                  <div class="flex flex-col gap-2">
+                    {item.images.map((src) => (
+                      <img
+                        src={src}
+                        alt={`${item.student}'s rating improvement graph`}
+                        class="w-full rounded-lg object-contain"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </article>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative section-pad">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+
+        <!-- Stars -->
+        <div class="flex gap-1.5" aria-label="5 stars">
+          {Array(5).fill(null).map(() => (
+            <svg viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-gold" aria-hidden="true">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          ))}
+        </div>
+
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Ready to Join Them?
+        </h2>
+        <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+          Every one of these students started exactly where you are.<br />Let's get to work.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 mt-2">
+          <a href="/pricing" class="btn-gold text-base px-10 py-4">
+            Book a Lesson
+          </a>
+          <a
+            href="https://nextlevelchesscoaching.setmore.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-4 rounded-lg
+                   transition-all duration-200 ease-in-out
+                   hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
+                   focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-navy"
+          >
+            Free Consultation
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>

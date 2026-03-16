@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background: dark navy -->
+  <rect width="1200" height="630" fill="#1B1F3B"/>
+
+  <!-- Subtle chessboard pattern (top-right quadrant) -->
+  <g opacity="0.04">
+    <pattern id="board" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect x="0"  y="0"  width="40" height="40" fill="#fff"/>
+      <rect x="40" y="40" width="40" height="40" fill="#fff"/>
+    </pattern>
+    <rect width="1200" height="630" fill="url(#board)"/>
+  </g>
+
+  <!-- Left gold accent bar -->
+  <rect x="0" y="0" width="8" height="630" fill="#C9A227"/>
+
+  <!-- Gold label -->
+  <text
+    x="80" y="200"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="22"
+    letter-spacing="6"
+    fill="#C9A227"
+    font-weight="400"
+    text-transform="uppercase"
+  >FIDE MASTER · CHESS COACH · EDUCATOR</text>
+
+  <!-- Main name -->
+  <text
+    x="80" y="300"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="88"
+    fill="#FFFFFF"
+    font-weight="700"
+  >FM Dalton Perrine</text>
+
+  <!-- Subtitle -->
+  <text
+    x="80" y="370"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="30"
+    fill="#F7F5F0"
+    opacity="0.70"
+  >Personalized Online Chess Coaching for All Levels</text>
+
+  <!-- Divider -->
+  <rect x="80" y="420" width="120" height="3" fill="#C9A227" rx="2"/>
+
+  <!-- URL -->
+  <text
+    x="80" y="470"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="24"
+    fill="#C9A227"
+    opacity="0.90"
+  >daltonperrine.com</text>
+
+  <!-- Chess knight watermark (right side) -->
+  <text
+    x="980" y="440"
+    font-family="serif"
+    font-size="340"
+    fill="#FFFFFF"
+    opacity="0.04"
+    text-anchor="middle"
+  >♞</text>
+</svg>

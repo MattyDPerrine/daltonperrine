@@ -1,0 +1,358 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const steps = [
+  {
+    number: '01',
+    title: 'Get in Touch',
+    body: 'Fill out my contact form or book a free 15-minute consultation call. Tell me about your chess background, your rating, and your goals.',
+  },
+  {
+    number: '02',
+    title: 'I Study Your Games',
+    body: 'Before our first lesson, I analyze your recent games on my own time. This helps me understand your playing style and identify the areas where you can improve the most.',
+  },
+  {
+    number: '03',
+    title: 'We Work Together',
+    body: 'We meet online using Chess.com or Lichess with Zoom for video and voice communication. Each lesson is approximately one hour and is fully interactive. I ask lots of questions to understand your thinking process.',
+  },
+  {
+    number: '04',
+    title: 'You Keep Improving',
+    body: 'After each lesson, I send you personalized homework. We track your progress and periodically re-evaluate your strengths and weaknesses as you grow.',
+  },
+];
+
+const topics = [
+  {
+    icon: '🧠',
+    title: 'Thinking Process',
+    desc: 'A structured approach to evaluating every move so you can make better decisions at the board.',
+  },
+  {
+    icon: '♟',
+    title: 'Positional Understanding',
+    desc: 'Learn to identify the key imbalances in any position and always have a plan.',
+  },
+  {
+    icon: '⚡',
+    title: 'Tactics & Calculation',
+    desc: 'Sharpen your tactical eye and learn how to find combinations in your own games.',
+  },
+  {
+    icon: '📖',
+    title: 'Opening Repertoire',
+    desc: 'Build a personalized repertoire based on your playing style, not generic theory.',
+  },
+  {
+    icon: '♔',
+    title: 'Endgame Technique',
+    desc: 'Master the critical endgame patterns and convert your advantages into wins.',
+  },
+  {
+    icon: '🔍',
+    title: 'Game Analysis',
+    desc: "We'll review your games together to find recurring mistakes and turn them into lessons.",
+  },
+  {
+    icon: '🔁',
+    title: 'Pattern Recognition',
+    desc: 'Develop the ability to recognize common themes and motifs that speed up your improvement.',
+  },
+  {
+    icon: '🎯',
+    title: 'Chess Psychology',
+    desc: 'Work on the mental side of the game, including time management, competitive mindset, handling pressure, and more.',
+  },
+  {
+    icon: '✨',
+    title: 'Anything You Need',
+    desc: 'Have a specific topic or area you want to focus on? Just ask. Every lesson is built around you.',
+  },
+];
+
+const included = [
+  {
+    icon: '♟',
+    text: 'Personalized lesson tailored to your game and goals',
+  },
+  {
+    icon: '📝',
+    text: 'Customized homework assignments focused on your weak areas',
+  },
+  {
+    icon: '🔄',
+    text: 'Ongoing game reviews and recommendations between lessons',
+  },
+];
+---
+
+<Layout
+  title="Online Chess Coaching | Personalized 1-on-1 Lessons with FM Dalton Perrine"
+  description="Personalized online chess lessons for players of all levels. Get structured training, opening preparation, game analysis, and a clear roadmap to improvement."
+>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        1-on-1 · Online · Fully Personalized
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Private Chess Coaching
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed mb-8">
+        Personalized 1-on-1 lessons built around your game, your goals, and your playing style.
+      </p>
+      <a href="/pricing" class="btn-gold text-base px-8 py-3.5">
+        View Pricing &amp; Book
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — MY APPROACH
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto px-0">
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-8 text-center">
+        What Makes My Coaching Different
+      </h2>
+
+      <div class="flex flex-col gap-5 font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        <p>
+          Any coach can pull up a generic lesson template and run through it with every student.
+          I don't do that. I believe no two students are the same, which means no two lessons
+          should be the same. Every single lesson I teach is customized to fit your game: your
+          specific strengths, your specific weaknesses, and your specific goals.
+        </p>
+        <p>
+          Before we even meet for our first session, I'm already doing my homework. I study your
+          recent games on my own time to get an idea of your overall ability and identify recurring
+          patterns, both good habits to reinforce and problem areas to address. Between lessons, I
+          continue researching your play and preparing material tailored specifically to you.
+        </p>
+        <p>
+          I also tailor each student's homework to focus on the specific areas of your game that
+          need the most attention. If we discover that your positional understanding needs work,
+          that's what we focus on. If we need to build you an opening repertoire that fits your
+          style, we do that. If your endgame technique is costing you half-points, we fix it.
+          My goal is simple: make you the best chess player you can be.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — HOW LESSONS WORK
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-14">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          How It Works
+        </h2>
+      </div>
+
+      <!-- Steps — vertical on mobile, horizontal on desktop -->
+      <div class="relative">
+
+        <!-- Horizontal connector line (desktop only) -->
+        <div
+          aria-hidden="true"
+          class="hidden lg:block absolute top-9 left-0 right-0 h-px bg-navy/10 z-0"
+          style="left: calc(100% / 8); right: calc(100% / 8);"
+        ></div>
+
+        <ol class="grid grid-cols-1 lg:grid-cols-4 gap-10 lg:gap-6 relative z-10" role="list">
+          {steps.map(({ number, title, body }) => (
+            <li class="flex flex-col items-center lg:items-start gap-4 text-center lg:text-left">
+
+              <!-- Number circle -->
+              <div
+                class="flex-shrink-0 w-[4.5rem] h-[4.5rem] rounded-full bg-gold
+                       flex items-center justify-center
+                       shadow-[0_4px_20px_rgba(201,162,39,0.35)]"
+                aria-hidden="true"
+              >
+                <span class="font-playfair text-white text-2xl font-bold leading-none">
+                  {number}
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="flex flex-col gap-2">
+                <h3 class="font-playfair text-navy text-xl font-semibold leading-snug">
+                  {title}
+                </h3>
+                <p class="font-inter text-text-secondary text-sm leading-relaxed">
+                  {body}
+                </p>
+              </div>
+
+            </li>
+          ))}
+        </ol>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — WHAT WE'LL COVER
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          What We'll Cover
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {topics.map(({ icon, title, desc }) => (
+          <div class="card flex gap-4 items-start">
+            <!-- Icon badge -->
+            <div
+              class="flex-shrink-0 w-11 h-11 rounded-lg bg-gold/10 flex items-center justify-center text-xl leading-none select-none mt-0.5"
+              aria-hidden="true"
+            >
+              {icon}
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <h3 class="font-playfair text-navy text-base font-semibold leading-snug">
+                {title}
+              </h3>
+              <p class="font-inter text-text-secondary text-sm leading-relaxed">
+                {desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — WHAT'S INCLUDED
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          What's Included with Every Lesson
+        </h2>
+      </div>
+
+      <div class="max-w-2xl mx-auto flex flex-col gap-4">
+        {included.map(({ icon, text }) => (
+          <div class="flex items-center gap-5 bg-off-white rounded-xl px-6 py-5 shadow-card hover:shadow-lg transition-shadow duration-200">
+            <!-- Icon -->
+            <div
+              class="flex-shrink-0 w-12 h-12 rounded-full bg-gold flex items-center justify-center text-xl shadow-[0_4px_16px_rgba(201,162,39,0.30)] select-none"
+              aria-hidden="true"
+            >
+              {icon}
+            </div>
+            <!-- Text -->
+            <p class="font-inter text-navy font-medium text-base leading-snug">
+              {text}
+            </p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — WHO I WORK WITH
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="max-w-3xl mx-auto px-0 text-center">
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-8">
+        Who I Work With
+      </h2>
+
+      <!-- Rating range visual -->
+      <div class="flex items-center justify-center gap-3 mb-8 flex-wrap">
+        {['Beginner', 'Intermediate', 'Club Player', 'Tournament Player', 'Expert'].map((level) => (
+          <span class="font-inter text-xs font-semibold tracking-wide uppercase px-3 py-1.5 rounded-full bg-navy/8 text-navy/70 border border-navy/10">
+            {level}
+          </span>
+        ))}
+      </div>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        I work with chess players of all ages and all levels, from scholastic beginners to
+        experienced tournament players looking to earn a title. The majority of my students
+        are adult improvers, but I've also worked with young players building their competitive
+        foundation. Whether you're rated 800 or 2100, if you're serious about improving,
+        I can help.
+      </p>
+
+      <a href="/contact" class="inline-flex items-center gap-2 mt-8 font-inter font-semibold text-gold hover:text-gold-hover transition-colors duration-150 group">
+        Get in touch to discuss your goals
+        <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 7 — CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative section-pad">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Let's Get Started
+        </h2>
+        <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+          Ready to invest in your chess? Let's build something together.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 mt-2">
+          <a href="/pricing" class="btn-gold text-base px-8 py-3.5">
+            See Pricing &amp; Book
+          </a>
+          <a
+            href="/first-lesson"
+            class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-3.5 rounded-lg
+                   transition-all duration-200 ease-in-out
+                   hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
+                   focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-navy"
+          >
+            Learn About the First Lesson
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>

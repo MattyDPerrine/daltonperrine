@@ -1,0 +1,528 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface PriceCard {
+  name: string;
+  price: string;
+  description: string;
+  buttonLabel: string;
+  href: string;
+  savings?: string;
+  popular?: boolean;
+}
+
+const withoutRecording: PriceCard[] = [
+  {
+    name: 'Trial Lesson',
+    price: '$70',
+    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
+    buttonLabel: 'Get Started',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZTGH9S3RFDSYG',
+  },
+  {
+    name: 'Single Lesson',
+    price: '$80',
+    description: 'One 1-hour personalized coaching session.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YPKW54SNVQU46',
+  },
+  {
+    name: '3-Lesson Pack',
+    price: '$235',
+    savings: 'Save $5',
+    description: 'Three 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EB97SVG3Z7R9N',
+  },
+  {
+    name: '5-Lesson Pack',
+    price: '$380',
+    savings: 'Save $20',
+    description: 'Five 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    popular: true,
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HAACXXFUTCXLY',
+  },
+  {
+    name: '10-Lesson Pack',
+    price: '$750',
+    savings: 'Save $50',
+    description: 'Ten 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATMLSK58CPSR4',
+  },
+];
+
+const withRecording: PriceCard[] = [
+  {
+    name: 'Trial Lesson',
+    price: '$75',
+    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
+    buttonLabel: 'Get Started',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FL2UA5ZT5W24U',
+  },
+  {
+    name: 'Single Lesson',
+    price: '$85',
+    description: 'One 1-hour personalized coaching session.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RWYYGS8P8MBFC',
+  },
+  {
+    name: '3-Lesson Pack',
+    price: '$250',
+    savings: 'Save $5',
+    description: 'Three 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z3DRRW2A9NNCC',
+  },
+  {
+    name: '5-Lesson Pack',
+    price: '$405',
+    savings: 'Save $20',
+    description: 'Five 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    popular: true,
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T4C6WHS69UA6U',
+  },
+  {
+    name: '10-Lesson Pack',
+    price: '$800',
+    savings: 'Save $50',
+    description: 'Ten 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XCVRFMAGQ5ST2',
+  },
+];
+
+const otherServices = [
+  {
+    name: 'Play & Review',
+    price: '$70',
+    description:
+      'We play a 15|10 rated game on Chess.com or Lichess, then review and analyze it together afterward. A great way to get direct, practical feedback on your play in real time.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TJJERK5BDTPU4',
+  },
+  {
+    name: 'Game Analysis',
+    price: '$60',
+    description:
+      "Send me 2 of your games and I'll provide detailed PGN annotations with full analysis, emailed to you within a few days.",
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5P9RE3U25J9AW',
+  },
+];
+---
+
+<Layout
+  title="Chess Lesson Pricing | Affordable Online Coaching Packages — FM Dalton Perrine"
+  description="Transparent pricing for 1-on-1 online chess lessons with FM Dalton Perrine. Single sessions, multi-lesson packs, game analysis, and free consultations available."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Online Chess Lessons with FM Dalton Perrine",
+      "url": "https://daltonperrine.com/pricing",
+      "provider": {
+        "@type": "Person",
+        "@id": "https://daltonperrine.com/#person",
+        "name": "Dalton Perrine"
+      },
+      "description": "Personalized 1-on-1 online chess lessons for players of all levels. Packages range from single trial sessions to 10-lesson packs.",
+      "areaServed": "Worldwide",
+      "serviceType": "Chess Coaching",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Trial Lesson (60 min, no recording)",
+          "price": "70.00",
+          "priceCurrency": "USD",
+          "description": "A single 60-minute introductory chess lesson — no recording.",
+          "url": "https://daltonperrine.com/pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "Single Lesson (60 min, no recording)",
+          "price": "80.00",
+          "priceCurrency": "USD",
+          "description": "One 60-minute personalized chess coaching session.",
+          "url": "https://daltonperrine.com/pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "5-Lesson Pack (60 min, no recording)",
+          "price": "380.00",
+          "priceCurrency": "USD",
+          "description": "Five 60-minute personalized chess coaching sessions. Save $20.",
+          "url": "https://daltonperrine.com/pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "10-Lesson Pack (60 min, no recording)",
+          "price": "750.00",
+          "priceCurrency": "USD",
+          "description": "Ten 60-minute personalized chess coaching sessions. Save $50.",
+          "url": "https://daltonperrine.com/pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "Game Analysis (written report)",
+          "price": "60.00",
+          "priceCurrency": "USD",
+          "description": "Written analysis of 1–3 of your recent games with annotations and takeaways.",
+          "url": "https://daltonperrine.com/pricing"
+        }
+      ]
+    })} />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        Transparent · No Hidden Fees
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Lesson Pricing
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        All lessons are conducted online via Chess.com or Lichess, with Zoom for
+        voice/video. Each lesson is approximately one hour.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — FREE CONSULTATION CALLOUT
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-gold">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+      <p class="font-inter text-navy font-medium text-base leading-relaxed max-w-lg">
+        <strong class="font-semibold">Not sure if coaching is right for you?</strong>{' '}
+        Book a free 15-minute consultation call. No pressure, no obligation.
+      </p>
+      <a
+        href="https://nextlevelchesscoaching.setmore.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex-shrink-0 inline-block bg-navy text-white font-inter font-semibold px-6 py-3 rounded-lg
+               transition-all duration-200 ease-in-out
+               hover:bg-charcoal hover:shadow-md hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2 focus:ring-offset-gold
+               whitespace-nowrap"
+      >
+        Book Free Consultation
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — WITHOUT VIDEO RECORDING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-3">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Lessons <span class="italic">Without</span> Video Recording
+        </h2>
+        <p class="font-inter text-text-secondary text-base">
+          Notes and homework are emailed after every session.
+        </p>
+      </div>
+
+      <!-- Pricing grid -->
+      <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {withoutRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+          <div
+            class:list={[
+              'relative flex flex-col rounded-xl bg-white shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
+              popular ? 'ring-2 ring-gold' : '',
+            ]}
+          >
+            <!-- Popular badge -->
+            {popular && (
+              <div class="bg-gold text-white font-inter font-semibold text-xs tracking-wide uppercase text-center py-1.5 px-3">
+                ★ Most Popular
+              </div>
+            )}
+
+            <div class="flex flex-col gap-4 p-6 flex-grow">
+              <!-- Name + savings row -->
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+                  {name}
+                </h3>
+                {savings && (
+                  <span class="flex-shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-200 font-inter font-semibold text-[10px] tracking-wide uppercase px-2 py-0.5 rounded-full leading-tight mt-0.5">
+                    {savings}
+                  </span>
+                )}
+              </div>
+
+              <!-- Price -->
+              <div>
+                <span class="font-playfair text-gold text-4xl font-bold leading-none">
+                  {price}
+                </span>
+                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+              </div>
+
+              <!-- Description -->
+              <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+                {description}
+              </p>
+
+              <!-- CTA -->
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-gold text-sm text-center mt-auto"
+                aria-label={`${buttonLabel} — ${name}`}
+              >
+                {buttonLabel}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — WITH VIDEO RECORDING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-3">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Lessons <span class="italic">With</span> Video Recording
+        </h2>
+        <p class="font-inter text-text-secondary text-base max-w-xl mx-auto">
+          Everything above, plus a video recording of the lesson emailed to you afterward
+          so you can review it anytime.
+        </p>
+      </div>
+
+      <!-- Recording callout chip -->
+      <div class="flex justify-center mt-4 mb-10">
+        <span class="inline-flex items-center gap-2 bg-navy/5 border border-navy/10 text-navy font-inter text-xs font-semibold tracking-wide px-4 py-2 rounded-full">
+          <span aria-hidden="true">🎥</span>
+          Video recording emailed after every lesson
+        </span>
+      </div>
+
+      <!-- Pricing grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {withRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+          <div
+            class:list={[
+              'relative flex flex-col rounded-xl bg-white border border-navy/8 shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
+              popular ? 'ring-2 ring-gold' : '',
+            ]}
+          >
+            {popular && (
+              <div class="bg-gold text-white font-inter font-semibold text-xs tracking-wide uppercase text-center py-1.5 px-3">
+                ★ Most Popular
+              </div>
+            )}
+
+            <div class="flex flex-col gap-4 p-6 flex-grow">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+                  {name}
+                </h3>
+                {savings && (
+                  <span class="flex-shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-200 font-inter font-semibold text-[10px] tracking-wide uppercase px-2 py-0.5 rounded-full leading-tight mt-0.5">
+                    {savings}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <span class="font-playfair text-gold text-4xl font-bold leading-none">
+                  {price}
+                </span>
+                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+              </div>
+
+              <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+                {description}
+              </p>
+
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-gold text-sm text-center mt-auto"
+                aria-label={`${buttonLabel} — ${name} with recording`}
+              >
+                {buttonLabel}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — OTHER SERVICES
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-10">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          Other Services
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        {otherServices.map(({ name, price, description, buttonLabel, href }) => (
+          <div class="card flex flex-col gap-5">
+            <!-- Header row -->
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="font-playfair text-navy text-xl font-semibold leading-snug">
+                {name}
+              </h3>
+              <span class="font-playfair text-gold text-3xl font-bold leading-none flex-shrink-0">
+                {price}
+              </span>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-navy/8"></div>
+
+            <!-- Description -->
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <!-- Button -->
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-gold text-sm text-center"
+              aria-label={`${buttonLabel} — ${name}`}
+            >
+              {buttonLabel}
+            </a>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — HOW TO PAY & BOOK
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-6">
+
+      <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+        How to Book
+      </h2>
+
+      <p class="font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed">
+        Click any <strong class="font-semibold text-navy">"Buy Now"</strong> or{' '}
+        <strong class="font-semibold text-navy">"Book Now"</strong> button above to make your
+        payment. Once payment is received, contact me using the form below or reach out on
+        Chess.com (username:{' '}
+        <a
+          href="https://www.chess.com/member/mattydperrine"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150"
+        >
+          MattyDPerrine
+        </a>
+        ) so we can schedule your lesson at a time that works for both of us.
+      </p>
+
+      <!-- Step summary -->
+      <div class="w-full flex flex-col sm:flex-row items-stretch gap-3 text-left mt-2">
+        {[
+          { n: '1', text: 'Choose your package and complete payment' },
+          { n: '2', text: 'Contact me to schedule your session' },
+          { n: '3', text: 'I study your games before we meet' },
+        ].map(({ n, text }) => (
+          <div class="flex items-center gap-3 bg-off-white rounded-xl px-5 py-4 flex-1 shadow-card">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gold flex items-center justify-center shadow-[0_2px_10px_rgba(201,162,39,0.3)]">
+              <span class="font-playfair text-white text-sm font-bold leading-none">{n}</span>
+            </div>
+            <p class="font-inter text-navy text-sm leading-snug">{text}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 mt-4">
+        <a href="/contact" class="btn-gold text-base px-8 py-3.5">
+          Contact Me
+        </a>
+        <a
+          href="/first-lesson"
+          class="inline-block border-2 border-gold text-gold font-inter font-semibold px-8 py-3.5 rounded-lg
+                 transition-all duration-200 ease-in-out
+                 hover:bg-gold hover:text-white hover:-translate-y-0.5 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+        >
+          Learn About the First Lesson
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       CLOSING NAVY BAND
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+      <div>
+        <p class="font-playfair text-white text-xl font-semibold mb-1">
+          Have a question before booking?
+        </p>
+        <p class="font-inter text-off-white/60 text-sm">
+          I'm happy to answer any questions you have about lessons, scheduling, or my coaching approach.
+        </p>
+      </div>
+      <a
+        href="https://nextlevelchesscoaching.setmore.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-gold flex-shrink-0"
+      >
+        Book Free Consultation
+      </a>
+    </div>
+  </section>
+
+</Layout>

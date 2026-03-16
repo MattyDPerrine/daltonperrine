@@ -1,0 +1,136 @@
+---
+const quickLinks = [
+  { href: '/',             label: 'Home' },
+  { href: '/about',        label: 'About' },
+  { href: '/coaching',     label: 'Coaching' },
+  { href: '/pricing',      label: 'Pricing' },
+  { href: '/testimonials', label: 'Testimonials' },
+  { href: '/blog',         label: 'Blog' },
+  { href: '/content',      label: 'Content' },
+  { href: '/contact',      label: 'Contact' },
+];
+
+const socials = [
+  {
+    label: 'YouTube',
+    href:  'https://www.youtube.com/@DaltonPerrine',
+    icon:  'youtube',
+  },
+  {
+    label: 'Substack',
+    href:  'https://chesschatter.substack.com/',
+    icon:  'substack',
+  },
+  {
+    label: 'Chess.com',
+    href:  'https://www.chess.com/member/mattydperrine',
+    icon:  'chesscom',
+  },
+  {
+    label: 'Chessable',
+    href:  'https://www.chessable.com/dalton/',
+    icon:  'chessable',
+  },
+];
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-navy text-off-white">
+  <!-- Main footer grid -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+      <!-- Col 1: Branding -->
+      <div class="flex flex-col gap-3">
+        <a
+          href="/"
+          class="font-playfair text-gold text-2xl font-semibold hover:opacity-90 transition-opacity"
+        >
+          FM Dalton Perrine
+        </a>
+        <p class="text-off-white/70 text-sm font-inter tracking-widest uppercase">
+          FIDE Master · Chess Coach · Educator
+        </p>
+        <p class="text-off-white/60 text-sm font-inter leading-relaxed mt-2 max-w-xs">
+          Helping chess players of all levels build real understanding,
+          raise their rating, and take their game to the next level!
+        </p>
+      </div>
+
+      <!-- Col 2: Quick links -->
+      <div>
+        <h3 class="font-playfair text-gold text-lg font-semibold mb-4">Quick Links</h3>
+        <nav aria-label="Footer navigation">
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
+            {quickLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="font-inter text-sm text-off-white/70 hover:text-gold transition-colors duration-150"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Col 3: Social links -->
+      <div>
+        <h3 class="font-playfair text-gold text-lg font-semibold mb-4">Find Me Online</h3>
+        <ul class="flex flex-col gap-3">
+          {socials.map(({ label, href, icon }) => (
+            <li>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-3 text-off-white/70 hover:text-gold transition-colors duration-150 group"
+                aria-label={label}
+              >
+                <!-- Icon -->
+                <span class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                  {icon === 'youtube' && (
+                    <img src="/images/youtube-logo3.png" alt="YouTube" class="w-5 h-5 object-contain"/>
+                  )}
+                  {icon === 'substack' && (
+                    <img src="/images/substack-logo.png" alt="Substack" class="w-5 h-5 object-contain"/>
+                  )}
+                  {icon === 'chesscom' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5">
+                      <path fill="#689f38" d="M28.001,19h-8.002c0,16.944-10,9.713-10,23c0,0,0.546,2,14.001,2c13.455,0,14.001-2,14.001-2 C38.001,28.713,28.001,35.944,28.001,19z"/>
+                      <path fill="#33691e" d="M28.001,19h-8.002c0,1.127-0.047,2.141-0.13,3.067c1.869,0.18,5.76,0.63,5.76,3.765 C25.629,28.534,23.891,37.51,19,38c-4.461,0.447-8.273-1.094-8.273-1.094C10.272,38.18,9.999,39.81,9.999,42c0,0,0.546,2,14.001,2 c13.455,0,14.001-2,14.001-2C38.001,28.713,28.001,35.944,28.001,19z"/>
+                      <path fill="#689f38" d="M26.02,14H24h-2.02c-1.986,1.334-3.972,2.668-5.957,4.001c0.03,0.428,0.113,0.997,0.332,1.634 c0.197,0.573,0.446,1.032,0.663,1.371l6.984-0.01l6.981,0.01c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634C29.992,16.668,28.006,15.334,26.02,14z"/>
+                      <path fill="#33691e" d="M26,20.999l1.084,0.483l0.976-0.48l2.922,0.004c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634c-1.986-1.334-3.972-2.668-5.957-4.001H24l3,4L26,20.999z"/>
+                      <circle cx="24" cy="10" r="7" fill="#689f38"/>
+                      <path fill="#33691e" d="M27.884,4.178c0.743,1.112,1.178,2.447,1.178,3.884c0,3.016-1.907,5.586-4.581,6.571l1.544,2.07 c0.435-0.131,1.04,0.059,1.434-0.15c0.361-0.191,0.515-0.775,0.835-1.024C29.94,14.249,31,12.248,31,10 C31,7.571,29.762,5.433,27.884,4.178z"/>
+                      <path fill="#9ccc65" d="M24.683,4.727c0.372,0.973-0.526,2.556-2.006,3.536c-1.48,0.979-2.982,0.984-3.354,0.011 s0.526-2.556,2.006-3.536S24.31,3.753,24.683,4.727z"/>
+                    </svg>
+                  )}
+                  {icon === 'chessable' && (
+                    <img src="/images/chessable-logo.jpg" alt="Chessable" class="w-5 h-5 object-contain"/>
+                  )}
+                </span>
+                <span class="text-sm font-inter">{label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-off-white/50 text-xs font-inter">
+        © {currentYear} Dalton Perrine. All rights reserved.
+      </p>
+      <p class="text-off-white/40 text-xs font-inter">
+        Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">Astro</a> · Deployed on <a href="https://netlify.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">Netlify</a>
+      </p>
+    </div>
+  </div>
+</footer>

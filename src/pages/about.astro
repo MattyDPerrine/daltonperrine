@@ -1,0 +1,413 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const credentials = [
+  {
+    label: 'FIDE Master',
+    description: 'Title earned in 2014. Highest FIDE rating: 2374.',
+  },
+  {
+    label: 'USCF National Master',
+    description: 'Title earned in 2011. Highest USCF rating: 2362.',
+  },
+  {
+    label: '2025 Ohio State Champion',
+    description: 'Won the Ohio State Championship.',
+  },
+  {
+    label: '12+ Years Coaching',
+    description:
+      'Full-time online chess coach since March 2014. Hundreds of students, thousands of lessons.',
+  },
+  {
+    label: 'Chessable Author',
+    description:
+      'Multiple published courses including The Benko Blueprint, French: Simplified, and Survive & Thrive. Shortlisted for Best Author Support 2023.',
+  },
+  {
+    label: '3 GM Scalps',
+    description: 'Defeated three Grandmasters in over-the-board tournament play.',
+  },
+];
+
+const results = [
+  'Champion — 2025 Ohio State Championship',
+  '1st Place — 2024 Northeast Ohio Open',
+  '1st Place — 2024 Mayfield Summer Mayhem',
+  '1st Place — 2024 Great Northern Classic',
+  'Tie for 2nd Place — 2025 Joe Yun Memorial',
+  '2nd Place — 2020 Land of the Sky XXXIII',
+  'Tie for 1st — 2010 & 2011 U.S. Amateur Team South Championships',
+  'Multiple 1st place finishes at Parma Quads',
+  'Multiple 1st place finishes at Orlando Chess & Games Opens',
+  'Multiple 1st place finishes at Central Florida Chess Club Tornados',
+];
+
+const profiles = [
+  {
+    platform: 'FIDE Profile',
+    href: 'https://ratings.fide.com/profile/2048434',
+    icon: 'fide',
+  },
+  {
+    platform: 'USCF Profile',
+    href: 'http://www.uschess.org/msa/MbrDtlMain.php?12910086',
+    icon: 'uscf',
+  },
+  {
+    platform: 'Chess.com',
+    href: 'https://www.chess.com/member/mattydperrine',
+    icon: 'chesscom',
+  },
+  {
+    platform: 'Lichess',
+    href: 'https://lichess.org/@/MattyDPerrine',
+    icon: 'lichess',
+  },
+  {
+    platform: 'Chessable',
+    href: 'https://www.chessable.com/dalton/',
+    icon: 'chessable',
+  },
+  {
+    platform: 'YouTube',
+    href: 'https://www.youtube.com/@DaltonPerrine',
+    icon: 'youtube',
+  },
+  {
+    platform: 'Substack',
+    href: 'https://chesschatter.substack.com/',
+    icon: 'substack',
+  },
+  {
+    platform: 'Podcast',
+    href: 'https://open.spotify.com/show/6EknGRW7czzortrUSlgDhQ',
+    icon: 'spotify',
+  },
+];
+---
+
+<Layout
+  title="About FM Dalton Perrine | FIDE Master, Chess Coach & Chessable Author"
+  description="Learn about Dalton Perrine — FIDE Master, USCF National Master, Chessable author, and experienced online chess coach dedicated to helping players of all levels improve."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://daltonperrine.com/#person",
+      "name": "Dalton Perrine",
+      "url": "https://daltonperrine.com/about",
+      "jobTitle": "FIDE Master & Chess Coach",
+      "description": "FIDE Master (2374 peak rating), USCF National Master, Chessable course author, and online chess coach with 12+ years of experience.",
+      "knowsAbout": ["Chess", "Chess Coaching", "Chess Openings", "Chess Strategy", "Chess Endgames", "Chess Tactics"],
+      "email": "NextLevelChessCoaching@gmail.com",
+      "sameAs": [
+        "https://www.chess.com/member/dalton2468",
+        "https://lichess.org/@/MattyDPerrine",
+        "https://www.youtube.com/@DaltonPerrine",
+        "https://chesschatter.substack.com",
+        "https://www.chessable.com/author/DaltonPerrine/"
+      ]
+    })} />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        The Story Behind the Coach
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        About Dalton
+      </h1>
+      <p class="font-inter text-off-white/65 text-lg max-w-lg mx-auto leading-relaxed">
+        FIDE Master · USCF National Master<br />Full-Time Chess Coach Since 2014
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — BIO WITH PHOTO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+      <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+
+        <!-- Left: photos -->
+        <div class="flex-shrink-0 flex flex-col gap-4 justify-center w-full lg:w-auto">
+          <img
+            src="/images/dalton-perrine-joe-yun.jpg"
+            alt="Dalton Perrine at a chess tournament"
+            class="w-72 lg:w-80 rounded-2xl shadow-[0_8px_40px_rgba(27,31,59,0.14)] object-cover"
+          />
+          <img
+            src="/images/dalton-perrine-trophies.jpg"
+            alt="Dalton Perrine with trophies"
+            class="w-72 lg:w-80 rounded-2xl shadow-[0_8px_40px_rgba(27,31,59,0.14)] object-cover"
+          />
+        </div>
+
+        <!-- Right: bio text -->
+        <div class="flex flex-col gap-5 font-inter text-text-secondary text-base lg:text-[1.05rem] leading-relaxed min-w-0">
+
+          <p>
+            I started playing competitive chess at 10 years old in central Florida, cutting my
+            teeth at the Orlando Chess and Games Center and the Central Florida Chess Club. The
+            game captivated me immediately, and I spent years studying, competing, and improving,
+            eventually earning the USCF National Master title in 2011 and the FIDE Master title
+            in 2014.
+          </p>
+
+          <p>
+            I began coaching chess professionally at 21 years old and have been working with
+            students full-time online since March 2014. That's over 12 years of helping players
+            at every level improve their game. Hundreds of students have taken thousands of lessons
+            with me, and many have gone on to win tournaments and gain hundreds of rating points.
+            One student even won $10,000 at the Millionaire Chess Open.
+          </p>
+
+          <p>
+            My highest USCF rating is 2362 and my highest FIDE rating is 2374. I've defeated
+            multiple Grandmasters over the board and have over 23 years of competitive tournament
+            experience. In 2025, I won the Ohio State Championship. I'm also a Chessable author
+            with multiple published courses, and I was shortlisted for Chessable's Best Author
+            Support award in 2023.
+          </p>
+
+          <p>
+            At the start of 2020, I decided to double down on my playing career and actively
+            pursue the International Master title. That journey, along with practical lessons,
+            psychological insights, and strategies, is something I share regularly through my
+            Substack newsletter,{' '}
+            <a
+              href="https://chesschatter.substack.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150"
+            >
+              Chess Chatter
+            </a>
+            , and my{' '}
+            <a
+              href="https://www.youtube.com/@DaltonPerrine"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150"
+            >
+              YouTube channel
+            </a>
+            .
+          </p>
+
+          <p>
+            As a player, I'm known as a specialist in the Reti Nimzo Larsen Attack, the Benko
+            Gambit, and the French Defense and have made <a href="https://www.chessable.com/dalton" target="_blank" rel="noopener noreferrer" class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150">Chessable courses</a> on these openings. As a coach, I'm known for deeply personalized lessons
+            that meet each student exactly where they are. Outside of chess, I enjoy traveling,
+            listening to music, rock climbing, and playing sports.
+          </p>
+
+          <div class="pt-2">
+            <a href="/pricing" class="btn-gold self-start">
+              Book a Lesson
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — CREDENTIALS & HIGHLIGHTS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          Credentials &amp; Highlights
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {credentials.map(({ label, description }) => (
+          <div class="flex gap-0 rounded-lg shadow-card bg-white overflow-hidden hover:shadow-lg transition-shadow duration-200">
+            <!-- Gold left border accent -->
+            <div class="w-1.5 flex-shrink-0 bg-gold rounded-l-lg"></div>
+            <div class="px-6 py-5 flex flex-col gap-1.5">
+              <p class="font-playfair text-navy text-lg font-semibold leading-snug">
+                {label}
+              </p>
+              <p class="font-inter text-text-secondary text-sm leading-relaxed">
+                {description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — TOURNAMENT RESULTS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          Selected Tournament Results
+        </h2>
+      </div>
+
+      <ul class="max-w-2xl mx-auto flex flex-col gap-3" role="list">
+        {results.map((result) => (
+          <li class="flex items-start gap-4 group">
+            <!-- Gold chess icon -->
+            <span
+              class="flex-shrink-0 mt-0.5 w-7 h-7 rounded-md bg-gold/10 flex items-center justify-center
+                     text-gold text-base leading-none select-none
+                     group-hover:bg-gold group-hover:text-white transition-colors duration-200"
+              aria-hidden="true"
+            >
+              ♟
+            </span>
+            <span class="font-inter text-text-secondary text-base leading-relaxed pt-0.5">
+              {result}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — FIND ME ONLINE
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Find Me Online
+        </h2>
+        <p class="font-inter text-text-secondary text-base">
+          Follow along, study my games, or explore my courses.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {profiles.map(({ platform, href, icon }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card flex flex-col items-center gap-3 py-6 text-center group hover:border-gold/30 border border-transparent"
+          >
+            <!-- Platform icon -->
+            <div class="w-12 h-12 rounded-xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold/10 group-hover:text-gold transition-colors duration-200">
+
+              {icon === 'fide' && (
+                <img src="/images/fide-logo.png" alt="FIDE" class="w-6 h-6 object-contain"/>
+              )}
+
+              {icon === 'uscf' && (
+                <img src="/images/uscf-logo.png" alt="USCF" class="w-6 h-6 object-contain"/>
+              )}
+
+              {icon === 'chesscom' && (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                  <path fill="#689f38" d="M28.001,19h-8.002c0,16.944-10,9.713-10,23c0,0,0.546,2,14.001,2c13.455,0,14.001-2,14.001-2 C38.001,28.713,28.001,35.944,28.001,19z"/>
+                  <path fill="#33691e" d="M28.001,19h-8.002c0,1.127-0.047,2.141-0.13,3.067c1.869,0.18,5.76,0.63,5.76,3.765 C25.629,28.534,23.891,37.51,19,38c-4.461,0.447-8.273-1.094-8.273-1.094C10.272,38.18,9.999,39.81,9.999,42c0,0,0.546,2,14.001,2 c13.455,0,14.001-2,14.001-2C38.001,28.713,28.001,35.944,28.001,19z"/>
+                  <path fill="#689f38" d="M26.02,14H24h-2.02c-1.986,1.334-3.972,2.668-5.957,4.001c0.03,0.428,0.113,0.997,0.332,1.634 c0.197,0.573,0.446,1.032,0.663,1.371l6.984-0.01l6.981,0.01c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634C29.992,16.668,28.006,15.334,26.02,14z"/>
+                  <path fill="#33691e" d="M26,20.999l1.084,0.483l0.976-0.48l2.922,0.004c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634c-1.986-1.334-3.972-2.668-5.957-4.001H24l3,4L26,20.999z"/>
+                  <circle cx="24" cy="10" r="7" fill="#689f38"/>
+                  <path fill="#33691e" d="M27.884,4.178c0.743,1.112,1.178,2.447,1.178,3.884c0,3.016-1.907,5.586-4.581,6.571l1.544,2.07 c0.435-0.131,1.04,0.059,1.434-0.15c0.361-0.191,0.515-0.775,0.835-1.024C29.94,14.249,31,12.248,31,10 C31,7.571,29.762,5.433,27.884,4.178z"/>
+                  <path fill="#9ccc65" d="M24.683,4.727c0.372,0.973-0.526,2.556-2.006,3.536c-1.48,0.979-2.982,0.984-3.354,0.011 s0.526-2.556,2.006-3.536S24.31,3.753,24.683,4.727z"/>
+                </svg>
+              )}
+
+              {icon === 'lichess' && (
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 45 45" class="w-6 h-6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;">
+                  <path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18" style="fill:#ffffff;stroke:#000000;"/>
+                  <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" style="fill:#ffffff;stroke:#000000;"/>
+                  <path d="M 9.5 25.5 A 0.5 0.5 0 1 1 8.5,25.5 A 0.5 0.5 0 1 1 9.5 25.5 z" style="fill:#000000;stroke:#000000;"/>
+                  <path d="M 15 15.5 A 0.5 1.5 0 1 1  14,15.5 A 0.5 1.5 0 1 1  15 15.5 z" transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)" style="fill:#000000;stroke:#000000;"/>
+                </svg>
+              )}
+
+              {icon === 'chessable' && (
+                <img src="/images/chessable-logo.jpg" alt="Chessable" class="w-6 h-6 object-contain"/>
+              )}
+
+              {icon === 'youtube' && (
+                <img src="/images/youtube-logo3.png" alt="YouTube" class="w-6 h-6 object-contain"/>
+              )}
+
+              {icon === 'substack' && (
+                <img src="/images/substack-logo.png" alt="Substack" class="w-6 h-6 object-contain"/>
+              )}
+
+              {icon === 'spotify' && (
+                <img src="/images/spotify-logo.png" alt="Spotify" class="w-6 h-6 object-contain"/>
+              )}
+
+            </div>
+
+            <!-- Platform name -->
+            <p class="font-inter font-semibold text-navy text-sm group-hover:text-gold transition-colors duration-200">
+              {platform}
+            </p>
+
+            <!-- Visit link -->
+            <span class="font-inter text-xs text-text-secondary group-hover:text-gold transition-colors duration-200 inline-flex items-center gap-1">
+              Visit
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+            </span>
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Ready to Improve Your Chess?
+        </h2>
+        <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+          Let's build a personalized plan around your<br />strengths, weaknesses, and goals.
+        </p>
+        <a href="/pricing" class="btn-gold text-base px-10 py-4 mt-2">
+          Book a Lesson
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

@@ -1,0 +1,524 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const videos = [
+  {
+    id:    '1jTi3gTTLV0',
+    title: 'Reti Nimzo Larsen Speedrun Episode 1',
+    views: '6.1K views',
+  },
+  {
+    id:    's5kVpl4jylo',
+    title: 'Benko Gambit Speedrun Episode 1',
+    views: '5.3K views',
+  },
+  {
+    id:    'hKqaTzSiFP8',
+    title: 'French Defense Speedrun Episode 1',
+    views: '3.7K views',
+  },
+  {
+    id:    '47k3d3nbE-E',
+    title: 'THIS is Why You Should Play the Reti Nimzo Larsen Attack',
+    views: '3.2K views',
+  },
+  {
+    id:    'ZtVEBcOCgNo',
+    title: 'How My Student Outsmarted a 300-Point Stronger Player',
+    views: '786 views',
+  },
+  {
+    id:    '_bhpGgpdtQo',
+    title: 'How to SURVIVE and THRIVE: Five Essential Defensive Techniques',
+    views: '933 views',
+  },
+];
+
+const substackArticles = [
+  {
+    title:       'Why You Keep Blundering in Chess (And How to Stop)',
+    description: 'Learn proven methods to reduce blunders, spot hanging pieces, and defend better in your games.',
+    href:        'https://chesschatter.substack.com/p/how-to-blunder-less',
+  },
+  {
+    title:       'The Chess Cookie Jar',
+    description: "Why your brain forgets your best chess — and how to fix it.",
+    href:        'https://chesschatter.substack.com/p/the-chess-cookie-jar',
+  },
+  {
+    title:       '5 Takeaways from the 2025 US Masters',
+    description: 'Reflections and lessons learned from competing in the US Masters tournament.',
+    href:        'https://chesschatter.substack.com/p/5-takeaways-us-masters-2025',
+  },
+  {
+    title:       'Mindset Mastery Monday',
+    description: 'A weekly series of questions designed to expose your chess blind spots and close the gap between the player you think you are and the player you actually are.',
+    href:        'https://chesschatter.substack.com/p/mindset-mastery-monday-week-5',
+  },
+];
+
+const courses = [
+  {
+    title:       'The Benko Blueprint: From Theory to Practice',
+    description: 'A complete guide to the Benko Gambit from a lifelong Benko player. Learn the theory, the plans, and the practical ideas.',
+    href:        'https://www.chessable.com/the-benko-blueprint-from-theory-to-practice/course/143241/',
+    icon:        '♟',
+  },
+  {
+    title:       'French: Simplified',
+    description: 'A solid, easy-to-understand French Defense repertoire to handle anything a 1.e4 player throws at you.',
+    href:        'https://www.chessable.com/french-simplified/course/197838/',
+    icon:        '♙',
+  },
+  {
+    title:       'Survive & Thrive: How to Blunder Less and Defend Better',
+    description: '300 challenging puzzles to develop your defensive calculation and survival skills. Endorsed by GM Sam Shankland.',
+    href:        'https://www.chessable.com/survive-thrive-how-to-blunder-less-and-defend-better/course/80629/',
+    icon:        '♖',
+  },
+];
+
+const podcasts = [
+  {
+    title:       'The Art of Advantage Conversion — The Chess Cognition Podcast',
+    description: "I joined the Chess Cognition Podcast to discuss converting advantages, creating Chessable courses, and my journey as a player and coach.",
+    linkLabel:   'Listen on Spotify →',
+    href:        'https://open.spotify.com/episode/35Xkc7hcaBJR9SfGOl5rRl',
+    external:    true,
+    icon:        'spotify',
+    badge:       'Chess Cognition Podcast',
+  },
+  {
+    title:       "'Master to IM' Adult Improver Special — Perpetual Chess Podcast",
+    description: "As the title suggests, we feature Master-level players who are training and competing with the hope of earning the FIDE International Master title (IM.) Our three guests are FM Doug Eckert, NM Evan Rosenberg, and FM Dalton Perrine.",
+    linkLabel:   'Listen on Spotify →',
+    href:        'https://open.spotify.com/episode/5vbJYbROSUaSG8eF3fkGmL',
+    external:    true,
+    icon:        'spotify',
+    badge:       'Perpetual Chess Podcast',
+  },
+  {
+    title:       'FM Dalton Perrine (2325 USCF) — Chess Journeys Podcast',
+    description: "This week on Chess Journeys, I spoke with FM Dalton Perrine. We discussed his time as a scholastic chess player, high school player, and continuing to play as an adult. We discussed topics such as setting goals, coaching, playing as an adult and creating Chessable courses.",
+    linkLabel:   'Listen on Spotify →',
+    href:        'https://open.spotify.com/episode/2prsCgxLs2XTUCijNfqbmX',
+    external:    true,
+    icon:        'spotify',
+    badge:       'Chess Journeys Podcast',
+  },
+  {
+    title:       'Chess Chatter Podcast',
+    description: 'Past episodes of my own podcast covering chess improvement topics.',
+    linkLabel:   'Listen →',
+    href:        'https://open.spotify.com/show/6EknGRW7czzortrUSlgDhQ',
+    external:    true,
+    badge:       'Chess Chatter Podcast',
+    icon:        'podcast',
+  },
+];
+---
+
+<Layout
+  title="Chess Content | YouTube Videos, Courses & Podcast — FM Dalton Perrine"
+  description="Watch chess videos, study Chessable courses, listen to the Chess Chatter podcast, and read articles — all from FM Dalton Perrine."
+>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        YouTube · Substack · Chessable · Podcast
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Content
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
+        Educational videos, articles, courses, and more.<br />Hundreds of hours of free and premium chess content.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — YOUTUBE
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <!-- Section header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <!-- YouTube wordmark row -->
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" fill="white" class="w-5 h-5" aria-hidden="true">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </div>
+            <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+              YouTube
+            </h2>
+          </div>
+          <p class="font-inter text-text-secondary text-base max-w-xl leading-relaxed mb-3">
+            I publish educational chess videos covering openings, strategy, speedruns,
+            tournament recaps, and student game analysis. Subscribe to follow along.
+          </p>
+          <!-- Stats -->
+          <p class="font-inter text-navy text-sm font-semibold">
+            2,100+ subscribers · 237+ videos
+          </p>
+        </div>
+        <a
+          href="https://www.youtube.com/@DaltonPerrine"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-shrink-0 inline-flex items-center gap-2 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          Visit my YouTube channel
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+      <!-- Video grid: 3 cols desktop, 2 tablet, 1 mobile -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {videos.map(({ id, title, views }) => (
+          <div class="flex flex-col gap-2 group">
+            <!-- 16:9 responsive embed -->
+            <div
+              class="relative w-full rounded-xl overflow-hidden shadow-card"
+              style="padding-top: 56.25%;"
+            >
+              <iframe
+                class="absolute inset-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${id}`}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <!-- Caption -->
+            <div class="px-1">
+              <p class="font-inter text-navy text-sm font-medium leading-snug line-clamp-2">
+                {title}
+              </p>
+              <p class="font-inter text-text-secondary text-xs mt-0.5">{views}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Channel link (bottom) -->
+      <div class="text-center mt-10">
+        <a
+          href="https://www.youtube.com/@DaltonPerrine"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-gold"
+        >
+          Visit My YouTube Channel
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — CHESS CHATTER (SUBSTACK)
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <!-- Section header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-lg bg-[#FF6719] flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" fill="white" class="w-4 h-4" aria-hidden="true">
+                <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+              </svg>
+            </div>
+            <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+              Chess Chatter Newsletter
+            </h2>
+          </div>
+          <p class="font-inter text-text-secondary text-base max-w-xl leading-relaxed mb-3">
+            My weekly Substack newsletter where I write about chess improvement, mindset
+            strategies, opening ideas, tournament reflections, and the journey to the IM title.
+            Recommended by GM Eugene Perelshteyn.
+          </p>
+          <p class="font-inter text-navy text-sm font-semibold">
+            800+ subscribers · Published since 2024
+          </p>
+        </div>
+        <a
+          href="https://chesschatter.substack.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-shrink-0 inline-flex items-center gap-2 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          Visit Chess Chatter
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+      <!-- Article cards 2×2 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+        {substackArticles.map(({ title, description, href }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card flex flex-col gap-3 group hover:border-gold/30 border border-transparent"
+          >
+            <!-- Top accent -->
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded flex items-center justify-center bg-[#FF6719]/10 flex-shrink-0">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 text-[#FF6719]" aria-hidden="true">
+                  <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+                </svg>
+              </div>
+              <span class="font-inter text-[10px] font-semibold tracking-widest uppercase text-text-secondary">
+                Chess Chatter
+              </span>
+            </div>
+
+            <h3 class="font-playfair text-navy text-lg font-semibold leading-snug group-hover:text-gold transition-colors duration-150">
+              {title}
+            </h3>
+
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <span class="inline-flex items-center gap-1.5 font-inter font-semibold text-sm text-gold group-hover:text-gold-hover transition-colors duration-150 mt-auto">
+              Read on Substack
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Subscribe CTA -->
+      <div class="text-center">
+        <a
+          href="https://chesschatter.substack.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-gold"
+        >
+          Subscribe to Chess Chatter
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — CHESSABLE COURSES
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <!-- Section header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
+              <img src="/images/chessable-logo.jpg" alt="Chessable" class="w-9 h-9 object-contain rounded-lg"/>
+            </div>
+            <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+              Chessable Courses
+            </h2>
+          </div>
+          <p class="font-inter text-text-secondary text-base max-w-xl leading-relaxed mb-3">
+            I'm a published Chessable author with 375+ reviews averaging 4.7/5 stars.<br />I was also shortlisted for Chessable's Best Author Support award in 2023.
+          </p>
+          <!-- Star rating display -->
+          <div class="flex items-center gap-2">
+            <div class="flex gap-0.5" aria-label="4.7 out of 5 stars">
+              {[1,2,3,4].map(() => (
+                <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gold" aria-hidden="true">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              ))}
+              <!-- Half star -->
+              <svg viewBox="0 0 20 20" class="w-4 h-4 text-gold" aria-hidden="true">
+                <defs>
+                  <linearGradient id="half">
+                    <stop offset="50%" stop-color="currentColor"/>
+                    <stop offset="50%" stop-color="transparent"/>
+                  </linearGradient>
+                </defs>
+                <path fill="url(#half)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                <path fill="#d1d5db" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" style="clip-path: inset(0 0 0 50%)"/>
+              </svg>
+            </div>
+            <span class="font-inter font-semibold text-navy text-sm">4.7 / 5</span>
+          </div>
+        </div>
+        <a
+          href="https://www.chessable.com/dalton/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-shrink-0 inline-flex items-center gap-2 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group"
+        >
+          See all my courses on Chessable
+          <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+
+      <!-- Course cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {courses.map(({ icon, title, description, href }) => (
+          <div class="card flex flex-col gap-4 group">
+            <!-- Icon -->
+            <div class="w-14 h-14 rounded-xl bg-[#2e9e6b]/10 flex items-center justify-center text-3xl leading-none select-none text-[#2e9e6b]" aria-hidden="true">
+              {icon}
+            </div>
+
+            <!-- Title -->
+            <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+              {title}
+            </h3>
+
+            <!-- Description -->
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <!-- Link -->
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 font-inter font-semibold text-sm text-gold hover:text-gold-hover transition-colors duration-150 group/link mt-auto"
+            >
+              View on Chessable
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover/link:translate-x-1">→</span>
+            </a>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 5 — PODCAST
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <!-- Section header -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-9 h-9 rounded-lg bg-[#1DB954] flex items-center justify-center flex-shrink-0">
+            <!-- Headphones icon -->
+            <svg viewBox="0 0 24 24" fill="white" class="w-5 h-5" aria-hidden="true">
+              <path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H5v-1a7 7 0 0 1 14 0v1h-1a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9z"/>
+            </svg>
+          </div>
+          <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+            Podcast Appearances &amp; Episodes
+          </h2>
+        </div>
+        <p class="font-inter text-text-secondary text-base max-w-xl leading-relaxed">
+          I've been a guest on chess podcasts and have produced my own episodes discussing
+          improvement, mindset, and the chess journey.
+        </p>
+      </div>
+
+      <!-- Podcast items -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+        {podcasts.map(({ title, description, linkLabel, href, external, icon, badge }) => (
+          <div class="card flex flex-col gap-4">
+            <!-- Platform badge -->
+            <div class="flex items-center gap-2.5">
+              {icon === 'spotify' ? (
+                <div class="w-8 h-8 rounded-lg bg-[#1DB954] flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="white" class="w-4 h-4" aria-hidden="true">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                  </svg>
+                </div>
+              ) : (
+                <div class="w-8 h-8 rounded-lg bg-navy/10 flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-navy" aria-hidden="true">
+                    <path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H5v-1a7 7 0 0 1 14 0v1h-1a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9z"/>
+                  </svg>
+                </div>
+              )}
+              <span class="font-inter text-[10px] font-semibold tracking-widest uppercase text-text-secondary">
+                {badge}
+              </span>
+            </div>
+
+            <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+              {title}
+            </h3>
+
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <a
+              href={href}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noopener noreferrer' : undefined}
+              class:list={[
+                'inline-flex items-center gap-1.5 font-inter font-semibold text-sm transition-colors duration-150 group/link mt-auto',
+                href === '#'
+                  ? 'text-text-secondary cursor-not-allowed opacity-60 pointer-events-none'
+                  : 'text-gold hover:text-gold-hover',
+              ]}
+            >
+              {linkLabel.replace(' →', '')}
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover/link:translate-x-1">→</span>
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <p class="font-inter text-text-secondary text-sm mt-6 italic">
+        More episodes coming soon.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 6 — CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative section-pad">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Want Personalized Help?
+        </h2>
+        <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+          Free content can only take you so far. If you're ready<br />for a customized improvement plan built around your game,<br />let's work together.
+        </p>
+        <a href="/pricing" class="btn-gold text-base px-10 py-4 mt-2">
+          Book a Lesson
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

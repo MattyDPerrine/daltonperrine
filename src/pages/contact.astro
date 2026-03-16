@@ -1,0 +1,576 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const contactMethods = [
+  {
+    icon: 'calendar',
+    label: 'Book a Free Consultation',
+    detail: 'Schedule a free 15-minute call to discuss your chess goals.',
+    linkLabel: 'Book on Setmore',
+    href: 'https://nextlevelchesscoaching.setmore.com/',
+    external: true,
+  },
+  {
+    icon: 'chesscom',
+    label: 'Chess.com',
+    detail: 'Send me a message on Chess.com.',
+    linkLabel: 'MattyDPerrine',
+    href: 'https://www.chess.com/member/mattydperrine',
+    external: true,
+  },
+  {
+    icon: 'lichess',
+    label: 'Lichess',
+    detail: 'Find me on Lichess.',
+    linkLabel: 'MattyDPerrine',
+    href: 'https://lichess.org/@/MattyDPerrine',
+    external: true,
+  },
+  {
+    icon: 'email',
+    label: 'Email',
+    detail: 'NextLevelChessCoaching@gmail.com',
+    linkLabel: 'NextLevelChessCoaching@gmail.com',
+    href: 'mailto:NextLevelChessCoaching@gmail.com',
+    external: false,
+  },
+  {
+    icon: 'youtube',
+    label: 'YouTube',
+    detail: 'Watch free chess lessons and content.',
+    linkLabel: '@DaltonPerrine',
+    href: 'https://www.youtube.com/@DaltonPerrine',
+    external: true,
+  },
+  {
+    icon: 'substack',
+    label: 'Chess Chatter (Substack)',
+    detail: 'Read weekly chess improvement articles.',
+    linkLabel: 'chesschatter.substack.com',
+    href: 'https://chesschatter.substack.com/',
+    external: true,
+  },
+];
+
+const faqs = [
+  {
+    q: 'How do online chess lessons work?',
+    a: 'We meet on Chess.com or Lichess and communicate via Zoom. We use a classroom or study board to play through positions, games, and concepts together. It feels very natural, like sitting across the board from each other.',
+  },
+  {
+    q: 'What skill level do you work with?',
+    a: "All levels, from beginners to experienced tournament players. The majority of my students are adult improvers, but I also work with scholastic players. Whether you're rated 600 or 2100, I can help.",
+  },
+  {
+    q: 'How do I prepare for my first lesson?',
+    a: "Just fill out the short questionnaire I'll email you and make sure you have a Chess.com or Lichess account and Zoom set up. I'll handle the rest, including studying your games before we meet.",
+  },
+  {
+    q: 'Do you offer a free trial lesson?',
+    a: 'I offer a free 15-minute consultation call where we can discuss your goals and how I can help. The first full lesson is a discounted trial at $70 (or $75 with video recording).',
+  },
+  {
+    q: 'What is your cancellation policy?',
+    a: "I ask for at least 24 hours' notice if you need to reschedule. Life happens, and I'm flexible and happy to find another time that works.",
+  },
+  {
+    q: 'Can I gift lessons to someone?',
+    a: "Absolutely! Just purchase the lesson package you'd like to gift and contact me with the recipient's details. I'll take it from there.",
+  },
+];
+---
+
+<Layout
+  title="Contact FM Dalton Perrine | Book a Chess Lesson or Ask a Question"
+  description="Get in touch with FM Dalton Perrine to book a free consultation, ask about chess lessons, or learn more about training packages."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ContactPage",
+          "@id": "https://daltonperrine.com/contact",
+          "name": "Contact FM Dalton Perrine",
+          "url": "https://daltonperrine.com/contact",
+          "description": "Get in touch with FM Dalton Perrine to book a free consultation or ask about chess lessons.",
+          "mainEntity": {
+            "@type": "Person",
+            "@id": "https://daltonperrine.com/#person",
+            "name": "Dalton Perrine",
+            "email": "NextLevelChessCoaching@gmail.com"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://daltonperrine.com/contact#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do online chess lessons work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We meet on Chess.com or Lichess and communicate via Zoom. We use a classroom or study board to play through positions, games, and concepts together. It feels very natural, like sitting across the board from each other."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What skill level do you work with?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All levels, from beginners to experienced tournament players. The majority of my students are adult improvers, but I also work with scholastic players. Whether you're rated 600 or 2100, I can help."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I prepare for my first lesson?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Just fill out the short questionnaire I'll email you and make sure you have a Chess.com or Lichess account and Zoom set up. I'll handle the rest, including studying your games before we meet."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do you offer a free trial lesson?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "I offer a free 15-minute consultation call where we can discuss your goals and how I can help. The first full lesson is a discounted trial at $70 (or $75 with video recording)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is your cancellation policy?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "I ask for at least 24 hours' notice if you need to reschedule. Life happens, and I'm flexible and happy to find another time that works."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I gift lessons to someone?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Absolutely! Just purchase the lesson package you'd like to gift and contact me with the recipient's details. I'll take it from there."
+              }
+            }
+          ]
+        }
+      ]
+    })} />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        I'd Love to Hear From You
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Contact Me
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        Have a question, want to schedule a lesson, or just want<br />to say hello? I'd love to hear from you.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — CONTACT OPTIONS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14">
+
+
+        <!-- ── LEFT: Contact Form ──────────────────────────────────────── -->
+        <div>
+          <h2 class="font-playfair text-navy text-2xl sm:text-3xl font-bold mb-7">
+            Send a Message
+          </h2>
+
+          <!--
+            Netlify Forms: the `netlify` attribute + `name="contact"` + hidden `form-name` input
+            enable automatic form handling on Netlify.
+            If not using Netlify, swap the action attribute to your Formspree endpoint:
+            action="https://formspree.io/f/YOUR_FORM_ID"
+          -->
+          <form
+            name="contact"
+            method="POST"
+            netlify
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            class="flex flex-col gap-5"
+            id="contact-form"
+            novalidate
+          >
+            <!-- Netlify hidden fields -->
+            <input type="hidden" name="form-name" value="contact" />
+            <!-- Honeypot spam field (hidden from humans) -->
+            <p class="hidden" aria-hidden="true">
+              <label>Don't fill this out: <input name="bot-field" /></label>
+            </p>
+
+            <!-- Name -->
+            <div class="flex flex-col gap-1.5">
+              <label for="name" class="font-inter font-semibold text-navy text-sm">
+                Name <span class="text-gold" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                autocomplete="name"
+                placeholder="Your name"
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col gap-1.5">
+              <label for="email" class="font-inter font-semibold text-navy text-sm">
+                Email <span class="text-gold" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              />
+            </div>
+
+            <!-- Subject -->
+            <div class="flex flex-col gap-1.5">
+              <label for="subject" class="font-inter font-semibold text-navy text-sm">
+                Subject
+                <span class="font-normal text-text-secondary ml-1">(optional)</span>
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="e.g., Interested in coaching, Question about lessons"
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              />
+            </div>
+
+            <!-- Message -->
+            <div class="flex flex-col gap-1.5">
+              <label for="message" class="font-inter font-semibold text-navy text-sm">
+                Message <span class="text-gold" aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="5"
+                placeholder="Tell me a bit about your chess background and what you're looking for..."
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35 resize-y
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              ></textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex flex-col gap-3">
+              <button
+                type="submit"
+                class="btn-gold w-full sm:w-auto sm:self-start text-base px-8 py-3.5 cursor-pointer"
+              >
+                Send Message
+              </button>
+              <p class="font-inter text-text-secondary text-xs">
+                I typically respond within 24 hours.
+              </p>
+            </div>
+
+          </form>
+
+          <!-- Success / error messages (shown via JS) -->
+          <div
+            id="form-success"
+            role="alert"
+            class="hidden mt-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-5 py-4 font-inter text-sm"
+          >
+            ✓ Your message was sent successfully! I'll be in touch within 24 hours.
+          </div>
+          <div
+            id="form-error"
+            role="alert"
+            class="hidden mt-5 bg-red-50 border border-red-200 text-red-800 rounded-lg px-5 py-4 font-inter text-sm"
+          >
+            Something went wrong. Please try emailing me directly at
+            <a href="mailto:NextLevelChessCoaching@gmail.com" class="underline font-semibold">
+              NextLevelChessCoaching@gmail.com
+            </a>.
+          </div>
+        </div>
+
+
+        <!-- ── RIGHT: Other ways to reach me ──────────────────────────── -->
+        <div>
+          <h2 class="font-playfair text-navy text-2xl sm:text-3xl font-bold mb-7">
+            Other Ways to Connect
+          </h2>
+
+          <ul class="flex flex-col gap-4" role="list">
+            {contactMethods.map(({ icon, label, detail, linkLabel, href, external }) => (
+              <li class="flex items-start gap-4 bg-white rounded-xl px-5 py-4 shadow-card hover:shadow-lg transition-shadow duration-200">
+
+                <!-- Icon badge -->
+                <div
+                  class="flex-shrink-0 w-10 h-10 rounded-lg bg-navy/5 flex items-center justify-center text-navy mt-0.5"
+                  aria-hidden="true"
+                >
+                  {icon === 'calendar' && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                  )}
+                  {icon === 'chesscom' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5">
+                      <path fill="#689f38" d="M28.001,19h-8.002c0,16.944-10,9.713-10,23c0,0,0.546,2,14.001,2c13.455,0,14.001-2,14.001-2 C38.001,28.713,28.001,35.944,28.001,19z"/>
+                      <path fill="#33691e" d="M28.001,19h-8.002c0,1.127-0.047,2.141-0.13,3.067c1.869,0.18,5.76,0.63,5.76,3.765 C25.629,28.534,23.891,37.51,19,38c-4.461,0.447-8.273-1.094-8.273-1.094C10.272,38.18,9.999,39.81,9.999,42c0,0,0.546,2,14.001,2 c13.455,0,14.001-2,14.001-2C38.001,28.713,28.001,35.944,28.001,19z"/>
+                      <path fill="#689f38" d="M26.02,14H24h-2.02c-1.986,1.334-3.972,2.668-5.957,4.001c0.03,0.428,0.113,0.997,0.332,1.634 c0.197,0.573,0.446,1.032,0.663,1.371l6.984-0.01l6.981,0.01c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634C29.992,16.668,28.006,15.334,26.02,14z"/>
+                      <path fill="#33691e" d="M26,20.999l1.084,0.483l0.976-0.48l2.922,0.004c0.217-0.339,0.466-0.798,0.663-1.371 c0.219-0.637,0.302-1.206,0.332-1.634c-1.986-1.334-3.972-2.668-5.957-4.001H24l3,4L26,20.999z"/>
+                      <circle cx="24" cy="10" r="7" fill="#689f38"/>
+                      <path fill="#33691e" d="M27.884,4.178c0.743,1.112,1.178,2.447,1.178,3.884c0,3.016-1.907,5.586-4.581,6.571l1.544,2.07 c0.435-0.131,1.04,0.059,1.434-0.15c0.361-0.191,0.515-0.775,0.835-1.024C29.94,14.249,31,12.248,31,10 C31,7.571,29.762,5.433,27.884,4.178z"/>
+                      <path fill="#9ccc65" d="M24.683,4.727c0.372,0.973-0.526,2.556-2.006,3.536c-1.48,0.979-2.982,0.984-3.354,0.011 s0.526-2.556,2.006-3.536S24.31,3.753,24.683,4.727z"/>
+                    </svg>
+                  )}
+                  {icon === 'lichess' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="w-5 h-5">
+                      <path style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18" />
+                      <path style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" />
+                      <path style="fill:#000000;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" d="M 9.5,25.5 A 0.5,0.5 0 1 1 8.5,25.5 A 0.5,0.5 0 1 1 9.5,25.5 z" />
+                      <path style="fill:#ababab;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" d="M 15,15.5 A 0.5,1.5 0 1 1 14,15.5 A 0.5,1.5 0 1 1 15,15.5 z" transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)" />
+                      <path style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" d="M 24.55,10.4 L 24.1,11.85 L 24.6,12 C 27.75,13 30.25,14.49 32.5,18.75 C 34.75,23.01 35.75,29.06 35.25,39 L 35.2,39.5 L 37.45,39.5 L 37.5,39 C 38,28.94 36.62,22.15 34.25,17.66 C 31.88,13.17 28.46,11.02 25.06,10.5 L 24.55,10.4 z" />
+                    </svg>
+                  )}
+                  {icon === 'email' && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                      <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                  )}
+                  {icon === 'youtube' && (
+                    <img src="/images/youtube-logo3.png" alt="YouTube" class="w-5 h-5 object-contain" />
+                  )}
+                  {icon === 'substack' && (
+                    <img src="/images/substack-logo.png" alt="Substack" class="w-5 h-5 object-contain" />
+                  )}
+                </div>
+
+                <!-- Text -->
+                <div class="flex flex-col gap-0.5 min-w-0">
+                  <p class="font-inter font-semibold text-navy text-sm leading-snug">
+                    {label}
+                  </p>
+                  <p class="font-inter text-text-secondary text-xs leading-relaxed">
+                    {detail}
+                  </p>
+                  <a
+                    href={href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    class="inline-flex items-center gap-1 font-inter font-semibold text-xs text-gold hover:text-gold-hover transition-colors duration-150 group mt-1 truncate"
+                  >
+                    {linkLabel}
+                    <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-0.5 flex-shrink-0">→</span>
+                  </a>
+                </div>
+
+              </li>
+            ))}
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — FAQ
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-12">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Frequently Asked Questions
+        </h2>
+        <p class="font-inter text-text-secondary text-base">
+          Still have questions?{' '}
+          <a href="#contact-form" class="text-gold hover:text-gold-hover underline underline-offset-2 transition-colors duration-150">
+            Send me a message
+          </a>
+          {' '}and I'll get back to you.
+        </p>
+      </div>
+
+      <div class="max-w-3xl mx-auto flex flex-col gap-0 divide-y divide-navy/8 border border-navy/8 rounded-xl overflow-hidden">
+        {faqs.map(({ q, a }, i) => (
+          <div class="faq-item bg-white">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 text-left px-6 py-5 hover:bg-off-white/60 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gold"
+              aria-expanded="false"
+              aria-controls={`faq-answer-${i}`}
+              id={`faq-trigger-${i}`}
+            >
+              <span class="font-playfair text-navy font-semibold text-base leading-snug">
+                {q}
+              </span>
+              <!-- Chevron icon -->
+              <span
+                class="faq-chevron flex-shrink-0 w-6 h-6 rounded-full bg-gold/10 flex items-center justify-center text-gold transition-transform duration-300"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                </svg>
+              </span>
+            </button>
+
+            <div
+              id={`faq-answer-${i}`}
+              role="region"
+              aria-labelledby={`faq-trigger-${i}`}
+              class="faq-answer overflow-hidden max-h-0 transition-all duration-300 ease-in-out"
+            >
+              <p class="font-inter text-text-secondary text-sm leading-relaxed px-6 pb-5 pt-0">
+                {a}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative section-pad">
+      <div class="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+        <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold leading-snug">
+          Let's Take Your Chess to<br />the Next Level
+        </h2>
+        <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+          Ready to invest in your game? Browse lesson<br />packages and get started today.
+        </p>
+        <a href="/pricing" class="btn-gold text-base px-10 py-4 mt-2">
+          See Pricing
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+
+<script>
+  // ── FAQ accordion ─────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const isOpen   = trigger.getAttribute('aria-expanded') === 'true';
+      const answer   = trigger.nextElementSibling as HTMLElement | null;
+      const chevron  = trigger.querySelector<HTMLElement>('.faq-chevron');
+
+      // Close all others first
+      document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach((t) => {
+        if (t !== trigger) {
+          t.setAttribute('aria-expanded', 'false');
+          const a = t.nextElementSibling as HTMLElement | null;
+          const c = t.querySelector<HTMLElement>('.faq-chevron');
+          if (a) a.style.maxHeight = '0px';
+          if (c) c.classList.remove('rotate-180');
+        }
+      });
+
+      // Toggle current
+      if (isOpen) {
+        trigger.setAttribute('aria-expanded', 'false');
+        if (answer) answer.style.maxHeight = '0px';
+        if (chevron) chevron.classList.remove('rotate-180');
+      } else {
+        trigger.setAttribute('aria-expanded', 'true');
+        if (answer) answer.style.maxHeight = answer.scrollHeight + 'px';
+        if (chevron) chevron.classList.add('rotate-180');
+      }
+    });
+  });
+
+
+  // ── Contact form AJAX submit (Netlify) ────────────────────────────────────
+  const form      = document.getElementById('contact-form') as HTMLFormElement | null;
+  const success   = document.getElementById('form-success');
+  const errorMsg  = document.getElementById('form-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector<HTMLButtonElement>('[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
+
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form) as any).toString(),
+      });
+
+      if (res.ok) {
+        form.reset();
+        form.classList.add('hidden');
+        success?.classList.remove('hidden');
+        success?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch {
+      errorMsg?.classList.remove('hidden');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
+    }
+  });
+</script>

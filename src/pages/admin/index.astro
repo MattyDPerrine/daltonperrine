@@ -1,0 +1,195 @@
+---
+/**
+ * src/pages/admin/index.astro  —  Admin Dashboard Home
+ */
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getAllStudents, getAllAssignments, getAllRecordings } from '../../lib/supabase-admin';
+
+// ── Data ─────────────────────────────────────────────────────────────────────
+const [students, assignments, recordings] = await Promise.all([
+  getAllStudents(),
+  getAllAssignments(),
+  getAllRecordings(),
+]);
+
+const activeStudents = students.filter((s: any) => s.is_active);
+const recent = assignments.slice(0, 5);
+const recentRecordings = recordings.slice(0, 3);
+
+const success = Astro.url.searchParams.get('success');
+
+function formatDate(d: string | null) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function formatDateShort(d: string | null) {
+  if (!d) return '—';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+---
+
+<AdminLayout title="Dashboard | Admin">
+
+  <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full">
+    <h1 class="text-2xl font-bold text-navy font-playfair">Dashboard</h1>
+    <p class="text-gray-500 text-sm mt-0.5">Welcome back, Coach Dalton.</p>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    {success && (
+      <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 text-sm mb-6">
+        ✅ {success}
+      </div>
+    )}
+
+    <!-- Stats grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {[
+        { value: activeStudents.length,  label: 'Active Students',      href: '/admin/students' },
+        { value: assignments.length,     label: 'Assignments Created',   href: '/admin/assignments' },
+        { value: recordings.length,      label: 'Lesson Recordings',     href: '/admin/recordings' },
+        { value: recent[0] ? formatDate(recent[0].created_at) : '—', label: 'Last Assignment', href: null },
+      ].map(({ value, label, href }) => (
+        <div class={`bg-white rounded-xl border border-gray-200 shadow-sm p-5 ${href ? 'hover:border-gold/40 transition-colors' : ''}`}>
+          {href ? (
+            <a href={href} class="block">
+              <p class="text-3xl font-bold text-navy font-playfair">{value}</p>
+              <p class="text-gray-500 text-sm mt-1">{label}</p>
+            </a>
+          ) : (
+            <>
+              <p class="text-3xl font-bold text-navy font-playfair">{value}</p>
+              <p class="text-gray-500 text-sm mt-1">{label}</p>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Quick actions — 3-column on large screens -->
+    <div class="grid md:grid-cols-3 gap-4 mb-8">
+      <a href="/admin/students"
+         class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+        <div class="w-11 h-11 bg-navy/8 rounded-xl flex items-center justify-center text-xl flex-shrink-0">👥</div>
+        <div>
+          <h2 class="font-semibold text-navy">Manage Students</h2>
+          <p class="text-gray-500 text-xs mt-0.5">Add, edit, view homework links</p>
+          <p class="text-gold font-medium text-sm mt-2">{activeStudents.length} active →</p>
+        </div>
+      </a>
+      <a href="/admin/assignments"
+         class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+        <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center text-xl flex-shrink-0">📋</div>
+        <div>
+          <h2 class="font-semibold text-navy">Manage Assignments</h2>
+          <p class="text-gray-500 text-xs mt-0.5">Create and assign homework</p>
+          <p class="text-gold font-medium text-sm mt-2">{assignments.length} total →</p>
+        </div>
+      </a>
+      <a href="/admin/recordings"
+         class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+        <div class="w-11 h-11 bg-emerald-50 rounded-xl flex items-center justify-center text-xl flex-shrink-0">🎬</div>
+        <div>
+          <h2 class="font-semibold text-navy">Manage Recordings</h2>
+          <p class="text-gray-500 text-xs mt-0.5">Upload lesson video links</p>
+          <p class="text-gold font-medium text-sm mt-2">{recordings.length} total →</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Two-column bottom section -->
+    <div class="grid lg:grid-cols-2 gap-6">
+
+      <!-- Recent assignments -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="font-semibold text-navy">Recent Assignments</h2>
+          <a href="/admin/assignments/new"
+             class="inline-flex items-center gap-1 bg-gold text-navy font-semibold px-3 py-1.5 rounded-lg text-xs hover:bg-gold-hover transition-colors">
+            + Create New
+          </a>
+        </div>
+        {recent.length === 0 ? (
+          <div class="px-6 py-10 text-center text-gray-400 italic text-sm">
+            No assignments yet.
+            <a href="/admin/assignments/new" class="text-gold underline ml-1">Create the first one →</a>
+          </div>
+        ) : (
+          <table class="w-full">
+            <thead class="bg-navy">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Title</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden sm:table-cell">Date</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recent.map((a: any) => (
+                <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                  <td class="px-4 py-3 font-medium text-navy text-sm">{a.title}</td>
+                  <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(a.lesson_date)}</td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <a href={`/admin/assignments/view/${a.id}`} class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">View</a>
+                      <a href={`/admin/assignments/edit/${a.id}`} class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <!-- Recent recordings -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="font-semibold text-navy">Recent Recordings</h2>
+          <a href="/admin/recordings"
+             class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 font-semibold px-3 py-1.5 rounded-lg text-xs hover:bg-emerald-100 transition-colors border border-emerald-200">
+            + Add Recording
+          </a>
+        </div>
+        {recentRecordings.length === 0 ? (
+          <div class="px-6 py-10 text-center text-gray-400 italic text-sm">
+            No recordings yet.
+            <a href="/admin/recordings" class="text-gold underline ml-1">Add the first one →</a>
+          </div>
+        ) : (
+          <table class="w-full">
+            <thead class="bg-navy">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Student</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Title</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden sm:table-cell">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentRecordings.map((r: any) => (
+                <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                  <td class="px-4 py-3 text-navy text-sm font-medium">{r.student?.name ?? '—'}</td>
+                  <td class="px-4 py-3 text-navy text-sm">{r.title}</td>
+                  <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDateShort(r.lesson_date)}</td>
+                </tr>
+              ))}
+              {recordings.length > 3 && (
+                <tr class="border-t border-gray-100">
+                  <td colspan="3" class="px-4 py-3 text-center">
+                    <a href="/admin/recordings" class="text-gold text-xs underline">
+                      View all {recordings.length} recordings →
+                    </a>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+    </div>
+
+  </div>
+</AdminLayout>

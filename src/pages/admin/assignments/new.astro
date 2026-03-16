@@ -1,0 +1,584 @@
+---
+/**
+ * src/pages/admin/assignments/new.astro
+ * Create a new assignment with the dynamic item builder.
+ */
+export const prerender = false;
+
+import AdminLayout   from '../../../layouts/AdminLayout.astro';
+import { supabaseAdmin } from '../../../lib/supabase-admin';
+
+let flashError = '';
+
+// ── Handle save ────────────────────────────────────────────────────────────────
+if (Astro.request.method === 'POST') {
+  const form        = await Astro.request.formData();
+  const title       = form.get('title')?.toString().trim() ?? '';
+  const lessonDate  = form.get('lesson_date')?.toString() || null;
+  const itemsJson   = form.get('items_json')?.toString() ?? '[]';
+  const studentIds  = form.getAll('student_ids[]').map(String);
+
+  if (!title) {
+    flashError = 'Assignment title is required.';
+  } else {
+    let items: any[] = [];
+    try { items = JSON.parse(itemsJson); } catch { items = []; }
+
+    // 1. Create assignment
+    const { data: assignment, error: aErr } = await supabaseAdmin
+      .from('assignments')
+      .insert({ title, lesson_date: lessonDate, created_by: Astro.locals.user?.id })
+      .select()
+      .single();
+
+    if (aErr || !assignment) {
+      flashError = aErr?.message ?? 'Failed to create assignment.';
+    } else {
+      // 2. Create assignment items
+      if (items.length > 0) {
+        const itemRows = items.map((item: any, idx: number) => ({
+          assignment_id: assignment.id,
+          item_order:    idx,
+          item_type:     item.item_type,
+          title:         item.title  || null,
+          content:       item.content || null,
+          file_url:      item.file_url || null,
+          file_name:     item.file_name || null,
+          timer_seconds: item.timer_seconds ? parseInt(item.timer_seconds) : null,
+          metadata:      item.metadata || null,
+        }));
+        await supabaseAdmin.from('assignment_items').insert(itemRows);
+      }
+
+      // 3. Assign to selected students
+      if (studentIds.length > 0) {
+        const saRows = studentIds.map((sid) => ({
+          student_id:    sid,
+          assignment_id: assignment.id,
+          status:        'pending',
+        }));
+        await supabaseAdmin.from('student_assignments').insert(saRows);
+      }
+
+      return Astro.redirect(`/admin/assignments/view/${assignment.id}?success=Assignment+created`);
+    }
+  }
+}
+
+// ── Data: active students + all recordings ────────────────────────────────────
+const [{ data: students = [] }, { data: allRecordings = [] }] = await Promise.all([
+  supabaseAdmin.from('students').select('id, name, email').eq('is_active', true).order('name'),
+  supabaseAdmin
+    .from('lesson_recordings')
+    .select('id, title, lesson_date, student:students(name)')
+    .order('lesson_date', { ascending: false }),
+]);
+
+// Flatten for client use: [{id, title, lesson_date, student_name}]
+const recordingsForClient = (allRecordings ?? []).map((r: any) => ({
+  id:           r.id,
+  title:        r.title,
+  lesson_date:  r.lesson_date,
+  student_name: r.student?.name ?? '',
+}));
+
+const supabaseUrl     = import.meta.env.SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
+---
+
+<AdminLayout title="Create Assignment | Admin">
+  <slot name="head">
+    <!-- Chessground CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/chessground@9.1.1/assets/chessground.base.css" />
+    <link rel="stylesheet" href="https://unpkg.com/chessground@9.1.1/assets/chessground.brown.css" />
+    <link rel="stylesheet" href="https://unpkg.com/chessground@9.1.1/assets/chessground.cburnett.css" />
+  </slot>
+
+  <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full
+              flex items-center justify-between">
+    <div>
+      <a href="/admin/assignments" class="text-gray-400 hover:text-navy text-sm mb-1 inline-block">← Assignments</a>
+      <h1 class="text-2xl font-bold text-navy font-playfair">Create New Assignment</h1>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    {flashError && (
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm mb-6">
+        ⚠️ {flashError}
+      </div>
+    )}
+
+    <form method="POST" id="assignment-form">
+      <input type="hidden" name="items_json" id="items-json-input" value="[]" />
+
+      <!-- ── Assignment metadata ─────────────────────────────────────── -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+        <h2 class="font-semibold text-navy mb-4">Assignment Details</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Title <span class="text-red-500">*</span>
+            </label>
+            <input type="text" name="title" required
+                   placeholder="e.g. Homework – March 12, 2026"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Lesson Date</label>
+            <input type="date" name="lesson_date"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Assign to students ──────────────────────────────────────── -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold text-navy">Assign to Students</h2>
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="select-all-students" class="rounded" />
+            Select All
+          </label>
+        </div>
+        {!students || students.length === 0 ? (
+          <p class="text-gray-400 text-sm italic">
+            No active students yet.
+            <a href="/admin/students" class="text-gold underline ml-1">Add students first →</a>
+          </p>
+        ) : (
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {students.map((s: any) => (
+              <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gold/5
+                             hover:border-gold/40 cursor-pointer transition-colors student-checkbox-label">
+                <input type="checkbox" name="student_ids[]" value={s.id}
+                       class="rounded text-gold focus:ring-gold student-checkbox" />
+                <span class="text-sm text-navy">{s.name}</span>
+                {s.email && <span class="text-xs text-gray-400 truncate">{s.email}</span>}
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- ── Assignment item builder ─────────────────────────────────── -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-navy">Homework Items</h2>
+          <div class="relative">
+            <button type="button" id="add-item-btn"
+                    class="inline-flex items-center gap-2 bg-navy text-white font-medium px-4 py-2 rounded-lg
+                           text-sm hover:bg-navy/80 transition-colors">
+              + Add Item ▾
+            </button>
+            <!-- Type picker dropdown -->
+            <div id="item-type-menu"
+                 class="hidden absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-xl
+                        shadow-lg overflow-hidden w-52">
+              {[
+                { type: 'text',      icon: '📝', label: 'Text Instruction' },
+                { type: 'fen',       icon: '♟',  label: 'Chess Position (FEN)' },
+                { type: 'pgn',       icon: '📖', label: 'PGN Game' },
+                { type: 'file',      icon: '📎', label: 'File Attachment' },
+                { type: 'link',      icon: '🔗', label: 'External Link' },
+                { type: 'recording', icon: '🎬', label: 'Lesson Recording' },
+              ].map(({ type, icon, label }) => (
+                <button type="button" data-add-type={type}
+                        class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left text-navy
+                               hover:bg-gold/8 transition-colors">
+                  <span class="text-base">{icon}</span> {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Items container -->
+        <div id="items-container" class="space-y-4">
+          <div id="items-empty" class="text-center py-10 text-gray-400 italic text-sm border-2 border-dashed border-gray-200 rounded-xl">
+            No items yet. Click "+ Add Item" to add your first homework piece.
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Submit ──────────────────────────────────────────────────── -->
+      <div class="flex items-center gap-4">
+        <button type="submit"
+                class="bg-gold text-navy font-semibold px-6 py-2.5 rounded-lg text-sm hover:bg-gold-hover
+                       transition-colors">
+          💾 Save Assignment
+        </button>
+        <a href="/admin/assignments"
+           class="bg-white text-navy font-medium px-6 py-2.5 rounded-lg text-sm border border-gray-200
+                  hover:bg-gray-50 transition-colors">
+          Cancel
+        </a>
+      </div>
+
+    </form>
+  </div>
+</AdminLayout>
+
+<!-- Inline data bridge (no module imports here) -->
+<script define:vars={{ supabaseUrl, supabaseAnonKey, recordingsForClient }}>
+  window.__SB_URL      = supabaseUrl;
+  window.__SB_ANON     = supabaseAnonKey;
+  window.__RECORDINGS  = recordingsForClient;
+</script>
+
+<!-- Module script: item builder + chessground -->
+<script>
+import { Chessground } from 'chessground';
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let items: string[] = [];  // ordered list of item IDs
+const cgBoards: Record<string, any> = {};  // chessground instances per item id
+
+// ─── Select All students ──────────────────────────────────────────────────────
+document.getElementById('select-all-students')?.addEventListener('change', (e) => {
+  const checked = (e.target as HTMLInputElement).checked;
+  document.querySelectorAll<HTMLInputElement>('.student-checkbox').forEach((cb) => {
+    cb.checked = checked;
+    cb.closest('label')?.classList.toggle('bg-gold/10', checked);
+    cb.closest('label')?.classList.toggle('border-gold', checked);
+  });
+});
+document.querySelectorAll<HTMLInputElement>('.student-checkbox').forEach((cb) => {
+  cb.addEventListener('change', () => {
+    cb.closest('label')?.classList.toggle('bg-gold/10', cb.checked);
+    cb.closest('label')?.classList.toggle('border-gold', cb.checked);
+  });
+});
+
+// ─── Add item dropdown toggle ─────────────────────────────────────────────────
+const addBtn  = document.getElementById('add-item-btn')!;
+const typeMenu = document.getElementById('item-type-menu')!;
+addBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  typeMenu.classList.toggle('hidden');
+});
+document.addEventListener('click', () => typeMenu.classList.add('hidden'));
+
+document.querySelectorAll<HTMLButtonElement>('[data-add-type]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    addItem(btn.dataset.addType!);
+    typeMenu.classList.add('hidden');
+  });
+});
+
+// ─── Item ID generator ────────────────────────────────────────────────────────
+function uid() { return `item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`; }
+
+// ─── Render helpers ───────────────────────────────────────────────────────────
+function getContainer() { return document.getElementById('items-container')!; }
+function getEmptyMsg()  { return document.getElementById('items-empty')!; }
+
+function syncEmpty() {
+  getEmptyMsg().style.display = items.length ? 'none' : 'block';
+}
+
+// ─── Add item ─────────────────────────────────────────────────────────────────
+function addItem(type: string, initial: any = {}) {
+  const id  = initial.id ?? uid();
+  items.push(id);
+
+  const el = document.createElement('div');
+  el.id    = `item-${id}`;
+  el.className = 'border border-gray-200 rounded-xl bg-gray-50 overflow-hidden';
+  el.innerHTML = buildItemHTML(id, type, initial);
+  getContainer().appendChild(el);
+
+  // Wire events for this item
+  wireItem(id, type);
+  syncEmpty();
+
+  // Auto-init chessground if FEN item with content
+  if (type === 'fen' && initial.content) {
+    requestAnimationFrame(() => initCG(id, initial.content));
+  }
+}
+
+// ─── Item HTML builder ────────────────────────────────────────────────────────
+const typeLabels: Record<string, string> = {
+  text:      '📝 Text Instruction',
+  fen:       '♟ Chess Position (FEN)',
+  pgn:       '📖 PGN Game',
+  file:      '📎 File Attachment',
+  link:      '🔗 External Link',
+  recording: '🎬 Lesson Recording',
+};
+
+function inp(id: string, name: string, type = 'text', placeholder = '', value = '', extra = '') {
+  return `<input id="${name}-${id}" name="${name}-${id}" type="${type}"
+           placeholder="${placeholder}" value="${value}" ${extra}
+           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white" />`;
+}
+function ta(id: string, name: string, placeholder = '', value = '', rows = 4) {
+  return `<textarea id="${name}-${id}" name="${name}-${id}" placeholder="${placeholder}"
+           rows="${rows}"
+           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
+                  resize-y bg-white">${value}</textarea>`;
+}
+
+function buildItemHTML(id: string, type: string, d: any = {}): string {
+  const header = `
+    <div class="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+      <span class="font-medium text-sm text-navy">${typeLabels[type] ?? type}</span>
+      <input type="hidden" id="type-${id}" value="${type}" />
+      <div class="flex items-center gap-2">
+        <button type="button" data-move-up="${id}" title="Move up"
+                class="text-gray-400 hover:text-navy text-lg leading-none px-1">↑</button>
+        <button type="button" data-move-down="${id}" title="Move down"
+                class="text-gray-400 hover:text-navy text-lg leading-none px-1">↓</button>
+        <button type="button" data-remove="${id}"
+                class="text-red-400 hover:text-red-600 text-sm font-medium px-2">✕ Remove</button>
+      </div>
+    </div>
+    <div class="p-4 space-y-3">`;
+
+  const titleRow = `
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">Title / Label <span class="text-gray-400">(optional)</span></label>
+      ${inp(id, 'title', 'text', 'e.g. Position 1: White to play', d.title ?? '')}
+    </div>`;
+
+  let body = '';
+
+  if (type === 'text') {
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Instructions / Content</label>
+        ${ta(id, 'content', 'Write your instructions here...', d.content ?? '', 5)}
+      </div>`;
+  }
+
+  if (type === 'fen') {
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">FEN String</label>
+        ${inp(id, 'content', 'text', 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1', d.content ?? '', `data-fen-input="${id}"`)}
+      </div>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Board Orientation</label>
+          <select id="orientation-${id}" name="orientation-${id}"
+                  class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold bg-white">
+            <option value="white" ${d.metadata?.orientation !== 'black' ? 'selected' : ''}>White (bottom)</option>
+            <option value="black" ${d.metadata?.orientation === 'black' ? 'selected' : ''}>Black (bottom)</option>
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Time Limit (seconds, optional)</label>
+          ${inp(id, 'timer', 'number', 'e.g. 300 for 5 min', d.timer_seconds ?? '', 'min="0"')}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-2">Board Preview</label>
+        <div id="cg-wrap-${id}" class="cg-board-preview"
+             style="width:200px;height:200px;border:1px solid #d1d5db;border-radius:4px;overflow:hidden;">
+        </div>
+        <button type="button" data-preview-fen="${id}"
+                class="mt-2 text-xs text-gold underline underline-offset-2">
+          Update Preview
+        </button>
+      </div>`;
+  }
+
+  if (type === 'pgn') {
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">PGN Text</label>
+        ${ta(id, 'content', 'Paste your PGN here...', d.content ?? '', 6)}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Additional Instructions <span class="text-gray-400">(optional)</span></label>
+        ${ta(id, 'pgn_instruction', 'e.g. Focus on Black\'s handling of the isolated pawn...', d.pgn_instruction ?? '', 2)}
+      </div>`;
+  }
+
+  if (type === 'file') {
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">File Upload</label>
+        <input type="file" id="file-input-${id}"
+               accept=".pdf,.pgn,.png,.jpg,.jpeg,.gif,.doc,.docx"
+               class="block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-4
+                      file:rounded-lg file:border-0 file:text-sm file:font-medium
+                      file:bg-gold/10 file:text-navy hover:file:bg-gold/20 cursor-pointer" />
+        <input type="hidden" id="file_url-${id}"  value="${d.file_url ?? ''}" />
+        <input type="hidden" id="file_name-${id}" value="${d.file_name ?? ''}" />
+        <div id="file-status-${id}" class="mt-2 text-xs text-gray-500">
+          ${d.file_url ? `✅ Uploaded: <strong>${d.file_name ?? 'file'}</strong>` : ''}
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Instructions <span class="text-gray-400">(optional)</span></label>
+        ${ta(id, 'content', 'e.g. Complete the exercises on pages 1–3', d.content ?? '', 2)}
+      </div>`;
+  }
+
+  if (type === 'link') {
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">URL</label>
+        ${inp(id, 'content', 'url', 'https://...', d.content ?? '')}
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">Description / Instructions <span class="text-gray-400">(optional)</span></label>
+        ${ta(id, 'link_instruction', 'e.g. Watch the first 15 minutes and take notes on the endgame technique', d.link_instruction ?? '', 2)}
+      </div>`;
+  }
+
+  if (type === 'recording') {
+    // Build options from window.__RECORDINGS (set by define:vars)
+    const recs: any[] = (window as any).__RECORDINGS ?? [];
+    const options = recs.map((r: any) =>
+      `<option value="${r.id}" ${d.content === r.id ? 'selected' : ''}>` +
+      `${r.title} — ${r.student_name} (${r.lesson_date})</option>`
+    ).join('');
+    body = `
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          Select Recording <span class="text-red-500">*</span>
+        </label>
+        <select id="content-${id}" name="content-${id}"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-gold bg-white">
+          <option value="">— Select a recording —</option>
+          ${options}
+        </select>
+        ${recs.length === 0
+          ? '<p class="mt-1 text-xs text-amber-600">No recordings found. <a href="/admin/recordings" class="underline text-gold">Add recordings first →</a></p>'
+          : ''}
+      </div>
+      <p class="text-xs text-gray-500">
+        The recording's title and coach notes will be shown to the student.
+        Use the "Title / Label" field above to add context like "Watch before doing the puzzles."
+      </p>`;
+  }
+
+  return header + titleRow + body + `</div>`;
+}
+
+// ─── Wire events for an item ──────────────────────────────────────────────────
+function wireItem(id: string, type: string) {
+  const el = document.getElementById(`item-${id}`)!;
+
+  el.querySelector<HTMLButtonElement>(`[data-remove="${id}"]`)?.addEventListener('click', () => {
+    if (confirm('Remove this item?')) removeItem(id);
+  });
+  el.querySelector<HTMLButtonElement>(`[data-move-up="${id}"]`)?.addEventListener('click', () => moveItem(id, -1));
+  el.querySelector<HTMLButtonElement>(`[data-move-down="${id}"]`)?.addEventListener('click', () => moveItem(id, 1));
+
+  if (type === 'fen') {
+    const fenInput = document.getElementById(`content-${id}`) as HTMLInputElement;
+    fenInput?.addEventListener('change', () => initCG(id, fenInput.value));
+
+    el.querySelector<HTMLButtonElement>(`[data-preview-fen="${id}"]`)?.addEventListener('click', () => {
+      initCG(id, fenInput?.value ?? '');
+    });
+
+    const orientSelect = document.getElementById(`orientation-${id}`) as HTMLSelectElement;
+    orientSelect?.addEventListener('change', () => {
+      if (cgBoards[id]) {
+        cgBoards[id].set({ orientation: orientSelect.value as 'white' | 'black' });
+      }
+    });
+  }
+
+  if (type === 'file') {
+    const fileInput = document.getElementById(`file-input-${id}`) as HTMLInputElement;
+    fileInput?.addEventListener('change', () => handleFileUpload(id, fileInput));
+  }
+}
+
+// ─── Chessground FEN preview ──────────────────────────────────────────────────
+function initCG(id: string, fen: string) {
+  const wrap = document.getElementById(`cg-wrap-${id}`);
+  if (!wrap) return;
+  const orientation = (document.getElementById(`orientation-${id}`) as HTMLSelectElement)?.value ?? 'white';
+  if (cgBoards[id]) {
+    cgBoards[id].set({ fen, orientation });
+  } else {
+    cgBoards[id] = Chessground(wrap, {
+      fen,
+      orientation: orientation as 'white' | 'black',
+      viewOnly: true,
+      coordinates: true,
+      drawable: { enabled: false },
+    });
+  }
+}
+
+// ─── File upload ──────────────────────────────────────────────────────────────
+async function handleFileUpload(id: string, input: HTMLInputElement) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const statusEl = document.getElementById(`file-status-${id}`)!;
+  statusEl.innerHTML = `⏳ Uploading <strong>${file.name}</strong>…`;
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  try {
+    const res  = await fetch('/api/upload', { method: 'POST', body: fd });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error ?? 'Upload failed');
+    (document.getElementById(`file_url-${id}`) as HTMLInputElement).value  = json.url;
+    (document.getElementById(`file_name-${id}`) as HTMLInputElement).value = json.name;
+    statusEl.innerHTML = `✅ Uploaded: <strong>${json.name}</strong>`;
+  } catch (err: any) {
+    statusEl.innerHTML = `❌ Error: ${err.message}`;
+  }
+}
+
+// ─── Remove item ──────────────────────────────────────────────────────────────
+function removeItem(id: string) {
+  items = items.filter((i) => i !== id);
+  document.getElementById(`item-${id}`)?.remove();
+  if (cgBoards[id]) { cgBoards[id].destroy?.(); delete cgBoards[id]; }
+  syncEmpty();
+}
+
+// ─── Move item up or down ─────────────────────────────────────────────────────
+function moveItem(id: string, dir: -1 | 1) {
+  const idx = items.indexOf(id);
+  const to  = idx + dir;
+  if (to < 0 || to >= items.length) return;
+  // Swap in state
+  [items[idx], items[to]] = [items[to], items[idx]];
+  // Swap in DOM
+  const container = getContainer();
+  const a = document.getElementById(`item-${items[idx]}`)!;
+  const b = document.getElementById(`item-${items[to]}`)!;
+  if (dir === -1) container.insertBefore(b, a);
+  else            container.insertBefore(a, b);
+}
+
+// ─── Serialize to JSON on submit ──────────────────────────────────────────────
+document.getElementById('assignment-form')?.addEventListener('submit', () => {
+  const serialized = items.map((id, idx) => {
+    const type = (document.getElementById(`type-${id}`) as HTMLInputElement)?.value ?? '';
+    return {
+      item_type:     type,
+      title:         (document.getElementById(`title-${id}`)   as HTMLInputElement)?.value || null,
+      content:       (document.getElementById(`content-${id}`)  as HTMLInputElement | HTMLTextAreaElement)?.value || null,
+      file_url:      (document.getElementById(`file_url-${id}`) as HTMLInputElement)?.value || null,
+      file_name:     (document.getElementById(`file_name-${id}`) as HTMLInputElement)?.value || null,
+      timer_seconds: parseInt((document.getElementById(`timer-${id}`) as HTMLInputElement)?.value ?? '') || null,
+      metadata: type === 'fen' ? {
+        orientation: (document.getElementById(`orientation-${id}`) as HTMLSelectElement)?.value ?? 'white',
+      } : null,
+    };
+  });
+  (document.getElementById('items-json-input') as HTMLInputElement).value = JSON.stringify(serialized);
+});
+</script>
+
+<style is:global>
+  .cg-board-preview cg-board { background-size: cover; }
+  .cg-board-preview { display: block; }
+</style>
