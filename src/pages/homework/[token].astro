@@ -14,7 +14,7 @@
 export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
-import { getStudentByToken, getStudentAssignments, getRecordingsForStudent } from '../../lib/supabase-admin';
+import { getStudentByToken, getStudentAssignments, getRecordingsForStudent, getLessonNotesForStudent } from '../../lib/supabase-admin';
 import { parseVideoUrl } from '../../lib/video';
 
 // ── Validate token ────────────────────────────────────────────────────────────
@@ -25,9 +25,10 @@ const student = await getStudentByToken(token);
 if (!student) return new Response(null, { status: 404 });
 
 // ── Fetch data in parallel ────────────────────────────────────────────────────
-const [studentAssignments, recordings] = await Promise.all([
+const [studentAssignments, recordings, lessonNotes] = await Promise.all([
   getStudentAssignments(student.id),
   getRecordingsForStudent(student.id),
+  getLessonNotesForStudent(student.id),
 ]);
 
 // Stats
@@ -98,6 +99,18 @@ const statusClass: Record<string, string> = {
             <span class="ml-1.5 inline-flex items-center justify-center bg-gold text-navy text-xs
                          font-bold rounded-full w-5 h-5">
               {studentAssignments.length}
+            </span>
+          )}
+        </button>
+        <button id="tab-notes"
+                data-tab="notes"
+                class="tab-btn px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-white/60
+                       hover:text-white transition-colors">
+          📝 Lesson Notes
+          {lessonNotes.length > 0 && (
+            <span class="ml-1.5 inline-flex items-center justify-center bg-white/20 text-white text-xs
+                         font-bold rounded-full w-5 h-5">
+              {lessonNotes.length}
             </span>
           )}
         </button>
@@ -192,6 +205,39 @@ const statusClass: Record<string, string> = {
               </a>
             );
           })}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+  <!-- ── LESSON NOTES TAB ──────────────────────────────────────────────────── -->
+  <section id="section-notes" class="section-pad bg-off-white hidden">
+    <div class="container-max">
+
+      {lessonNotes.length === 0 ? (
+        <div class="card text-center py-16">
+          <p class="text-5xl mb-4">📝</p>
+          <h2 class="font-playfair text-2xl font-bold text-navy mb-2">No lesson notes yet</h2>
+          <p class="text-text-secondary max-w-md mx-auto">
+            After each lesson, Coach Dalton will upload a summary of what you covered. Check back soon.
+          </p>
+        </div>
+      ) : (
+        <div class="space-y-5">
+          {lessonNotes.map((n: any) => (
+            <div class="card">
+              <div class="mb-3">
+                <h3 class="font-playfair text-xl font-bold text-navy">{n.title}</h3>
+                <p class="text-text-secondary text-sm mt-0.5">
+                  📅 {formatDateShort(n.lesson_date)}
+                </p>
+              </div>
+              <div class="border-t border-navy/10 pt-4">
+                <pre class="font-inter text-text-primary text-sm leading-relaxed whitespace-pre-wrap break-words">{n.content}</pre>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -313,6 +359,7 @@ const statusClass: Record<string, string> = {
 // ── Tab switching ─────────────────────────────────────────────────────────────
 const tabs = {
   homework:   { btn: document.getElementById('tab-homework'),   section: document.getElementById('section-homework') },
+  notes:      { btn: document.getElementById('tab-notes'),      section: document.getElementById('section-notes') },
   recordings: { btn: document.getElementById('tab-recordings'), section: document.getElementById('section-recordings') },
 };
 
@@ -330,7 +377,7 @@ function activateTab(name) {
 
 // Check URL hash on load
 const hash = location.hash.replace('#', '');
-activateTab(hash === 'recordings' ? 'recordings' : 'homework');
+activateTab(['recordings', 'notes'].includes(hash) ? hash : 'homework');
 
 Object.entries(tabs).forEach(([name, { btn }]) => {
   btn?.addEventListener('click', () => activateTab(name));
