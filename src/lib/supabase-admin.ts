@@ -145,6 +145,37 @@ export async function getRecordingCountByStudent(): Promise<Record<string, numbe
 }
 
 /**
+ * Get all lesson notes for a specific student, newest lesson first.
+ */
+export async function getLessonNotesForStudent(studentId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('lesson_notes')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('lesson_date', { ascending: false });
+
+  if (error) return [];
+  return data ?? [];
+}
+
+/**
+ * Get lesson note counts grouped by student_id.
+ * Returns { [student_id]: count }
+ */
+export async function getLessonNoteCountByStudent(): Promise<Record<string, number>> {
+  const { data, error } = await supabaseAdmin
+    .from('lesson_notes')
+    .select('student_id');
+
+  if (error || !data) return {};
+  const counts: Record<string, number> = {};
+  for (const row of data) {
+    counts[row.student_id] = (counts[row.student_id] ?? 0) + 1;
+  }
+  return counts;
+}
+
+/**
  * Generate a cryptographically random 24-character access token.
  * Used when creating a new student.
  */
