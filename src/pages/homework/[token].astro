@@ -88,9 +88,9 @@ const statusClass: Record<string, string> = {
         {recordings.length > 0 ? ' recordings of your lessons.' : ' recordings of your lessons when they\'re ready.'}
       </p>
 
-      <!-- ── Pricing pill ────────────────────────────────────────────────── -->
-      {student.pricing_url && (
-        <div class="pb-4">
+      <!-- ── Quick-access pills ───────────────────────────────────────────── -->
+      <div class="flex flex-wrap gap-3 pb-4">
+        {student.pricing_url && (
           <a
             href={student.pricing_url}
             target="_blank"
@@ -100,8 +100,18 @@ const statusClass: Record<string, string> = {
           >
             💰 View your lesson prices →
           </a>
-        </div>
-      )}
+        )}
+        <a
+          href="https://us04web.zoom.us/j/8505894481?pwd=WHA0cDRCVWsxN1RidTJTSjEzaWtkdz09"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Meeting ID: 850 589 4481 · Passcode: chess"
+          class="inline-flex items-center gap-2 border border-white/30 text-white/80 hover:bg-white/10
+                 transition-colors text-sm font-medium px-4 py-1.5 rounded-full"
+        >
+          🎥 Join Zoom lesson →
+        </a>
+      </div>
 
       <!-- ── Tab navigation ──────────────────────────────────────────────── -->
       <div class="flex gap-0 border-t border-white/10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 mt-2">
