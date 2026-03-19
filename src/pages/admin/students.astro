@@ -19,9 +19,10 @@ if (Astro.request.method === 'POST') {
 
   // ── CREATE ─────────────────────────────────────────────────────────────
   if (action === 'create') {
-    const name  = form.get('name')?.toString().trim() ?? '';
-    const email = form.get('email')?.toString().trim() ?? '';
-    const notes = form.get('notes')?.toString().trim() ?? '';
+    const name       = form.get('name')?.toString().trim() ?? '';
+    const email      = form.get('email')?.toString().trim() ?? '';
+    const notes      = form.get('notes')?.toString().trim() ?? '';
+    const pricingUrl = form.get('pricing_url')?.toString().trim() ?? '';
 
     if (!name) {
       flashError = 'Name is required.';
@@ -29,8 +30,9 @@ if (Astro.request.method === 'POST') {
       const token = generateAccessToken();
       const { error } = await supabaseAdmin.from('students').insert({
         name,
-        email: email || null,
-        notes: notes || null,
+        email:       email || null,
+        notes:       notes || null,
+        pricing_url: pricingUrl || null,
         access_token: token,
         is_active: true,
       });
@@ -44,18 +46,20 @@ if (Astro.request.method === 'POST') {
 
   // ── EDIT ───────────────────────────────────────────────────────────────
   if (action === 'edit') {
-    const id    = form.get('id')?.toString() ?? '';
-    const name  = form.get('name')?.toString().trim() ?? '';
-    const email = form.get('email')?.toString().trim() ?? '';
-    const notes = form.get('notes')?.toString().trim() ?? '';
+    const id         = form.get('id')?.toString() ?? '';
+    const name       = form.get('name')?.toString().trim() ?? '';
+    const email      = form.get('email')?.toString().trim() ?? '';
+    const notes      = form.get('notes')?.toString().trim() ?? '';
+    const pricingUrl = form.get('pricing_url')?.toString().trim() ?? '';
 
     if (!name) {
       flashError = 'Name is required.';
     } else {
       const { error } = await supabaseAdmin.from('students').update({
         name,
-        email: email || null,
-        notes: notes || null,
+        email:       email || null,
+        notes:       notes || null,
+        pricing_url: pricingUrl || null,
       }).eq('id', id);
       if (error) { flashError = error.message; }
       else        { return Astro.redirect('/admin/students?success=Student+updated'); }
@@ -156,6 +160,17 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
             <input type="email" name="email" placeholder="student@example.com"
                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
           </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Pricing Page <span class="text-gray-400">(shown to student on their portal)</span>
+          </label>
+          <select name="pricing_url"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
+            <option value="/pricing">Current pricing (new students)</option>
+            <option value="/pricing-before-march-2026">Before March 2026</option>
+            <option value="/pricing-before-december-2021">Before December 2021</option>
+          </select>
         </div>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -285,6 +300,15 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
                           <input type="email" name="email" value={s.email ?? ''}
                                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
                         </div>
+                      </div>
+                      <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Pricing Page</label>
+                        <select name="pricing_url"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
+                          <option value="/pricing"                        selected={!s.pricing_url || s.pricing_url === '/pricing'}>Current pricing (new students)</option>
+                          <option value="/pricing-before-march-2026"      selected={s.pricing_url === '/pricing-before-march-2026'}>Before March 2026</option>
+                          <option value="/pricing-before-december-2021"   selected={s.pricing_url === '/pricing-before-december-2021'}>Before December 2021</option>
+                        </select>
                       </div>
                       <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Private Notes</label>
