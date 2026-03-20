@@ -11,6 +11,17 @@
 #
 # Static 404 handling is done by Astro's src/pages/404.astro.
 
+# /lesson-prices → /pricing (permanent, edge-level, no flash)
+[[redirects]]
+  from   = "/lesson-prices"
+  to     = "/pricing"
+  status = 301
+
+[[redirects]]
+  from   = "/lesson-prices/"
+  to     = "/pricing"
+  status = 301
+
 # Cache static assets aggressively
 [[headers]]
   for = "/assets/*"
