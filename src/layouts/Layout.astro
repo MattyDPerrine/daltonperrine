@@ -54,6 +54,15 @@ const {
       rel="stylesheet"
     />
 
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-34GE3EG48R"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-34GE3EG48R');
+    </script>
+
     <!-- Page-specific head content (JSON-LD structured data, etc.) -->
     <slot name="head" />
   </head>
