@@ -11,6 +11,67 @@
 #
 # Static 404 handling is done by Astro's src/pages/404.astro.
 
+# Old nextlevelchesscoaching.com pages → new daltonperrine.com equivalents
+[[redirects]]
+  from   = "/why-next-level-chess-coaching"
+  to     = "/coaching"
+  status = 301
+
+[[redirects]]
+  from   = "/why-next-level-chess-coaching/"
+  to     = "/coaching"
+  status = 301
+
+[[redirects]]
+  from   = "/fm-dalton-perrine"
+  to     = "/about"
+  status = 301
+
+[[redirects]]
+  from   = "/fm-dalton-perrine/"
+  to     = "/about"
+  status = 301
+
+[[redirects]]
+  from   = "/contact-me"
+  to     = "/contact"
+  status = 301
+
+[[redirects]]
+  from   = "/contact-me/"
+  to     = "/contact"
+  status = 301
+
+[[redirects]]
+  from   = "/online-chess-coaching"
+  to     = "/coaching"
+  status = 301
+
+[[redirects]]
+  from   = "/online-chess-coaching/"
+  to     = "/coaching"
+  status = 301
+
+[[redirects]]
+  from   = "/the-first-lesson"
+  to     = "/first-lesson"
+  status = 301
+
+[[redirects]]
+  from   = "/the-first-lesson/"
+  to     = "/first-lesson"
+  status = 301
+
+[[redirects]]
+  from   = "/4-week-essential-study-program"
+  to     = "/essential-study-program"
+  status = 301
+
+[[redirects]]
+  from   = "/4-week-essential-study-program/"
+  to     = "/essential-study-program"
+  status = 301
+
 # /lesson-prices → /pricing (permanent, edge-level, no flash)
 [[redirects]]
   from   = "/lesson-prices"
