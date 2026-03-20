@@ -275,6 +275,42 @@ const faqs = [
               />
             </div>
 
+            <!-- Chess.com / Lichess username -->
+            <div class="flex flex-col gap-1.5">
+              <label for="username" class="font-inter font-semibold text-navy text-sm">
+                Chess.com / Lichess Username
+                <span class="font-normal text-text-secondary ml-1">(optional)</span>
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="e.g., MattyDPerrine"
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              />
+            </div>
+
+            <!-- OTB Rating -->
+            <div class="flex flex-col gap-1.5">
+              <label for="otb-rating" class="font-inter font-semibold text-navy text-sm">
+                Over-the-Board Rating (USCF/FIDE)
+                <span class="font-normal text-text-secondary ml-1">(optional)</span>
+              </label>
+              <input
+                type="text"
+                id="otb-rating"
+                name="otb_rating"
+                placeholder="e.g., USCF 1450 / Unrated"
+                class="w-full bg-white border border-navy/15 rounded-lg px-4 py-3
+                       font-inter text-navy text-sm placeholder:text-navy/35
+                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+                       transition-colors duration-150"
+              />
+            </div>
+
             <!-- Message -->
             <div class="flex flex-col gap-1.5">
               <label for="message" class="font-inter font-semibold text-navy text-sm">
