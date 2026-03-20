@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Netlify Form Detection</title></head>
+  <body>
+    <!--
+      This file exists solely so Netlify can detect the contact form during build.
+      The site is SSR (server-rendered), so Netlify can't scan the actual page HTML.
+      This static file registers the form fields with Netlify Forms.
+      It is never linked to or shown to visitors.
+    -->
+    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="subject" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>
