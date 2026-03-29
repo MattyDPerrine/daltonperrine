@@ -1,6 +1,7 @@
 ---
 /**
  * src/pages/admin/assignments.astro  —  Assignment List & Management
+ * Assignments grouped by week (Sunday–Saturday), collapsible, most recent 4 weeks shown first.
  */
 export const prerender = false;
 
@@ -22,27 +23,89 @@ if (Astro.request.method === 'POST') {
   }
 }
 
-// ── Fetch assignments with student count ──────────────────────────────────────
-const { data: assignments = [] } = await supabaseAdmin
+// ── Fetch assignments ─────────────────────────────────────────────────────────
+const { data: rawAssignments = [] } = await supabaseAdmin
   .from('assignments')
   .select('*, student_assignments(count)')
-  .order('created_at', { ascending: false });
+  .order('lesson_date', { ascending: false });
 
+const assignments = rawAssignments ?? [];
 const success = Astro.url.searchParams.get('success') ?? '';
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function parseLocalDate(d: string): Date {
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(y, m - 1, day);
+}
 
 function formatDate(d: string | null) {
   if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return parseLocalDate(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
+
+// ── Group assignments by week (Sunday–Saturday) ───────────────────────────────
+type WeekGroup = {
+  key: string;
+  start: Date;
+  end: Date;
+  label: string;
+  assignments: any[];
+};
+
+const weekMap = new Map<string, WeekGroup>();
+
+for (const a of assignments) {
+  let key: string;
+  let sunday: Date;
+  let saturday: Date;
+
+  if (a.lesson_date) {
+    const d   = parseLocalDate(a.lesson_date);
+    const dow = d.getDay(); // 0 = Sunday
+    sunday    = new Date(d);
+    sunday.setDate(d.getDate() - dow);
+    saturday  = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
+    const yy  = sunday.getFullYear();
+    const mm  = String(sunday.getMonth() + 1).padStart(2, '0');
+    const dd  = String(sunday.getDate()).padStart(2, '0');
+    key = `${yy}-${mm}-${dd}`;
+  } else {
+    key      = 'undated';
+    sunday   = new Date(0);
+    saturday = new Date(0);
+  }
+
+  if (!weekMap.has(key)) {
+    const fmt = { month: 'short', day: 'numeric' } as const;
+    const label = key === 'undated'
+      ? 'No Date Set'
+      : `${sunday.toLocaleDateString('en-US', fmt)} – ${saturday.toLocaleDateString('en-US', { ...fmt, year: 'numeric' })}`;
+    weekMap.set(key, { key, start: sunday, end: saturday, label, assignments: [] });
+  }
+  weekMap.get(key)!.assignments.push(a);
+}
+
+// Sort: most recent week first; undated at the end
+const weeks: WeekGroup[] = [...weekMap.values()].sort((a, b) => {
+  if (a.key === 'undated') return 1;
+  if (b.key === 'undated') return -1;
+  return b.start.getTime() - a.start.getTime();
+});
+
+const INITIAL_WEEKS = 4;
+const recentWeeks   = weeks.slice(0, INITIAL_WEEKS);
+const olderWeeks    = weeks.slice(INITIAL_WEEKS);
 ---
 
 <AdminLayout title="Assignments | Admin">
 
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
   <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full
               flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-bold text-navy font-playfair">Manage Assignments</h1>
-      <p class="text-gray-500 text-sm mt-0.5">{assignments?.length ?? 0} assignments total</p>
+      <p class="text-gray-500 text-sm mt-0.5">{assignments.length} assignments total · {weeks.length} week{weeks.length !== 1 ? 's' : ''}</p>
     </div>
     <a href="/admin/assignments/new"
        class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-4 py-2 rounded-lg
@@ -64,64 +127,174 @@ function formatDate(d: string | null) {
       </div>
     )}
 
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      {!assignments || assignments.length === 0 ? (
-        <div class="px-6 py-16 text-center">
-          <p class="text-gray-400 italic text-sm mb-4">No assignments yet.</p>
-          <a href="/admin/assignments/new"
-             class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg
-                    text-sm hover:bg-gold-hover transition-colors">
-            + Create Your First Assignment
-          </a>
-        </div>
-      ) : (
-        <table class="w-full">
-          <thead class="bg-navy">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Title</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden md:table-cell">Students</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden lg:table-cell">Created</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assignments.map((a: any) => {
-              const studentCount = a.student_assignments?.[0]?.count ?? 0;
-              return (
-                <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td class="px-4 py-3 font-medium text-navy text-sm">{a.title}</td>
-                  <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(a.lesson_date)}</td>
-                  <td class="px-4 py-3 hidden md:table-cell">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-navy/8 text-navy">
-                      {studentCount} student{studentCount !== 1 ? 's' : ''}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-gray-400 text-sm hidden lg:table-cell">{formatDate(a.created_at)}</td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center gap-3 flex-wrap">
-                      <a href={`/admin/assignments/view/${a.id}`}
-                         class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">View</a>
-                      <a href={`/admin/assignments/edit/${a.id}`}
-                         class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
-                      <form method="POST" class="inline"
-                            onsubmit="return confirm('Delete this assignment? This will also remove it from all students. This cannot be undone.')">
-                        <input type="hidden" name="action" value="delete" />
-                        <input type="hidden" name="id"     value={a.id} />
-                        <button type="submit"
-                                class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </div>
+    {assignments.length === 0 ? (
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm px-6 py-16 text-center">
+        <p class="text-gray-400 italic text-sm mb-4">No assignments yet.</p>
+        <a href="/admin/assignments/new"
+           class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg
+                  text-sm hover:bg-gold-hover transition-colors">
+          + Create Your First Assignment
+        </a>
+      </div>
+    ) : (
+      <div class="flex flex-col gap-3">
 
+        <!-- ── Recent weeks ──────────────────────────────────────────────── -->
+        {recentWeeks.map((week) => (
+          <details class="week-group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer
+                            hover:bg-gray-50 transition-colors select-none list-none">
+              <div class="flex items-center gap-3">
+                <span class="chevron text-gray-400 transition-transform duration-200 text-sm">▶</span>
+                <span class="font-semibold text-navy text-sm">{week.label}</span>
+              </div>
+              <span class="text-xs text-gray-400 font-medium bg-gray-100 px-2.5 py-1 rounded-full">
+                {week.assignments.length} assignment{week.assignments.length !== 1 ? 's' : ''}
+              </span>
+            </summary>
+
+            <table class="w-full border-t border-gray-100">
+              <thead class="bg-navy/5">
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Title</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden md:table-cell">Students</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden lg:table-cell">Created</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {week.assignments.map((a: any) => {
+                  const studentCount = a.student_assignments?.[0]?.count ?? 0;
+                  return (
+                    <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 font-medium text-navy text-sm">{a.title}</td>
+                      <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(a.lesson_date)}</td>
+                      <td class="px-4 py-3 hidden md:table-cell">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-navy/8 text-navy">
+                          {studentCount} student{studentCount !== 1 ? 's' : ''}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 text-gray-400 text-sm hidden lg:table-cell">{formatDate(a.created_at)}</td>
+                      <td class="px-4 py-3">
+                        <div class="flex items-center gap-3 flex-wrap">
+                          <a href={`/admin/assignments/view/${a.id}`}
+                             class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">View</a>
+                          <a href={`/admin/assignments/edit/${a.id}`}
+                             class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                          <form method="POST" class="inline"
+                                onsubmit="return confirm('Delete this assignment? This will also remove it from all students. This cannot be undone.')">
+                            <input type="hidden" name="action" value="delete" />
+                            <input type="hidden" name="id"     value={a.id} />
+                            <button type="submit"
+                                    class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">
+                              Delete
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </details>
+        ))}
+
+        <!-- ── Older weeks (hidden until "Load older" is clicked) ─────────── -->
+        {olderWeeks.length > 0 && (
+          <>
+            <div id="older-weeks" class="flex flex-col gap-3 hidden">
+              {olderWeeks.map((week) => (
+                <details class="week-group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <summary class="flex items-center justify-between px-5 py-4 cursor-pointer
+                                  hover:bg-gray-50 transition-colors select-none list-none">
+                    <div class="flex items-center gap-3">
+                      <span class="chevron text-gray-400 transition-transform duration-200 text-sm">▶</span>
+                      <span class="font-semibold text-navy text-sm">{week.label}</span>
+                    </div>
+                    <span class="text-xs text-gray-400 font-medium bg-gray-100 px-2.5 py-1 rounded-full">
+                      {week.assignments.length} assignment{week.assignments.length !== 1 ? 's' : ''}
+                    </span>
+                  </summary>
+
+                  <table class="w-full border-t border-gray-100">
+                    <thead class="bg-navy/5">
+                      <tr>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Title</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden md:table-cell">Students</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden lg:table-cell">Created</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {week.assignments.map((a: any) => {
+                        const studentCount = a.student_assignments?.[0]?.count ?? 0;
+                        return (
+                          <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-3 font-medium text-navy text-sm">{a.title}</td>
+                            <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(a.lesson_date)}</td>
+                            <td class="px-4 py-3 hidden md:table-cell">
+                              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-navy/8 text-navy">
+                                {studentCount} student{studentCount !== 1 ? 's' : ''}
+                              </span>
+                            </td>
+                            <td class="px-4 py-3 text-gray-400 text-sm hidden lg:table-cell">{formatDate(a.created_at)}</td>
+                            <td class="px-4 py-3">
+                              <div class="flex items-center gap-3 flex-wrap">
+                                <a href={`/admin/assignments/view/${a.id}`}
+                                   class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">View</a>
+                                <a href={`/admin/assignments/edit/${a.id}`}
+                                   class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                                <form method="POST" class="inline"
+                                      onsubmit="return confirm('Delete this assignment? This will also remove it from all students. This cannot be undone.')">
+                                  <input type="hidden" name="action" value="delete" />
+                                  <input type="hidden" name="id"     value={a.id} />
+                                  <button type="submit"
+                                          class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">
+                                    Delete
+                                  </button>
+                                </form>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </details>
+              ))}
+            </div>
+
+            <div class="text-center pt-2" id="load-older-wrap">
+              <button id="load-older-btn"
+                      class="text-sm text-gray-500 hover:text-navy font-medium underline underline-offset-2 transition-colors">
+                Load {olderWeeks.length} older week{olderWeeks.length !== 1 ? 's' : ''} →
+              </button>
+            </div>
+          </>
+        )}
+
+      </div>
+    )}
   </div>
 </AdminLayout>
+
+<script is:inline>
+  // Rotate chevron when a week group is opened/closed
+  document.querySelectorAll('details.week-group').forEach((details) => {
+    details.addEventListener('toggle', () => {
+      const chevron = details.querySelector('.chevron');
+      if (chevron) {
+        chevron.style.transform = details.open ? 'rotate(90deg)' : 'rotate(0deg)';
+      }
+    });
+  });
+
+  // Load older weeks
+  document.getElementById('load-older-btn')?.addEventListener('click', () => {
+    document.getElementById('older-weeks')?.classList.remove('hidden');
+    document.getElementById('load-older-wrap')?.classList.add('hidden');
+  });
+</script>
