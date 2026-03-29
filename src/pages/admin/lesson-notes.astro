@@ -1,13 +1,7 @@
 ---
 /**
  * src/pages/admin/lesson-notes.astro
- *
- * Zoom AI Lesson Notes — full CRUD admin page.
- *
- * CREATE: one note per student per lesson.
- * EDIT:   update title, date, content.
- * DELETE: single row.
- * FILTER: ?student=ID to show one student's notes.
+ * Zoom AI Lesson Notes grouped by week (Sunday–Saturday), collapsible, most recent 4 weeks shown first.
  */
 export const prerender = false;
 
@@ -17,54 +11,41 @@ import { supabaseAdmin, getAllStudents } from '../../lib/supabase-admin';
 let flashSuccess = Astro.url.searchParams.get('success') ?? '';
 let flashError   = '';
 
-// ── POST handlers ─────────────────────────────────────────────────────────────
 if (Astro.request.method === 'POST') {
   const form   = await Astro.request.formData();
   const action = form.get('action')?.toString() ?? '';
 
-  // ── CREATE ──────────────────────────────────────────────────────────────
   if (action === 'create') {
     const studentId  = form.get('student_id')?.toString() ?? '';
     const title      = form.get('title')?.toString().trim() ?? '';
     const lessonDate = form.get('lesson_date')?.toString() ?? '';
     const content    = form.get('content')?.toString().trim() ?? '';
-
-    if (!studentId)   flashError = 'Please select a student.';
-    else if (!title)       flashError = 'Title is required.';
-    else if (!lessonDate)  flashError = 'Lesson date is required.';
-    else if (!content)     flashError = 'Notes content is required.';
+    if (!studentId)      flashError = 'Please select a student.';
+    else if (!title)     flashError = 'Title is required.';
+    else if (!lessonDate) flashError = 'Lesson date is required.';
+    else if (!content)   flashError = 'Notes content is required.';
     else {
-      const { error } = await supabaseAdmin.from('lesson_notes').insert({
-        student_id:  studentId,
-        title,
-        lesson_date: lessonDate,
-        content,
-      });
+      const { error } = await supabaseAdmin.from('lesson_notes').insert({ student_id: studentId, title, lesson_date: lessonDate, content });
       if (error) flashError = error.message;
       else return Astro.redirect('/admin/lesson-notes?success=Lesson+notes+saved');
     }
   }
 
-  // ── EDIT ────────────────────────────────────────────────────────────────
   if (action === 'edit') {
     const id         = form.get('id')?.toString() ?? '';
     const title      = form.get('title')?.toString().trim() ?? '';
     const lessonDate = form.get('lesson_date')?.toString() ?? '';
     const content    = form.get('content')?.toString().trim() ?? '';
-
-    if (!title)      flashError = 'Title is required.';
+    if (!title)           flashError = 'Title is required.';
     else if (!lessonDate) flashError = 'Lesson date is required.';
     else if (!content)    flashError = 'Notes content is required.';
     else {
-      const { error } = await supabaseAdmin.from('lesson_notes').update({
-        title, lesson_date: lessonDate, content,
-      }).eq('id', id);
+      const { error } = await supabaseAdmin.from('lesson_notes').update({ title, lesson_date: lessonDate, content }).eq('id', id);
       if (error) flashError = error.message;
       else return Astro.redirect('/admin/lesson-notes?success=Lesson+notes+updated');
     }
   }
 
-  // ── DELETE ──────────────────────────────────────────────────────────────
   if (action === 'delete') {
     const id = form.get('id')?.toString() ?? '';
     const { error } = await supabaseAdmin.from('lesson_notes').delete().eq('id', id);
@@ -73,284 +54,274 @@ if (Astro.request.method === 'POST') {
   }
 }
 
-// ── Fetch data ────────────────────────────────────────────────────────────────
 const filterStudentId = Astro.url.searchParams.get('student') ?? '';
 const editId          = Astro.url.searchParams.get('edit')    ?? '';
 
-let query = supabaseAdmin
-  .from('lesson_notes')
-  .select('*, student:students(id, name)')
-  .order('lesson_date', { ascending: false });
-
-if (filterStudentId) {
-  query = query.eq('student_id', filterStudentId);
-}
-
+let query = supabaseAdmin.from('lesson_notes').select('*, student:students(id, name)').order('lesson_date', { ascending: false });
+if (filterStudentId) query = query.eq('student_id', filterStudentId);
 const { data: notes = [] } = await query;
 
 const students       = await getAllStudents();
 const activeStudents = students.filter((s: any) => s.is_active);
-
 const studentMap: Record<string, any> = {};
 for (const s of students) studentMap[(s as any).id] = s;
 
+function parseLocalDate(d: string): Date { const [y, m, day] = d.split('-').map(Number); return new Date(y, m - 1, day); }
 function formatDate(d: string | null) {
   if (!d) return '—';
-  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', {
-    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
-  });
+  return parseLocalDate(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 const today        = new Date().toISOString().split('T')[0];
 const suggestTitle = `Lesson Notes – ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+type WeekGroup = { key: string; start: Date; end: Date; label: string; items: any[] };
+const weekMap = new Map<string, WeekGroup>();
+for (const n of notes ?? []) {
+  let key: string; let sunday: Date; let saturday: Date;
+  if (n.lesson_date) {
+    const d = parseLocalDate(n.lesson_date); const dow = d.getDay();
+    sunday = new Date(d); sunday.setDate(d.getDate() - dow);
+    saturday = new Date(sunday); saturday.setDate(sunday.getDate() + 6);
+    key = `${sunday.getFullYear()}-${String(sunday.getMonth()+1).padStart(2,'0')}-${String(sunday.getDate()).padStart(2,'0')}`;
+  } else { key = 'undated'; sunday = new Date(0); saturday = new Date(0); }
+  if (!weekMap.has(key)) {
+    const fmt = { month: 'short', day: 'numeric' } as const;
+    const label = key === 'undated' ? 'No Date Set' : `${sunday.toLocaleDateString('en-US', fmt)} – ${saturday.toLocaleDateString('en-US', { ...fmt, year: 'numeric' })}`;
+    weekMap.set(key, { key, start: sunday, end: saturday, label, items: [] });
+  }
+  weekMap.get(key)!.items.push(n);
+}
+const weeks: WeekGroup[] = [...weekMap.values()].sort((a, b) => { if (a.key === 'undated') return 1; if (b.key === 'undated') return -1; return b.start.getTime() - a.start.getTime(); });
+const INITIAL_WEEKS = 4;
+const recentWeeks   = weeks.slice(0, INITIAL_WEEKS);
+const olderWeeks    = weeks.slice(INITIAL_WEEKS);
+const editWeekKey   = editId ? (weeks.find(w => w.items.some((n: any) => n.id === editId))?.key ?? '') : '';
+const editInOlder   = olderWeeks.some(w => w.key === editWeekKey);
 ---
 
 <AdminLayout title="Lesson Notes | Admin">
 
-  <!-- Page header -->
-  <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full
-              flex items-center justify-between">
+  <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto w-full flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-bold text-navy font-playfair">Zoom AI Lesson Notes</h1>
       <p class="text-gray-500 text-sm mt-0.5">
-        {notes.length} note{notes.length !== 1 ? 's' : ''}
-        {filterStudentId && studentMap[filterStudentId]
-          ? ` for ${(studentMap[filterStudentId] as any).name}`
-          : ' total'}
+        {(notes ?? []).length} note{(notes ?? []).length !== 1 ? 's' : ''}
+        {filterStudentId && studentMap[filterStudentId] ? ` for ${(studentMap[filterStudentId] as any).name}` : ` total · ${weeks.length} week${weeks.length !== 1 ? 's' : ''}`}
       </p>
     </div>
-    <button id="show-add-form"
-            class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-4 py-2 rounded-lg
-                   text-sm hover:bg-gold-hover transition-colors">
+    <button id="show-add-form" class="inline-flex items-center gap-2 bg-gold text-navy font-semibold px-4 py-2 rounded-lg text-sm hover:bg-gold-hover transition-colors">
       + Add Lesson Notes
     </button>
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-    <!-- Flash messages -->
-    {flashSuccess && (
-      <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 text-sm">
-        ✅ {flashSuccess}
-      </div>
-    )}
-    {flashError && (
-      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
-        ⚠️ {flashError}
-      </div>
-    )}
+    {flashSuccess && <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 text-sm">✅ {flashSuccess}</div>}
+    {flashError   && <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">⚠️ {flashError}</div>}
 
-    <!-- ── Add Notes Form (hidden by default) ─────────────────────────────── -->
+    <!-- Add form -->
     <div id="add-form-wrap" class="hidden bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 class="font-semibold text-navy mb-5 text-lg">Add Zoom AI Lesson Notes</h2>
       <form method="POST">
         <input type="hidden" name="action" value="create" />
-
         <div class="grid sm:grid-cols-2 gap-4 mb-4">
-          <!-- Student -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Student <span class="text-red-500">*</span>
-            </label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Student <span class="text-red-500">*</span></label>
             {activeStudents.length === 0 ? (
-              <p class="text-gray-400 text-sm italic">
-                No active students. <a href="/admin/students" class="text-gold underline">Add students first →</a>
-              </p>
+              <p class="text-gray-400 text-sm italic">No active students. <a href="/admin/students" class="text-gold underline">Add students first →</a></p>
             ) : (
-              <select name="student_id" required
-                      class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-navy
-                             focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
+              <select name="student_id" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
                 <option value="">— Select student —</option>
-                {activeStudents.map((s: any) => (
-                  <option value={s.id}>{s.name}</option>
-                ))}
+                {activeStudents.map((s: any) => <option value={s.id}>{s.name}</option>)}
               </select>
             )}
           </div>
-
-          <!-- Lesson Date -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Lesson Date <span class="text-red-500">*</span>
-            </label>
-            <input type="date" name="lesson_date" required value={today}
-                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                          focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">Lesson Date <span class="text-red-500">*</span></label>
+            <input type="date" name="lesson_date" required value={today} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
           </div>
-
-          <!-- Title -->
           <div class="sm:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Title <span class="text-red-500">*</span>
-            </label>
-            <input type="text" name="title" required placeholder={suggestTitle}
-                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                          focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
+            <input type="text" name="title" required placeholder={suggestTitle} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
           </div>
         </div>
-
-        <!-- Zoom AI Notes content -->
         <div class="mb-5">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Zoom AI Notes <span class="text-red-500">*</span>
-            <span class="text-gray-400 font-normal ml-1">— paste directly from Zoom's AI summary</span>
-          </label>
-          <textarea name="content" rows="12" required
-                    placeholder="Paste the Zoom AI meeting summary here..."
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono
-                           focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y"></textarea>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Zoom AI Notes <span class="text-red-500">*</span> <span class="text-gray-400 font-normal ml-1">— paste directly from Zoom's AI summary</span></label>
+          <textarea name="content" rows="12" required placeholder="Paste the Zoom AI meeting summary here..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y"></textarea>
         </div>
-
         <div class="flex items-center gap-3">
-          <button type="submit"
-                  class="bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg text-sm
-                         hover:bg-gold-hover transition-colors">
-            💾 Save Notes
-          </button>
-          <button type="button" id="hide-add-form"
-                  class="bg-white text-navy font-medium px-5 py-2 rounded-lg text-sm
-                         border border-gray-200 hover:bg-gray-50 transition-colors">
-            Cancel
-          </button>
+          <button type="submit" class="bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-gold-hover transition-colors">💾 Save Notes</button>
+          <button type="button" id="hide-add-form" class="bg-white text-navy font-medium px-5 py-2 rounded-lg text-sm border border-gray-200 hover:bg-gray-50 transition-colors">Cancel</button>
         </div>
       </form>
     </div>
 
-    <!-- ── Filter by student ──────────────────────────────────────────────── -->
+    <!-- Filter -->
     <div class="flex flex-wrap items-center gap-3">
       <label class="text-sm font-medium text-gray-700">Filter by student:</label>
       <form method="GET" class="inline-flex items-center gap-2">
-        <select name="student" onchange="this.form.submit()"
-                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-navy
-                       focus:outline-none focus:ring-2 focus:ring-gold bg-white">
+        <select name="student" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-gold bg-white">
           <option value="">All Students</option>
-          {activeStudents.map((s: any) => (
-            <option value={s.id} selected={filterStudentId === s.id}>{s.name}</option>
-          ))}
+          {activeStudents.map((s: any) => <option value={s.id} selected={filterStudentId === s.id}>{s.name}</option>)}
         </select>
-        {filterStudentId && (
-          <a href="/admin/lesson-notes" class="text-xs text-gold underline">Clear</a>
-        )}
+        {filterStudentId && <a href="/admin/lesson-notes" class="text-xs text-gold underline">Clear</a>}
       </form>
     </div>
 
-    <!-- ── Notes table ────────────────────────────────────────────────────── -->
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      {notes.length === 0 ? (
-        <div class="px-6 py-16 text-center text-gray-400 italic text-sm">
-          No lesson notes yet{filterStudentId ? ' for this student.' : '.'}
-          {' '}
-          <button id="show-add-form-empty" class="text-gold underline cursor-pointer">
-            Add the first one →
-          </button>
-        </div>
-      ) : (
-        <table class="w-full">
-          <thead class="bg-navy">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Student</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Title</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider hidden lg:table-cell">Preview</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notes.map((n: any) => (
-              <>
-              <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                <td class="px-4 py-3">
-                  <span class="font-medium text-navy text-sm">{n.student?.name ?? '—'}</span>
-                </td>
-                <td class="px-4 py-3">
-                  <p class="font-medium text-navy text-sm">{n.title}</p>
-                </td>
-                <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">
-                  {formatDate(n.lesson_date)}
-                </td>
-                <td class="px-4 py-3 hidden lg:table-cell">
-                  <p class="text-gray-400 text-xs truncate max-w-xs" title={n.content}>
-                    {n.content}
-                  </p>
-                </td>
-                <td class="px-4 py-3">
-                  <div class="flex items-center gap-2">
-                    <a href={`/admin/lesson-notes?edit=${n.id}`}
-                       class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">
-                      Edit
-                    </a>
-                    <form method="POST" class="inline"
-                          onsubmit="return confirm('Delete these notes? This cannot be undone.')">
-                      <input type="hidden" name="action" value="delete" />
-                      <input type="hidden" name="id"     value={n.id} />
-                      <button type="submit"
-                              class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
+    <!-- Week groups -->
+    {(notes ?? []).length === 0 ? (
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm px-6 py-16 text-center text-gray-400 italic text-sm">
+        No lesson notes yet{filterStudentId ? ' for this student.' : '.'}{' '}
+        <button id="show-add-form-empty" class="text-gold underline cursor-pointer">Add the first one →</button>
+      </div>
+    ) : (
+      <div class="flex flex-col gap-3">
 
-              {/* Inline edit form */}
-              {editId === n.id && (
-                <tr class="bg-gold/5 border-t border-gold/30">
-                  <td colspan="5" class="px-4 py-5">
-                    <h3 class="font-semibold text-navy mb-4 text-sm">Editing: {n.title}</h3>
-                    <form method="POST">
-                      <input type="hidden" name="action" value="edit" />
-                      <input type="hidden" name="id"     value={n.id} />
-
-                      <div class="grid sm:grid-cols-2 gap-4 mb-4">
-                        <div class="sm:col-span-2">
-                          <label class="block text-xs font-medium text-gray-700 mb-1">Title *</label>
-                          <input type="text" name="title" required value={n.title}
-                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                                        focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
-                        </div>
-                        <div>
-                          <label class="block text-xs font-medium text-gray-700 mb-1">Lesson Date *</label>
-                          <input type="date" name="lesson_date" required value={n.lesson_date}
-                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                                        focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Zoom AI Notes *</label>
-                        <textarea name="content" rows="12" required
-                                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono
-                                         focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y"
-                        >{n.content}</textarea>
-                      </div>
-
-                      <div class="flex items-center gap-3">
-                        <button type="submit"
-                                class="bg-gold text-navy font-semibold px-4 py-1.5 rounded-lg text-sm
-                                       hover:bg-gold-hover transition-colors">
-                          Save Changes
-                        </button>
-                        <a href="/admin/lesson-notes"
-                           class="bg-white text-navy font-medium px-4 py-1.5 rounded-lg text-sm
-                                  border border-gray-200 hover:bg-gray-50 transition-colors">
-                          Cancel
-                        </a>
-                      </div>
-                    </form>
-                  </td>
+        {recentWeeks.map((week) => (
+          <details class="week-group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden" open={week.key === editWeekKey || undefined}>
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors select-none list-none">
+              <div class="flex items-center gap-3">
+                <span class="chevron text-gray-400 transition-transform duration-200 text-sm">▶</span>
+                <span class="font-semibold text-navy text-sm">{week.label}</span>
+              </div>
+              <span class="text-xs text-gray-400 font-medium bg-gray-100 px-2.5 py-1 rounded-full">{week.items.length} note{week.items.length !== 1 ? 's' : ''}</span>
+            </summary>
+            <table class="w-full border-t border-gray-100">
+              <thead class="bg-navy/5">
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Student</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Title</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden lg:table-cell">Preview</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Actions</th>
                 </tr>
-              )}
-              </>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+              </thead>
+              <tbody>
+                {week.items.map((n: any) => (<>
+                  <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-3"><span class="font-medium text-navy text-sm">{n.student?.name ?? '—'}</span></td>
+                    <td class="px-4 py-3"><p class="font-medium text-navy text-sm">{n.title}</p></td>
+                    <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(n.lesson_date)}</td>
+                    <td class="px-4 py-3 hidden lg:table-cell"><p class="text-gray-400 text-xs truncate max-w-xs" title={n.content}>{n.content}</p></td>
+                    <td class="px-4 py-3">
+                      <div class="flex items-center gap-2">
+                        <a href={`/admin/lesson-notes?edit=${n.id}`} class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                        <form method="POST" class="inline" onsubmit="return confirm('Delete these notes? This cannot be undone.')">
+                          <input type="hidden" name="action" value="delete" /><input type="hidden" name="id" value={n.id} />
+                          <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">Delete</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  {editId === n.id && (
+                    <tr class="bg-gold/5 border-t border-gold/30"><td colspan="5" class="px-4 py-5">
+                      <h3 class="font-semibold text-navy mb-4 text-sm">Editing: {n.title}</h3>
+                      <form method="POST">
+                        <input type="hidden" name="action" value="edit" /><input type="hidden" name="id" value={n.id} />
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                          <div class="sm:col-span-2"><label class="block text-xs font-medium text-gray-700 mb-1">Title *</label><input type="text" name="title" required value={n.title} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" /></div>
+                          <div><label class="block text-xs font-medium text-gray-700 mb-1">Lesson Date *</label><input type="date" name="lesson_date" required value={n.lesson_date} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" /></div>
+                        </div>
+                        <div class="mb-4"><label class="block text-xs font-medium text-gray-700 mb-1">Zoom AI Notes *</label><textarea name="content" rows="12" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y">{n.content}</textarea></div>
+                        <div class="flex items-center gap-3">
+                          <button type="submit" class="bg-gold text-navy font-semibold px-4 py-1.5 rounded-lg text-sm hover:bg-gold-hover transition-colors">Save Changes</button>
+                          <a href="/admin/lesson-notes" class="bg-white text-navy font-medium px-4 py-1.5 rounded-lg text-sm border border-gray-200 hover:bg-gray-50 transition-colors">Cancel</a>
+                        </div>
+                      </form>
+                    </td></tr>
+                  )}
+                </>))}
+              </tbody>
+            </table>
+          </details>
+        ))}
 
+        {olderWeeks.length > 0 && (<>
+          <div id="older-weeks" class={`flex flex-col gap-3 ${editInOlder ? '' : 'hidden'}`}>
+            {olderWeeks.map((week) => (
+              <details class="week-group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden" open={week.key === editWeekKey || undefined}>
+                <summary class="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors select-none list-none">
+                  <div class="flex items-center gap-3">
+                    <span class="chevron text-gray-400 transition-transform duration-200 text-sm">▶</span>
+                    <span class="font-semibold text-navy text-sm">{week.label}</span>
+                  </div>
+                  <span class="text-xs text-gray-400 font-medium bg-gray-100 px-2.5 py-1 rounded-full">{week.items.length} note{week.items.length !== 1 ? 's' : ''}</span>
+                </summary>
+                <table class="w-full border-t border-gray-100">
+                  <thead class="bg-navy/5">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Student</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Title</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden sm:table-cell">Lesson Date</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider hidden lg:table-cell">Preview</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-navy/70 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {week.items.map((n: any) => (<>
+                      <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3"><span class="font-medium text-navy text-sm">{n.student?.name ?? '—'}</span></td>
+                        <td class="px-4 py-3"><p class="font-medium text-navy text-sm">{n.title}</p></td>
+                        <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">{formatDate(n.lesson_date)}</td>
+                        <td class="px-4 py-3 hidden lg:table-cell"><p class="text-gray-400 text-xs truncate max-w-xs" title={n.content}>{n.content}</p></td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center gap-2">
+                            <a href={`/admin/lesson-notes?edit=${n.id}`} class="text-navy hover:text-gold text-xs font-medium underline underline-offset-2">Edit</a>
+                            <form method="POST" class="inline" onsubmit="return confirm('Delete these notes? This cannot be undone.')">
+                              <input type="hidden" name="action" value="delete" /><input type="hidden" name="id" value={n.id} />
+                              <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-medium underline underline-offset-2">Delete</button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                      {editId === n.id && (
+                        <tr class="bg-gold/5 border-t border-gold/30"><td colspan="5" class="px-4 py-5">
+                          <h3 class="font-semibold text-navy mb-4 text-sm">Editing: {n.title}</h3>
+                          <form method="POST">
+                            <input type="hidden" name="action" value="edit" /><input type="hidden" name="id" value={n.id} />
+                            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                              <div class="sm:col-span-2"><label class="block text-xs font-medium text-gray-700 mb-1">Title *</label><input type="text" name="title" required value={n.title} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" /></div>
+                              <div><label class="block text-xs font-medium text-gray-700 mb-1">Lesson Date *</label><input type="date" name="lesson_date" required value={n.lesson_date} class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" /></div>
+                            </div>
+                            <div class="mb-4"><label class="block text-xs font-medium text-gray-700 mb-1">Zoom AI Notes *</label><textarea name="content" rows="12" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-y">{n.content}</textarea></div>
+                            <div class="flex items-center gap-3">
+                              <button type="submit" class="bg-gold text-navy font-semibold px-4 py-1.5 rounded-lg text-sm hover:bg-gold-hover transition-colors">Save Changes</button>
+                              <a href="/admin/lesson-notes" class="bg-white text-navy font-medium px-4 py-1.5 rounded-lg text-sm border border-gray-200 hover:bg-gray-50 transition-colors">Cancel</a>
+                            </div>
+                          </form>
+                        </td></tr>
+                      )}
+                    </>))}
+                  </tbody>
+                </table>
+              </details>
+            ))}
+          </div>
+          <div class={`text-center pt-2 ${editInOlder ? 'hidden' : ''}`} id="load-older-wrap">
+            <button id="load-older-btn" class="text-sm text-gray-500 hover:text-navy font-medium underline underline-offset-2 transition-colors">
+              Load {olderWeeks.length} older week{olderWeeks.length !== 1 ? 's' : ''} →
+            </button>
+          </div>
+        </>)}
+
+      </div>
+    )}
   </div>
 </AdminLayout>
 
 <script is:inline>
+  document.querySelectorAll('details.week-group').forEach((details) => {
+    const chevron = details.querySelector('.chevron');
+    if (chevron && details.open) chevron.style.transform = 'rotate(90deg)';
+    details.addEventListener('toggle', () => {
+      if (chevron) chevron.style.transform = details.open ? 'rotate(90deg)' : 'rotate(0deg)';
+    });
+  });
+  document.getElementById('load-older-btn')?.addEventListener('click', () => {
+    document.getElementById('older-weeks')?.classList.remove('hidden');
+    document.getElementById('load-older-wrap')?.classList.add('hidden');
+  });
   function showAddForm() {
     document.getElementById('add-form-wrap')?.classList.remove('hidden');
     document.getElementById('show-add-form')?.classList.add('hidden');
