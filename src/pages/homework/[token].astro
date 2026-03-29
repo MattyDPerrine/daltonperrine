@@ -141,6 +141,14 @@ const statusClass: Record<string, string> = {
             ♟ Chess.com Classroom
           </span>
         )}
+        {student.lessons_remaining !== null && student.lessons_remaining !== undefined && (
+          <span
+            class="inline-flex items-center gap-2 border border-emerald-400/60 text-emerald-300
+                   text-sm font-medium px-4 py-1.5 rounded-full"
+          >
+            🗓 {student.lessons_remaining} lesson{student.lessons_remaining !== 1 ? 's' : ''} remaining
+          </span>
+        )}
       </div>
 
       <!-- ── Tab navigation ──────────────────────────────────────────────── -->

@@ -23,8 +23,10 @@ if (Astro.request.method === 'POST') {
     const email      = form.get('email')?.toString().trim() ?? '';
     const notes      = form.get('notes')?.toString().trim() ?? '';
     const pricingUrl = form.get('pricing_url')?.toString().trim() ?? '';
-    const studyType  = form.get('study_type')?.toString().trim() ?? '';
-    const studyUrl   = form.get('study_url')?.toString().trim() ?? '';
+    const studyType       = form.get('study_type')?.toString().trim() ?? '';
+    const studyUrl        = form.get('study_url')?.toString().trim() ?? '';
+    const lessonsRawC     = form.get('lessons_remaining')?.toString().trim() ?? '';
+    const lessonsRemaining = lessonsRawC !== '' ? parseInt(lessonsRawC, 10) : null;
 
     if (!name) {
       flashError = 'Name is required.';
@@ -32,11 +34,12 @@ if (Astro.request.method === 'POST') {
       const token = generateAccessToken();
       const { error } = await supabaseAdmin.from('students').insert({
         name,
-        email:       email || null,
-        notes:       notes || null,
-        pricing_url: pricingUrl || null,
-        study_type:  studyType || null,
-        study_url:   (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
+        email:              email || null,
+        notes:              notes || null,
+        pricing_url:        pricingUrl || null,
+        study_type:         studyType || null,
+        study_url:          (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
+        lessons_remaining:  (lessonsRemaining !== null && !isNaN(lessonsRemaining)) ? lessonsRemaining : null,
         access_token: token,
         is_active: true,
       });
@@ -55,19 +58,22 @@ if (Astro.request.method === 'POST') {
     const email      = form.get('email')?.toString().trim() ?? '';
     const notes      = form.get('notes')?.toString().trim() ?? '';
     const pricingUrl = form.get('pricing_url')?.toString().trim() ?? '';
-    const studyType  = form.get('study_type')?.toString().trim() ?? '';
-    const studyUrl   = form.get('study_url')?.toString().trim() ?? '';
+    const studyType       = form.get('study_type')?.toString().trim() ?? '';
+    const studyUrl        = form.get('study_url')?.toString().trim() ?? '';
+    const lessonsRawE     = form.get('lessons_remaining')?.toString().trim() ?? '';
+    const lessonsRemaining = lessonsRawE !== '' ? parseInt(lessonsRawE, 10) : null;
 
     if (!name) {
       flashError = 'Name is required.';
     } else {
       const { error } = await supabaseAdmin.from('students').update({
         name,
-        email:       email || null,
-        notes:       notes || null,
-        pricing_url: pricingUrl || null,
-        study_type:  studyType || null,
-        study_url:   (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
+        email:              email || null,
+        notes:              notes || null,
+        pricing_url:        pricingUrl || null,
+        study_type:         studyType || null,
+        study_url:          (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
+        lessons_remaining:  (lessonsRemaining !== null && !isNaN(lessonsRemaining)) ? lessonsRemaining : null,
       }).eq('id', id);
       if (error) { flashError = error.message; }
       else        { return Astro.redirect('/admin/students?success=Student+updated'); }
@@ -194,6 +200,13 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">Classroom / Study URL <span class="text-gray-400">(optional)</span></label>
           <input type="text" name="study_url" placeholder="https://..."
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Lessons Remaining <span class="text-gray-400">(shown on student portal — leave blank to hide)</span>
+          </label>
+          <input type="number" name="lessons_remaining" min="0" placeholder="e.g. 8"
                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
         </div>
         <div class="mb-4">
@@ -347,6 +360,14 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
                       <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Classroom / Study URL <span class="text-gray-400">(optional)</span></label>
                         <input type="text" name="study_url" value={s.study_url ?? ''} placeholder="https://..."
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+                      </div>
+                      <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">
+                          Lessons Remaining <span class="text-gray-400">(shown on student portal — clear to hide)</span>
+                        </label>
+                        <input type="number" name="lessons_remaining" min="0" placeholder="e.g. 8"
+                               value={s.lessons_remaining !== null && s.lessons_remaining !== undefined ? String(s.lessons_remaining) : ''}
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
                       </div>
                       <div class="mb-4">
