@@ -191,9 +191,9 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
             <option value="lichess">Lichess Study</option>
           </select>
         </div>
-        <div class="mb-4 hidden" id="add-study-url-field">
-          <label class="block text-sm font-medium text-gray-700 mb-1" id="add-study-url-label">Study Link URL</label>
-          <input type="text" name="study_url" id="add-study-url-input" placeholder="https://..."
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Classroom / Study URL <span class="text-gray-400">(optional)</span></label>
+          <input type="text" name="study_url" placeholder="https://..."
                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
         </div>
         <div class="mb-4">
@@ -344,8 +344,8 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
                           <option value="lichess"  selected={s.study_type === 'lichess'}>Lichess Study</option>
                         </select>
                       </div>
-                      <div class="mb-4 edit-study-url-field" style={s.study_type === 'lichess' || s.study_type === 'chesscom' ? '' : 'display:none'}>
-                        <label class="edit-study-url-label block text-xs font-medium text-gray-700 mb-1">{s.study_type === 'chesscom' ? 'Chess.com Classroom URL' : 'Lichess Study URL'}</label>
+                      <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Classroom / Study URL <span class="text-gray-400">(optional)</span></label>
                         <input type="text" name="study_url" value={s.study_url ?? ''} placeholder="https://..."
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
                       </div>
@@ -379,33 +379,6 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
 </AdminLayout>
 
 <script is:inline>
-  // Show/hide study URL field in Add form
-  document.getElementById('add-study-type')?.addEventListener('change', (e) => {
-    const val   = (e.target as HTMLSelectElement).value;
-    const field = document.getElementById('add-study-url-field');
-    const label = document.getElementById('add-study-url-label');
-    const input = document.getElementById('add-study-url-input') as HTMLInputElement | null;
-    const show  = val === 'lichess' || val === 'chesscom';
-    if (field) field.classList.toggle('hidden', !show);
-    if (label) label.textContent = val === 'lichess' ? 'Lichess Study URL' : 'Chess.com Classroom URL';
-    if (input) input.placeholder = val === 'lichess' ? 'https://lichess.org/study/...' : 'https://www.chess.com/clubs/...';
-  });
-
-  // Show/hide study URL field in Edit forms
-  document.querySelectorAll('.edit-study-type').forEach((select) => {
-    select.addEventListener('change', (e) => {
-      const val  = (e.target as HTMLSelectElement).value;
-      const row  = (e.target as HTMLElement).closest('tr');
-      const field = row?.querySelector('.edit-study-url-field') as HTMLElement | null;
-      const label = row?.querySelector('.edit-study-url-label') as HTMLElement | null;
-      const input = row?.querySelector('input[name="study_url"]') as HTMLInputElement | null;
-      const show  = val === 'lichess' || val === 'chesscom';
-      if (field) field.style.display = show ? '' : 'none';
-      if (label) label.textContent = val === 'lichess' ? 'Lichess Study URL' : 'Chess.com Classroom URL';
-      if (input) input.placeholder = val === 'lichess' ? 'https://lichess.org/study/...' : 'https://www.chess.com/clubs/...';
-    });
-  });
-
   // Toggle add form visibility
   document.getElementById('show-add-form')?.addEventListener('click', () => {
     document.getElementById('add-form-wrap')?.classList.remove('hidden');
