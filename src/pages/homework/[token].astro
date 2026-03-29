@@ -122,7 +122,18 @@ const statusClass: Record<string, string> = {
             ♟ Lichess Study →
           </a>
         )}
-        {student.study_type === 'chesscom' && (
+        {student.study_type === 'chesscom' && student.study_url && (
+          <a
+            href={student.study_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 border border-white/30 text-white/80 hover:bg-white/10
+                   transition-colors text-sm font-medium px-4 py-1.5 rounded-full"
+          >
+            ♟ Chess.com Classroom →
+          </a>
+        )}
+        {student.study_type === 'chesscom' && !student.study_url && (
           <span
             class="inline-flex items-center gap-2 border border-white/30 text-white/80
                    text-sm font-medium px-4 py-1.5 rounded-full"
