@@ -2,6 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 
 const items = [
+  {
+    type: 'achievement',
+    student: 'Jerry Petrole',
+    uscfId: '30340195',
+    headline: 'Won his section at a recent tournament!',
+    score: '4.5 / 5',
+    ratingBefore: 1152,
+    ratingAfter: 1292,
+    results: ['W','W','W','W','D'],
+    images: ['/images/jerry-social-post.png', '/images/jerry-tournament-result.png'],
+  },
   { type: 'quote', quote: "I've had a great experience working with Dalton. He has no problem putting together lessons based on a specific request, changing plans at the last minute, or covering a wide range of topics (from calculation, planning, or opening prep). While working with him, I have set new personal bests in blitz, rapid, and classical chess. I have noticed an increase in my ability to calculate deeper and recognize opponents' resources when calculating tactics. Highly recommended for adult improvers. Lastly, Dalton seems willing to work with your preferred style of learning and progress rather than imposing his own structure on you.", attribution: '— Brendan' },
   { type: 'graph', student: 'Brendan', images: ['/images/brendan-testimonial-graph1.png', '/images/brendan-testimonial-graph2.png'] },
   { type: 'quote', quote: "Dalton hasn't just helped improve my OTB rating by hundreds of points. He's also given me a genuine love for the game that I'll carry with me for the rest of my life.", attribution: '— Nate' },
@@ -149,6 +160,57 @@ const testimonialCount = items.filter(i => i.type === 'quote').length;
                     <cite class="font-inter font-semibold text-navy text-sm not-italic">
                       {item.attribution}
                     </cite>
+                  </footer>
+                </div>
+              )}
+
+              {item.type === 'achievement' && (
+                <div class="p-6 flex flex-col gap-4">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <p class="font-inter font-bold text-navy text-sm leading-snug">
+                      {item.headline}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-between bg-navy/5 rounded-xl px-4 py-3">
+                    <div class="text-center">
+                      <p class="font-playfair text-2xl font-bold text-gold">{item.score}</p>
+                      <p class="text-xs text-text-secondary mt-0.5">Score</p>
+                    </div>
+                    <div class="text-center">
+                      <p class="font-inter text-sm font-semibold text-navy">
+                        {item.ratingBefore} <span class="text-gold">→</span> {item.ratingAfter}
+                      </p>
+                      <p class="text-xs text-text-secondary mt-0.5">Rating</p>
+                    </div>
+                    <div class="text-center">
+                      <div class="flex gap-1">
+                        {item.results.map((r: string) => (
+                          <span class={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold
+                            ${r === 'W' ? 'bg-emerald-100 text-emerald-700' : r === 'D' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                            {r}
+                          </span>
+                        ))}
+                      </div>
+                      <p class="text-xs text-text-secondary mt-1">Results</p>
+                    </div>
+                  </div>
+                  {item.images && item.images.length > 0 && (
+                    <div class="flex flex-col gap-2">
+                      {item.images.map((src: string) => (
+                        <img
+                          src={src}
+                          alt={`${item.student} tournament achievement`}
+                          class="w-full rounded-lg object-contain"
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <footer class="pt-2 border-t border-navy/8">
+                    <cite class="font-inter font-semibold text-navy text-sm not-italic">
+                      — {item.student}
+                    </cite>
+                    <span class="text-xs text-text-secondary ml-2">USCF #{item.uscfId}</span>
                   </footer>
                 </div>
               )}
