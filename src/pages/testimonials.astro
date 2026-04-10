@@ -13,6 +13,7 @@ const items = [
     results: ['W','W','W','W','D'],
     images: ['/images/jerry-social-post.png', '/images/jerry-tournament-result.png'],
   },
+  { type: 'quote', quote: "Great coach... gave me important things to work on.", attribution: '— Blake' },
   { type: 'quote', quote: "I've had a great experience working with Dalton. He has no problem putting together lessons based on a specific request, changing plans at the last minute, or covering a wide range of topics (from calculation, planning, or opening prep). While working with him, I have set new personal bests in blitz, rapid, and classical chess. I have noticed an increase in my ability to calculate deeper and recognize opponents' resources when calculating tactics. Highly recommended for adult improvers. Lastly, Dalton seems willing to work with your preferred style of learning and progress rather than imposing his own structure on you.", attribution: '— Brendan' },
   { type: 'graph', student: 'Brendan', images: ['/images/brendan-testimonial-graph1.png', '/images/brendan-testimonial-graph2.png'] },
   { type: 'quote', quote: "Dalton hasn't just helped improve my OTB rating by hundreds of points. He's also given me a genuine love for the game that I'll carry with me for the rest of my life.", attribution: '— Nate' },
@@ -46,7 +47,6 @@ const items = [
   { type: 'graph', student: 'Samir', images: ['/images/samir-testimonial-graph.png'] },
   { type: 'quote', quote: "This teacher is not just a skilled advisor, but also a mentor! Very professional. He helped to answer some novice questions of mine, that I think will really up my game.", attribution: '— Julian' },
   { type: 'quote', quote: "Good lesson. Gave me loads of time and had a good grasp of my strengths and weaknesses even though it was only our first session.", attribution: '— Roger' },
-  { type: 'quote', quote: "Great coach... gave me important things to work on.", attribution: '— Blake' },
 ];
 
 const testimonialCount = items.filter(i => i.type === 'quote').length;
