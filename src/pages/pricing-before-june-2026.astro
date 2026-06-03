@@ -1,0 +1,356 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface PriceCard {
+  name: string;
+  price: string;
+  description: string;
+  buttonLabel: string;
+  href: string;
+  savings?: string;
+  popular?: boolean;
+}
+
+const withoutRecording: PriceCard[] = [
+  {
+    name: 'Trial Lesson',
+    price: '$75',
+    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
+    buttonLabel: 'Get Started',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZH4UHN9B9G3EN',
+  },
+  {
+    name: 'Single Lesson',
+    price: '$90',
+    description: 'One 1-hour personalized coaching session.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GFJRKTYHWYKY2',
+  },
+  {
+    name: '3-Lesson Pack',
+    price: '$255',
+    savings: 'Save $15',
+    description: 'Three 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BW9QBW3P4C7N8',
+  },
+  {
+    name: '5-Lesson Pack',
+    price: '$415',
+    savings: 'Save $35',
+    description: 'Five 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    popular: true,
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X2AC6FZFWJAN8',
+  },
+  {
+    name: '10-Lesson Pack',
+    price: '$810',
+    savings: 'Save $90',
+    description: 'Ten 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DTV56B4CG5V72',
+  },
+];
+
+const withRecording: PriceCard[] = [
+  {
+    name: 'Trial Lesson',
+    price: '$80',
+    description: "Your first 1-hour session. I'll evaluate your game and create a personalized plan for future lessons.",
+    buttonLabel: 'Get Started',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T97ZMSJNXXPLG',
+  },
+  {
+    name: 'Single Lesson',
+    price: '$95',
+    description: 'One 1-hour personalized coaching session.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8W2RZQP4NCTJG',
+  },
+  {
+    name: '3-Lesson Pack',
+    price: '$270',
+    savings: 'Save $15',
+    description: 'Three 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6KLV3ZBUBXT34',
+  },
+  {
+    name: '5-Lesson Pack',
+    price: '$440',
+    savings: 'Save $35',
+    description: 'Five 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    popular: true,
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=N7YLUEGXAFXZL',
+  },
+  {
+    name: '10-Lesson Pack',
+    price: '$860',
+    savings: 'Save $90',
+    description: 'Ten 1-hour personalized coaching sessions.',
+    buttonLabel: 'Buy Pack',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6MG4D72H3R3LE',
+  },
+];
+
+const otherServices = [
+  {
+    name: 'Play & Review',
+    price: '$70',
+    description:
+      'We play a 15|10 rated game on Chess.com or Lichess, then review and analyze it together afterward. A great way to get direct, practical feedback on your play in real time.',
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TJJERK5BDTPU4',
+  },
+  {
+    name: 'Game Analysis',
+    price: '$60',
+    description:
+      "Send me 2 of your games and I'll provide detailed PGN annotations with full analysis, emailed to you within a few days.",
+    buttonLabel: 'Book Now',
+    href: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5P9RE3U25J9AW',
+  },
+];
+---
+
+<Layout
+  title="Lesson Pricing for Students Before June 2026 — FM Dalton Perrine"
+  description="Grandfathered lesson pricing for students of FM Dalton Perrine who began lessons before June 2026."
+>
+  <Fragment slot="head">
+    <!-- Keep this page out of search engines -->
+    <meta name="robots" content="noindex, nofollow" />
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 1 — PAGE HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        For Students Before June 2026
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Lesson Pricing
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        These are the prices for students that began taking lessons before June 2026.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 2 — WITHOUT VIDEO RECORDING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-3">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Lessons <span class="italic">Without</span> Video Recording
+        </h2>
+        <p class="font-inter text-text-secondary text-base">
+          Notes and homework are emailed after every session.
+        </p>
+      </div>
+
+      <!-- Pricing grid -->
+      <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {withoutRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+          <div
+            class:list={[
+              'relative flex flex-col rounded-xl bg-white shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
+              popular ? 'ring-2 ring-gold' : '',
+            ]}
+          >
+            <!-- Popular badge -->
+            {popular && (
+              <div class="bg-gold text-white font-inter font-semibold text-xs tracking-wide uppercase text-center py-1.5 px-3">
+                ★ Most Popular
+              </div>
+            )}
+
+            <div class="flex flex-col gap-4 p-6 flex-grow">
+              <!-- Name + savings row -->
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+                  {name}
+                </h3>
+                {savings && (
+                  <span class="flex-shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-200 font-inter font-semibold text-[10px] tracking-wide uppercase px-2 py-0.5 rounded-full leading-tight mt-0.5">
+                    {savings}
+                  </span>
+                )}
+              </div>
+
+              <!-- Price -->
+              <div>
+                <span class="font-playfair text-gold text-4xl font-bold leading-none">
+                  {price}
+                </span>
+                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+              </div>
+
+              <!-- Description -->
+              <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+                {description}
+              </p>
+
+              <!-- CTA -->
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-gold text-sm text-center mt-auto"
+                aria-label={`${buttonLabel} — ${name}`}
+              >
+                {buttonLabel}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 3 — WITH VIDEO RECORDING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-3">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold mb-3">
+          Lessons <span class="italic">With</span> Video Recording
+        </h2>
+        <p class="font-inter text-text-secondary text-base max-w-xl mx-auto">
+          Everything above, plus a video recording of the lesson emailed to you afterward
+          so you can review it anytime.
+        </p>
+      </div>
+
+      <!-- Recording callout chip -->
+      <div class="flex justify-center mt-4 mb-10">
+        <span class="inline-flex items-center gap-2 bg-navy/5 border border-navy/10 text-navy font-inter text-xs font-semibold tracking-wide px-4 py-2 rounded-full">
+          <span aria-hidden="true">🎥</span>
+          Video recording emailed after every lesson
+        </span>
+      </div>
+
+      <!-- Pricing grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {withRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+          <div
+            class:list={[
+              'relative flex flex-col rounded-xl bg-white border border-navy/8 shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
+              popular ? 'ring-2 ring-gold' : '',
+            ]}
+          >
+            {popular && (
+              <div class="bg-gold text-white font-inter font-semibold text-xs tracking-wide uppercase text-center py-1.5 px-3">
+                ★ Most Popular
+              </div>
+            )}
+
+            <div class="flex flex-col gap-4 p-6 flex-grow">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-playfair text-navy text-lg font-semibold leading-snug">
+                  {name}
+                </h3>
+                {savings && (
+                  <span class="flex-shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-200 font-inter font-semibold text-[10px] tracking-wide uppercase px-2 py-0.5 rounded-full leading-tight mt-0.5">
+                    {savings}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <span class="font-playfair text-gold text-4xl font-bold leading-none">
+                  {price}
+                </span>
+                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+              </div>
+
+              <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+                {description}
+              </p>
+
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-gold text-sm text-center mt-auto"
+                aria-label={`${buttonLabel} — ${name} with recording`}
+              >
+                {buttonLabel}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SECTION 4 — OTHER SERVICES
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+
+      <div class="text-center mb-10">
+        <h2 class="font-playfair text-navy text-3xl sm:text-4xl font-bold">
+          Other Services
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        {otherServices.map(({ name, price, description, buttonLabel, href }) => (
+          <div class="card flex flex-col gap-5">
+            <!-- Header row -->
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="font-playfair text-navy text-xl font-semibold leading-snug">
+                {name}
+              </h3>
+              <span class="font-playfair text-gold text-3xl font-bold leading-none flex-shrink-0">
+                {price}
+              </span>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-navy/8"></div>
+
+            <!-- Description -->
+            <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
+              {description}
+            </p>
+
+            <!-- Button -->
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-gold text-sm text-center"
+              aria-label={`${buttonLabel} — ${name}`}
+            >
+              {buttonLabel}
+            </a>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+</Layout>
