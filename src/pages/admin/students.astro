@@ -27,6 +27,7 @@ if (Astro.request.method === 'POST') {
     const studyUrl        = form.get('study_url')?.toString().trim() ?? '';
     const lessonsRawC     = form.get('lessons_remaining')?.toString().trim() ?? '';
     const lessonsRemaining = lessonsRawC !== '' ? parseInt(lessonsRawC, 10) : null;
+    const showDiscordC    = form.get('show_discord') !== 'false';
 
     if (!name) {
       flashError = 'Name is required.';
@@ -40,6 +41,7 @@ if (Astro.request.method === 'POST') {
         study_type:         studyType || null,
         study_url:          (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
         lessons_remaining:  (lessonsRemaining !== null && !isNaN(lessonsRemaining)) ? lessonsRemaining : null,
+        show_discord:       showDiscordC,
         access_token: token,
         is_active: true,
       });
@@ -62,6 +64,7 @@ if (Astro.request.method === 'POST') {
     const studyUrl        = form.get('study_url')?.toString().trim() ?? '';
     const lessonsRawE     = form.get('lessons_remaining')?.toString().trim() ?? '';
     const lessonsRemaining = lessonsRawE !== '' ? parseInt(lessonsRawE, 10) : null;
+    const showDiscordE    = form.get('show_discord') !== 'false';
 
     if (!name) {
       flashError = 'Name is required.';
@@ -74,6 +77,7 @@ if (Astro.request.method === 'POST') {
         study_type:         studyType || null,
         study_url:          (studyType === 'lichess' || studyType === 'chesscom') ? (studyUrl || null) : null,
         lessons_remaining:  (lessonsRemaining !== null && !isNaN(lessonsRemaining)) ? lessonsRemaining : null,
+        show_discord:       showDiscordE,
       }).eq('id', id);
       if (error) { flashError = error.message; }
       else        { return Astro.redirect('/admin/students?success=Student+updated'); }
@@ -209,6 +213,13 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
           </label>
           <input type="number" name="lessons_remaining" min="0" placeholder="e.g. 8"
                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Discord Community Link</label>
+          <select name="show_discord" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent">
+            <option value="true">Show on portal (default)</option>
+            <option value="false">Hide from portal</option>
+          </select>
         </div>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -371,6 +382,13 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
                         <input type="number" name="lessons_remaining" min="0" placeholder="e.g. 8"
                                value={s.lessons_remaining !== null && s.lessons_remaining !== undefined ? String(s.lessons_remaining) : ''}
                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent" />
+                      </div>
+                      <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Discord Community Link</label>
+                        <select name="show_discord" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent">
+                          <option value="true"  selected={s.show_discord !== false}>Show on portal (default)</option>
+                          <option value="false" selected={s.show_discord === false}>Hide from portal</option>
+                        </select>
                       </div>
                       <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Private Notes</label>
