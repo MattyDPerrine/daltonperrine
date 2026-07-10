@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const photos = [
+  {
+    src: '/images/tournament-naroditsky-memorial.jpg',
+    alt: 'Dalton holding his FM name card at the Naroditsky Memorial Rapid & Blitz',
+    caption: 'Naroditsky Memorial Rapid & Blitz — Charlotte Chess Center',
+  },
+  {
+    src: '/images/tournament-cfcc-champion.jpg',
+    alt: 'Dalton holding the Central Florida Chess Club Champion trophy',
+    caption: 'Central Florida Chess Club Champion — 2019',
+  },
+  {
+    src: '/images/tournament-chessalyz-smiling.jpg',
+    alt: 'Dalton at the board in a Chessalyz polo, smiling',
+    caption: 'Ready for the next round',
+  },
+  {
+    src: '/images/tournament-vs-gm.jpg',
+    alt: 'Dalton facing a GM across the board',
+    caption: 'Facing a GM over the board',
+  },
+  {
+    src: '/images/tournament-in-thought.jpg',
+    alt: 'Dalton deep in thought at the board',
+    caption: 'Deep in thought',
+  },
+  {
+    src: '/images/tournament-portrait.jpg',
+    alt: 'Dalton at the board, close-up portrait',
+    caption: 'Concentration at the board',
+  },
+  {
+    src: '/images/tournament-board-view.jpg',
+    alt: 'Dalton leaning over the board studying the position',
+    caption: 'Studying the position',
+  },
+  {
+    src: '/images/tournament-charlotte.jpg',
+    alt: 'Dalton making a move at the Charlotte Chess Center',
+    caption: 'Charlotte Chess Center',
+  },
+  {
+    src: '/images/tournament-chessalyz-serious.jpg',
+    alt: 'Dalton in Chessalyz polo, focused at the board',
+    caption: 'Focused and ready',
+  },
+  {
+    src: '/images/tournament-chessalyz-team.jpg',
+    alt: 'Dalton with a teammate in Chessalyz polos',
+    caption: 'Representing Chessalyz',
+  },
+  {
+    src: '/images/tournament-chessalyz-focused.jpg',
+    alt: 'Dalton in Chessalyz polo, deeply focused',
+    caption: 'In the middle of a tough game',
+  },
+  {
+    src: '/images/tournament-arms-crossed.jpg',
+    alt: 'Dalton seated at the board with arms crossed',
+    caption: 'Between moves',
+  },
+  {
+    src: '/images/tournament-pro-chess-bw.jpg',
+    alt: 'Dalton at the board in black and white — Pro Chess League',
+    caption: 'Pro Chess League',
+  },
+  {
+    src: '/images/tournament-early.jpg',
+    alt: 'Dalton at a tournament early in his career',
+    caption: 'Early tournament days',
+  },
+];
+---
+
+<Layout
+  title="Tournament Photos | FM Dalton Perrine"
+  description="Photos of FM Dalton Perrine competing in over-the-board chess tournaments across the country."
+>
+
+  <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+  <section class="bg-navy relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 opacity-[0.035] pointer-events-none"
+      style="background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%); background-size: 72px 72px;"
+    ></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+      <span class="inline-block font-inter text-gold text-xs font-semibold tracking-[0.2em] uppercase mb-5">
+        Over the Board
+      </span>
+      <h1 class="font-playfair text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+        Tournament Photos
+      </h1>
+      <p class="font-inter text-off-white/70 text-lg max-w-xl mx-auto leading-relaxed">
+        A look at FM Dalton Perrine competing across the country — from local club championships
+        to open tournaments and Grandmaster battles.
+      </p>
+      <div class="mt-6">
+        <a href="/about" class="font-inter text-gold/80 hover:text-gold text-sm underline underline-offset-4 transition-colors">
+          ← Back to About
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Photo Grid ──────────────────────────────────────────────────────── -->
+  <section class="bg-off-white section-pad">
+    <div class="container-max">
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+        {photos.map(({ src, alt, caption }) => (
+          <div class="break-inside-avoid mb-5">
+            <div class="bg-white rounded-xl shadow-card overflow-hidden hover:shadow-lg transition-shadow duration-200">
+              <div class="h-1 w-full bg-gold"></div>
+              <img
+                src={src}
+                alt={alt}
+                class="w-full object-cover"
+                loading="lazy"
+              />
+              {caption && (
+                <p class="font-inter text-text-secondary text-sm px-4 py-3 text-center">
+                  {caption}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────────────────────────────────── -->
+  <section class="bg-navy section-pad text-center">
+    <div class="container-max max-w-xl mx-auto flex flex-col items-center gap-5">
+      <h2 class="font-playfair text-gold text-3xl sm:text-4xl font-bold">
+        Ready to Work With Me?
+      </h2>
+      <p class="font-inter text-off-white/70 text-lg leading-relaxed">
+        Chess is a lifelong pursuit. Let's work on your game together.
+      </p>
+      <a href="/pricing" class="btn-gold text-base px-10 py-4">
+        Book a Lesson
+      </a>
+    </div>
+  </section>
+
+</Layout>
