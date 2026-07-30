@@ -27,7 +27,22 @@ if (Astro.request.method === 'POST') {
     else {
       const { error } = await supabaseAdmin.from('lesson_notes').insert({ student_id: studentId, title, lesson_date: lessonDate, content });
       if (error) flashError = error.message;
-      else return Astro.redirect('/admin/lesson-notes?success=Lesson+notes+saved');
+      else {
+        // Auto-decrement lessons_remaining if set and > 0
+        const { data: studentData, error: fetchErr } = await supabaseAdmin
+          .from('students').select('lessons_remaining').eq('id', studentId).single();
+        let decrementMsg = '';
+        if (fetchErr) {
+          decrementMsg = `+fetch+err:+${encodeURIComponent(fetchErr.message)}`;
+        } else if (studentData?.lessons_remaining !== null && studentData?.lessons_remaining !== undefined && studentData.lessons_remaining > 0) {
+          const { error: updateErr } = await supabaseAdmin
+            .from('students').update({ lessons_remaining: studentData.lessons_remaining - 1 }).eq('id', studentId);
+          decrementMsg = updateErr ? `+update+err:+${encodeURIComponent(updateErr.message)}` : `+lessons+decremented+to+${studentData.lessons_remaining - 1}`;
+        } else {
+          decrementMsg = `+no+decrement+(value+was+${studentData?.lessons_remaining ?? 'null'})`;
+        }
+        return Astro.redirect(`/admin/lesson-notes?success=Lesson+notes+saved${decrementMsg}`);
+      }
     }
   }
 
