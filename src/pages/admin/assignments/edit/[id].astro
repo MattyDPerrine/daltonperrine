@@ -362,7 +362,7 @@ function initCG(id: string, fen: string) {
   const wrap = document.getElementById(`cg-wrap-${id}`); if(!wrap) return;
   const ori = (document.getElementById(`orientation-${id}`) as HTMLSelectElement)?.value ?? 'white';
   if (cgBoards[id]) cgBoards[id].set({fen,orientation:ori});
-  else cgBoards[id] = Chessground(wrap,{fen,orientation:ori as any,viewOnly:true,coordinates:true,drawable:{enabled:false}});
+  else cgBoards[id] = Chessground(wrap,{fen,orientation:ori as any,viewOnly:true,coordinates:false,drawable:{enabled:false}});
 }
 
 async function handleFileUpload(id: string, input: HTMLInputElement) {
