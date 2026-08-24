@@ -262,7 +262,7 @@ const otherServices = [
 
       <!-- Pricing grid -->
       <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        {withoutRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+        {withoutRecording.map(({ name, price, description, buttonLabel, href, savings, popular, hidePerSession }) => (
           <div
             class:list={[
               'relative flex flex-col rounded-xl bg-white shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
@@ -347,7 +347,7 @@ const otherServices = [
 
       <!-- Pricing grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        {withRecording.map(({ name, price, description, buttonLabel, href, savings, popular }) => (
+        {withRecording.map(({ name, price, description, buttonLabel, href, savings, popular, hidePerSession }) => (
           <div
             class:list={[
               'relative flex flex-col rounded-xl bg-white border border-navy/8 shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-lg',
