@@ -9,6 +9,7 @@ interface PriceCard {
   href: string;
   savings?: string;
   popular?: boolean;
+  hidePerSession?: boolean;
 }
 
 const withoutRecording: PriceCard[] = [
@@ -30,26 +31,29 @@ const withoutRecording: PriceCard[] = [
     name: '3-Lesson Pack',
     price: '$285',
     savings: 'Save $15',
-    description: 'Three 1-hour personalized coaching sessions.',
+    description: 'Three sessions at $95 per session.',
     buttonLabel: 'Buy Pack',
     href: 'https://www.paypal.com/ncp/payment/V37CKQ57LJXJQ',
+    hidePerSession: true,
   },
   {
     name: '5-Lesson Pack',
     price: '$460',
     savings: 'Save $40',
-    description: 'Five 1-hour personalized coaching sessions.',
+    description: 'Five sessions at $92 per session.',
     buttonLabel: 'Buy Pack',
     popular: true,
     href: 'https://www.paypal.com/ncp/payment/6JL7C5GAZP7YS',
+    hidePerSession: true,
   },
   {
     name: '10-Lesson Pack',
     price: '$900',
     savings: 'Save $100',
-    description: 'Ten 1-hour personalized coaching sessions.',
+    description: 'Ten sessions at $90 per session.',
     buttonLabel: 'Buy Pack',
     href: 'https://www.paypal.com/ncp/payment/A8AZQH7Z8N43S',
+    hidePerSession: true,
   },
 ];
 
@@ -72,26 +76,29 @@ const withRecording: PriceCard[] = [
     name: '3-Lesson Pack',
     price: '$300',
     savings: 'Save $15',
-    description: 'Three 1-hour personalized coaching sessions.',
+    description: 'Three sessions at $100 per session.',
     buttonLabel: 'Buy Pack',
     href: 'https://www.paypal.com/ncp/payment/CF854SZA5HQR4',
+    hidePerSession: true,
   },
   {
     name: '5-Lesson Pack',
     price: '$485',
     savings: 'Save $40',
-    description: 'Five 1-hour personalized coaching sessions.',
+    description: 'Five sessions at $97 per session.',
     buttonLabel: 'Buy Pack',
     popular: true,
     href: 'https://www.paypal.com/ncp/payment/ESTG65633EWYN',
+    hidePerSession: true,
   },
   {
     name: '10-Lesson Pack',
     price: '$950',
     savings: 'Save $100',
-    description: 'Ten 1-hour personalized coaching sessions.',
+    description: 'Ten sessions at $95 per session.',
     buttonLabel: 'Buy Pack',
     href: 'https://www.paypal.com/ncp/payment/HMDR4FUNE4HSL',
+    hidePerSession: true,
   },
 ];
 
@@ -287,7 +294,7 @@ const otherServices = [
                 <span class="font-playfair text-gold text-4xl font-bold leading-none">
                   {price}
                 </span>
-                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+                {!hidePerSession && <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>}
               </div>
 
               <!-- Description -->
@@ -369,7 +376,7 @@ const otherServices = [
                 <span class="font-playfair text-gold text-4xl font-bold leading-none">
                   {price}
                 </span>
-                <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>
+                {!hidePerSession && <span class="font-inter text-text-secondary text-xs ml-1">/ session</span>}
               </div>
 
               <p class="font-inter text-text-secondary text-sm leading-relaxed flex-grow">
