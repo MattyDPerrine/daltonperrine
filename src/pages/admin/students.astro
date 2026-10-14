@@ -186,6 +186,7 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
           <select name="pricing_url"
                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
             <option value="/pricing">Current pricing (new students)</option>
+            <option value="/pricing-before-november-2026">Before November 2026</option>
             <option value="/pricing-before-june-2026">Before June 2026</option>
             <option value="/pricing-before-march-2026">Before March 2026</option>
             <option value="/pricing-before-december-2021">Before December 2021</option>
@@ -355,6 +356,7 @@ const editId = Astro.url.searchParams.get('edit') ?? '';
                         <select name="pricing_url"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent bg-white">
                           <option value="/pricing"                        selected={!s.pricing_url || s.pricing_url === '/pricing'}>Current pricing (new students)</option>
+                          <option value="/pricing-before-november-2026"   selected={s.pricing_url === '/pricing-before-november-2026'}>Before November 2026</option>
                           <option value="/pricing-before-june-2026"       selected={s.pricing_url === '/pricing-before-june-2026'}>Before June 2026</option>
                           <option value="/pricing-before-march-2026"      selected={s.pricing_url === '/pricing-before-march-2026'}>Before March 2026</option>
                           <option value="/pricing-before-december-2021"   selected={s.pricing_url === '/pricing-before-december-2021'}>Before December 2021</option>
