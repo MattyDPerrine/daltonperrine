@@ -4,7 +4,7 @@ const navLinks = [
   { href: '/about',        label: 'About' },
   { href: '/coaching',     label: 'Coaching' },
   { href: '/pricing',      label: 'Pricing' },
-  { href: '/chessalyz',    label: 'Chessalyz.ai' },
+  { href: 'https://chessalyz.ai/', label: 'Chessalyz.ai', external: true },
   { href: '/testimonials', label: 'Testimonials' },
   { href: '/blog',         label: 'Blog' },
   { href: '/content',      label: 'Content' },
@@ -32,9 +32,11 @@ const currentPath = Astro.url.pathname;
 
       <!-- Desktop nav links -->
       <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
-        {navLinks.map(({ href, label }) => (
+        {navLinks.map(({ href, label, external }) => (
           <a
             href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
             class:list={[
               'px-3 py-2 rounded-md text-sm font-medium font-inter transition-colors duration-150',
               currentPath === href
@@ -78,9 +80,11 @@ const currentPath = Astro.url.pathname;
     aria-label="Mobile navigation"
   >
     <nav class="flex flex-col px-4 py-4 gap-1">
-      {navLinks.map(({ href, label }) => (
+      {navLinks.map(({ href, label, external }) => (
         <a
           href={href}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noopener noreferrer' : undefined}
           class:list={[
             'block px-4 py-3 rounded-md text-base font-inter font-medium transition-colors duration-150',
             currentPath === href
